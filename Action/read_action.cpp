@@ -1,122 +1,6 @@
 #include "../common.h"
 using namespace std;
 
-bool block_need_read(int block_id, int disk_id, int step){
-    int obj_id=disk[disk_id][block_id];
-    if(obj_id == 0){
-        return false;
-    }
-    
-    Object &obj=object_array[obj_id];
-    int copy_id=1;
-    for(;copy_id<=3;copy_id++){//获得该磁盘存储的对象副本id
-        if(obj.disk_array[copy_id]==disk_id) break;
-    }
-    int obj_block_num=0;// 表示对象块处于对象第几块
-    
-    while(1){
-        if(obj.storge_data[copy_id].object_storge[obj_block_num]==block_id)
-            break;
-        obj_block_num++;
-    }
-    double block_score = calculate_score(block_id, disk_id);
-
-    if(block_score == 0)
-        return false;
-
-    double first_score = 1.3, second_score = 0.7;
-
-    if(time_step < 10800)
-        first_score = 0.04, second_score = 0.5;
-    // if(time_step < 77400 && time_step >= 10800)
-    //     first_score = 1.5, second_score = 0.995;
-    if(time_step < 86400 && time_step >= 77400)
-        first_score = 0.04, second_score = 0.2;
-
-    if(block_score <= first_score && step == 0)
-        return false;
-    if(block_score <= second_score && step == 1)
-        return false;
-    
-    for(int req_id:object_array[obj_id].wait_request_set){
-        if(request_array[req_id].read[obj_block_num]==false) 
-            return true; 
-    }
-    return false;
-}
-
-// 放弃的动态规划代码
-// 需要保证范围内有需要读取的块，且起点不需要读
-// 不考虑环的情况
-char solve(int disk_id, int begin, int end, int initial_continuous) {
-    assert(end > begin);
-    vector<int> positions;
-    for (int i = begin + 1; i <= end; ++i) {
-        if (disk_block_request[disk_id][i] != 0) {
-            positions.push_back(i);
-        }
-    }
-    assert(positions.size() >= 1); // 当前位置和要读取的一块
-
-    int need_read_size = positions.size();
-    const int MAX_C = 7;
-    const int INF = INT_MAX / 2;
-
-    vector<vector<vector<int>>> dp(need_read_size, vector<vector<int>>(MAX_C + 1, vector<int>(2, INF)));
-
-    int x0 = positions[0];
-    int d = x0 - begin;
-
-    // 一开始的两种情况
-    int cost1 = global_get_read_time(d, initial_continuous);
-    int new_c1 = min(initial_continuous + d, MAX_C);
-    dp[0][new_c1][1] = cost1;
-
-    int cost2 = (d - 1) + global_get_read_time(1, 0);
-    dp[0][1][0] = cost2;
-
-    for (int i = 0; i < need_read_size - 1; ++i) {
-        int curr_pos = positions[i];
-        int next_pos = positions[i + 1];
-        int d = next_pos - curr_pos;
-
-        for (int c = 0; c <= MAX_C; ++c) {
-            for (int f : {0, 1}) {
-                if (dp[i][c][f] == INF) continue;
-
-                int cost1 = global_get_read_time(d, c);
-                int new_c1 = min(c + d, MAX_C);
-                if (dp[i + 1][new_c1][f] > dp[i][c][f] + cost1) {
-                    dp[i + 1][new_c1][f] = dp[i][c][f] + cost1;
-                }
-
-                int cost2 = (d - 1) + global_get_read_time(1, 0);
-                int new_c2 = 1;
-                if (dp[i + 1][new_c2][f] > dp[i][c][f] + cost2) {
-                    dp[i + 1][new_c2][f] = dp[i][c][f] + cost2;
-                }
-            }
-        }
-    }
-
-    int min_time = INF;
-    char first_op = 'p';
-    for (int c = 0; c <= MAX_C; ++c) {
-        for (int f : {0, 1}) {
-            if (dp[need_read_size - 1][c][f] < min_time) {
-                min_time = dp[need_read_size - 1][c][f];
-                first_op = (f == 0) ? 'p' : 'r';
-            } else if (dp[need_read_size - 1][c][f] == min_time) {
-                if ((f == 0 && first_op == 'r') || (f == 1 && first_op == 'p')) {
-                    first_op = (f == 0) ? 'p' : 'r';
-                }
-            }
-        }
-    }
-
-    return first_op;
-}
-
 bool block_need_read2(int block_id, int disk_id){
     int obj_id=disk[disk_id][block_id];
     if(obj_id == 0){
@@ -168,20 +52,6 @@ void read_action(){
     int request_id, object_id;
     scanf("%d", &n_read);
     
-    
-    // for(int disk_id=1;disk_id<=N_disk_num;disk_id++){
-    //     for(int magnetic_head_id=0;magnetic_head_id<MAGNERIC_HEAD_NUM;magnetic_head_id++){
-    //         vector<pair<int, int>> array;
-    //         for(int n2 = 0; n2 < disk_array[disk_id].target_actual_array[magnetic_head_id].size(); n2++){
-    //             int actualSegment_id = disk_array[disk_id].target_actual_array[magnetic_head_id][n2];
-    //             ActualSegment& actualSegment = disk_array[disk_id].segment_array[actualSegment_id];
-    //             array.push_back({actualSegment.all_request_wait_time, actualSegment_id});    
-    //         }
-    //         sort(array.begin(), array.end(), greater<pair<int, int>>());
-    //         if(array.size()>=2 and time_step%1790==0)
-    //             most_req_segment[disk_id][magnetic_head_id]=array[1].second;
-    //     }
-    // }
     for (int i = 1; i <= n_read; i++) { // 总用时12s+
         scanf("%d%d", &request_id, &object_id);
         request_array[request_id].object_id = object_id;
@@ -206,22 +76,9 @@ void read_action(){
                 for(auto it=obj_segment_id.begin();it!=obj_segment_id.end();it++){
                     in_need_read = in_need_read & disk_array[disk_id].is_target_actual(*it, magnetic_head_id); 
                     
-                    // if(time_step%1800>=1780 and most_req_segment[disk_id][magnetic_head_id]!=-1)
-                    // in_need_read = in_need_read &*it==most_req_segment[disk_id][magnetic_head_id];
-                    
                 }
                 
-                if(in_need_read == true && request_id == 5383971){
-                    int a = 1;
-                }
-                // int now_segment_id=(disk_array[disk_id].magnetic_head[magnetic_head_id]-1)/segment_size;
-                // int dis_obj_to_now_segment_begin=(object_array[object_id].storge_data[n1].object_storge[0]-
-                // disk_array[disk_id].segment_array[now_segment_id].begin_index+V_block_per_disk)%V_block_per_disk;
-                // int dis_head_to_now_segment_begin=(disk_array[disk_id].magnetic_head[magnetic_head_id]-
-                //     disk_array[disk_id].segment_array[now_segment_id].begin_index+V_block_per_disk)%V_block_per_disk;
-                // if(time_step%1800>=1790 and dis_obj_to_now_segment_begin<dis_head_to_now_segment_begin){
-                //     in_need_read=false;
-                // }
+
                 if_need_read=if_need_read|in_need_read;
             }
             

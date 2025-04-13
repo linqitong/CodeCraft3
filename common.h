@@ -198,8 +198,6 @@ extern int quit_request; // 放弃请求数
 
 extern int total_write;
 
-extern int mode; // 0 表示分块模式, 1 表示乱序模式
-
 extern int zero_request; 
 
 extern int occupy_size; // 占用其他标签的总大小
@@ -269,7 +267,6 @@ int global_get_read_time(int read_num, int have_read_time);
 
 std::vector<int> get_allocate_size_rank(int tag_id);
 
-void analyze_read_request();
 
 bool if_find(std::vector<int>& vec, int target);
 
