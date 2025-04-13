@@ -1,0 +1,13 @@
+build/
+.vscode/
+*.exe
+output.txt
+test/
+Data/
+.idea/
+Python/__pycache__
+CMakeCache.txt
+*.zip
+mark.txt
+disk.txt
+disk/

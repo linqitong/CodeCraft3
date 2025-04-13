@@ -1,0 +1,159 @@
+import sys
+from draw import *
+import os
+from read_func import *
+import common
+from tqdm import tqdm
+import math
+import get_tag_rank
+
+def main():
+    original_stdin = sys.stdin
+    # f = open('../Data/初赛数据/practice.in', 'r')
+    f = open('../Data/sample_official.in', 'r')
+    sys.stdin = f
+
+    user_input = input().split()
+
+    common.T_time_step_length = int(user_input[0])
+    common.M_tag_num = int(user_input[1])
+    common.N_disk_num = int(user_input[2])
+    common.V_block_per_disk = int(user_input[3])
+    common.G_token_per_time_step = int(user_input[4])
+    common.K_garbage_recycle_size = int(user_input[5])
+
+
+    all_size_all = []
+    fre_del_all = []
+    fre_write_all = []
+    fre_net_demand_all = []
+    fre_read_all = []
+
+
+    # 删除情况
+    init = True
+    for n1 in range(1, common.M_tag_num + 1):
+        user_input = input().split()
+        all_size = 0
+        for n2 in range(len(user_input)):
+            if init:
+                init = False
+                all_size_all = [0 for _ in range(len(user_input))]
+                fre_del_all = [0 for _ in range(len(user_input))]
+                fre_write_all = [0 for _ in range(len(user_input))]
+                fre_net_demand_all = [0 for _ in range(len(user_input))]
+                fre_read_all = [0 for _ in range(len(user_input))]
+                common.tag_array = [common.Tag() for _ in range(common.M_tag_num + 1)]
+                common.tag_array[n1].read_data = [0 for _ in range(common.T_time_step_length + common.EXTRA_TIME + 1)]
+
+
+            common.tag_array[n1].fre_del.append(int(user_input[n2]))
+            common.tag_array[n1].fre_net_demand.append(-int(user_input[n2]))
+            all_size -= int(user_input[n2])
+            common.tag_array[n1].fre_all_size.append(all_size)
+            all_size_all[n2] += int(all_size)
+            fre_del_all[n2] += int(user_input[n2])
+            fre_net_demand_all[n2] -= int(user_input[n2])
+
+    # 写入情况
+    for n1 in range(1, common.M_tag_num + 1):
+        user_input = input().split()
+        all_size = 0
+        for n2 in range(len(user_input)):
+            common.tag_array[n1].fre_write.append(int(user_input[n2]))
+            common.tag_array[n1].fre_net_demand[n2] += int(user_input[n2])
+            all_size += int(user_input[n2])
+            common.tag_array[n1].fre_all_size[n2] += int(all_size)
+            all_size_all[n2] += all_size
+            fre_write_all[n2] += int(user_input[n2])
+            fre_net_demand_all[n2] += int(user_input[n2])
+
+    threshold = 10000
+    threshold_read_all = 0
+    read_all = 0
+    size_array = [0 for _ in range(len(user_input))]
+    # 读取情况
+    for n1 in range(1, common.M_tag_num + 1):
+        user_input = input().split()
+        for n2 in range(len(user_input)):
+            common.tag_array[n1].fre_read.append(int(user_input[n2]))
+            fre_read_all[n2] += int(user_input[n2])
+            read_all += int(user_input[n2])
+            if int(user_input[n2]) > threshold:
+                threshold_read_all += int(user_input[n2])
+                size_array[n2] += common.tag_array[n1].fre_all_size[n2]
+    get_tag_rank.get_tag_rank()
+    exit()
+    extra_token = input()
+    draw_pic = True
+    if draw_pic:
+        # 绘制 tag 图像
+        for n1 in range(1, common.M_tag_num + 1):
+            data = [common.tag_array[n1].fre_del, common.tag_array[n1].fre_write, common.tag_array[n1].fre_net_demand]
+            name = ["fre_del", "fre_write", "fre_net_demand"]
+            save_multi_line_plot(data, os.path.join(picture_addr, "tag_dwn"), "tag" + str(n1), name)
+            data = common.tag_array[n1].fre_read
+            save_line_plot(data, os.path.join(picture_addr, "tag_read"), "tag" + str(n1))
+            data = common.tag_array[n1].fre_all_size
+            save_line_plot(data, os.path.join(picture_addr, "tag_all_size"), "tag" + str(n1))
+
+        data = [fre_del_all, fre_write_all, fre_net_demand_all]
+        name = ["fre_del_all", "fre_write_all", "fre_net_demand_all"]
+        save_multi_line_plot(data, os.path.join(picture_addr), "all_tag_dwn", name)
+        data = all_size_all
+        save_line_plot(data, os.path.join(picture_addr), "all_tag_size")
+        data = fre_read_all
+        save_line_plot(data, os.path.join(picture_addr), "all_tag_read")
+
+    exit()
+    for time in tqdm(range(1, common.T_time_step_length + common.EXTRA_TIME + 1)):
+        common.t_segment = math.floor(time / 1800)
+        # if (common.t % 1800) == 0:
+            # print(common.t)
+        common.t = time
+        timestamp_action()
+        delete_action()
+        write_action()
+        read_action()
+        if (common.t % 1800) == 0:
+            garbage_action()
+
+    print("输入数据已经处理完毕")
+
+    data1 = []
+    for key, value in common.tag_array[1].object_request_dict.items():
+        data1.append(value)
+    draw_scatter_plot(data1, "./", "test", (0, 1000), (0, 50))
+
+    # exit()
+    data = []
+    map = {}
+    n1 = 1
+    for key, value in sorted(common.tag_array[1].object_request_dict.items()):
+        data.append(value)
+        map[key] = n1
+        n1 += 1
+
+    data2 = []
+    for key, value in common.tag_array[1].object_request_dict.items():
+        data2.append([map[key], common.objects[key].size_index, value])
+    plot_elements_3(data2, "./", "test")
+    exit()
+    draw_scatter_plot(data, "./", "test")
+    exit()
+
+    for n1 in range(1, common.M_tag_num + 1):
+        data = []
+        for value in common.tag_array[n1].object_request_dict.values():
+            data.append(value)
+        draw_scatter_plot(data, os.path.join(picture_addr, "object_read"), "tag" + str(n1))
+
+    exit()
+    tag_array = common.tag_array
+    for tag_id in range(1, common.M_tag_num + 1):
+        save_line_plot(tag_array[tag_id].read_data, os.path.join(picture_addr, "tag_read_all"), "tag" + str(tag_id))
+    a = 1
+
+
+if __name__ == '__main__':
+    main()
