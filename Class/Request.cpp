@@ -43,7 +43,6 @@ void Request::finish(){
     finish_request.push_back(request_id);
 
     // 全局等待集合删除，对应物品等待集合删除
-    // wait_request_set.erase(request_id);
     object_array[object_id].wait_request_set.erase(request_id);
 }
 

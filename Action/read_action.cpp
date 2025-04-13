@@ -198,16 +198,10 @@ void read_action(){
                         }
                     }
 
-                    // 需要跳转的两种情况
-                    // 1.1、在一个实际段的结尾
-                    // 1.3、现在处于的实际段不在要求读的范围中
-                    // 2.2、现在处于的实际段在要求读的范围中
-                    // 2.3、所在连续时间段后面后面没有需要读的内容
                     if((!in_need_read)
                         || (!have_r)){
                             int jump_index;
-                            
-                            
+                        
                             vector<pair<int, int>> array;
                             for(int n2 = 0; n2 < target_disk.target_actual_array[magnetic_head_id].size(); n2++){
                                 int actualSegment_id = target_disk.target_actual_array[magnetic_head_id][n2];
@@ -374,8 +368,6 @@ void read_action(){
         int this_time = (time_step - 1) / FRE_PER_SLICING + 1;
         if(time_step - request_array[finish_request[n1]].recieve_time > 105){
             zero_request++;
-            // int time = (request_array[finish_request[n1]].recieve_time - 1) / FRE_PER_SLICING + 1;
-            // int this_time = (time_step - 1) / FRE_PER_SLICING + 1;
             if(request_array[finish_request[n1]].select){
                 select_zero_request++;
             }

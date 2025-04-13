@@ -150,30 +150,6 @@ int global_get_read_time(int read_num, int have_read_time){
     return all_time;
 }
 
-vector<int> get_allocate_size_rank(int tag_id){
-    Tag& tag = tag_array[tag_id];
-    vector<pair<int, int>> size_rank;
-    for(int n1 = 1; n1 <= N_disk_num; n1++){
-        size_rank.push_back({tag.allocate_disk[n1].size, n1});
-    }
-    sort(size_rank.begin(), size_rank.end(), std::greater<pair<int, int>>());
-
-    vector<int> result;
-    for(int n1 = 0; n1 < size_rank.size(); n1++){
-        result.push_back(size_rank[n1].second);
-    }
-    return result;
-}
-
-bool if_find(vector<int>& vec, int target){
-    for(int i = 0; i < vec.size(); i++){
-        if(vec[i] == target)
-            return true;
-    }
-    return false;
-}
-
-
 double calculate_variance_double(const std::vector<double>& data){
     assert(data.size() >= 0);
 

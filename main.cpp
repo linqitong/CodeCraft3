@@ -5,8 +5,6 @@ bool debug_mode_mark_disk_imfromation = false;
 
 int main()
 {
-    int t1 = 0;
-    int time1 = 0, time2 = 0, time3 = 0, time4 = 0;
     if(debug_mode){
         freopen(".\\Data\\sample_official.in", "r", stdin);
         freopen(".\\output.txt", "w", stdout);
@@ -17,8 +15,6 @@ int main()
     // allocate_disk();
     for (; t <= T_time_step_length + EXTRA_TIME; t++) {
         busy_req = std::vector<int>();
-        if(t == 16462)
-            int a = 1;
         if(t % FRE_PER_SLICING == 1){
             if(debug_mode){
                 freopen("CON", "w", stdout);

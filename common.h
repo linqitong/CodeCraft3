@@ -41,13 +41,6 @@ class Object_storge{
 public:
     std::vector<int> object_storge; // 从 0 开始索引
 };
-
-
-struct Triple{
-    StorgeNode first; // 副本一
-    StorgeNode second; // 副本二
-    StorgeNode third; // 副本三
-};
     
 class VirtualSegment{
 public:
@@ -148,13 +141,11 @@ public:
 
 class Tag{
 public:
-    std::vector<StorgeNode> allocate_disk; // 该标签预分配的磁盘空间
     std::vector<int> allo_begin; // 该标签预分配的磁盘空间的起始位置
     std::vector<int> fre_del; // 多个时间段内删除的对象大小之和 每个数据的范围 0 ~ 2^32 - 1
     std::vector<int> fre_write; // 多个时间段内写入的对象大小之和
     std::vector<int> fre_read; // 多个时间段内读取的对象大小之和
     std::vector<int> default_index; // 该标签默认分配的三个磁盘
-    std::vector<StorgeNode> default_disk; // 该标签默认分配的磁盘的空间
     std::vector<double> pearson_tag;
     int all_write_size;
     std::vector<int> virtual_segment = std::vector<int>(); // 分配给该 tag 的虚拟段索引,从 0 开始
@@ -183,9 +174,6 @@ extern int disk_block_index[MAX_DISK_NUM][MAX_DISK_SIZE]; // 记录磁盘对应�
 extern int disk_block_request[MAX_DISK_NUM][MAX_DISK_SIZE];
 
 extern std::vector<int> finish_request; // 当前时间片完成的请求
-
-extern void allocate_disk();
-extern void allocate_disk1();
 
 extern std::vector<int> busy_req;
 
@@ -264,11 +252,6 @@ int advance_position(int current, int distance);
 double calculate_score(int block_id, int disk_id);
 
 int global_get_read_time(int read_num, int have_read_time);
-
-std::vector<int> get_allocate_size_rank(int tag_id);
-
-
-bool if_find(std::vector<int>& vec, int target);
 
 double calculate_variance_double(const std::vector<double>& data); // 计算方差
 
