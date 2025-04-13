@@ -104,9 +104,6 @@ class Disk{
         std::vector<int> current_time_segment = std::vector<int>(MAGNERIC_HEAD_NUM); // 当前正在执行的命令的时间段，初始是第一段
         std::vector<std::vector<int>> target_actual_array = std::vector<std::vector<int>>(MAGNERIC_HEAD_NUM); // 当前时间段分配给该 disk 的 actual 序列
 
-        // int head_move_mode = 1; // 0 特定区域巡回模式，1 全局巡回模式
-        // int last_head_move_mode = 1; // 0 特定区域巡回模式，1 全局巡回模式
-
         bool is_target_actual(int index, int head_id); // 判断对应段索引是否在 target_actual_array 中
         std::vector<std::vector<int>> segment_read_time=std::vector<std::vector<int>>(MAGNERIC_HEAD_NUM);//记录选中实际段的跳转次数
 
@@ -130,7 +127,6 @@ public:
     int object_id = 0;
     int recieve_time;
     bool select = false;
-    // int prev_id; // 记录同样对象的上一个请求
     bool read[MAX_OBJECT_SIZE]; // 记录该请求每个磁盘块的读取情况
     int read_num = 0; // 已经读取的磁盘块数量 
     bool read_block(int index);
@@ -141,24 +137,16 @@ public:
 
 class Tag{
 public:
-    std::vector<int> allo_begin; // 该标签预分配的磁盘空间的起始位置
     std::vector<int> fre_del; // 多个时间段内删除的对象大小之和 每个数据的范围 0 ~ 2^32 - 1
     std::vector<int> fre_write; // 多个时间段内写入的对象大小之和
     std::vector<int> fre_read; // 多个时间段内读取的对象大小之和
-    std::vector<int> default_index; // 该标签默认分配的三个磁盘
     std::vector<double> pearson_tag;
     int all_write_size;
     std::vector<int> virtual_segment = std::vector<int>(); // 分配给该 tag 的虚拟段索引,从 0 开始
 };
 
-class Tag_order{
-public:
-    std::vector<std::pair<int, int>> tag_order = std::vector<std::pair<int, int>>(); // 某时间段的标签净需求数组, first代表净需求, second代表标签编号
-};
-
 extern int quit_num1;
 
-extern std::vector<std::vector<int>> most_req_segment;
 extern Disk disk_array[MAX_DISK_NUM]; // 所有的磁盘数据
 extern Object object_array[MAX_OBJECT_NUM]; // 所有的对象数据
 extern Request request_array[MAX_REQUEST_NUM]; // 所有的请求数据
@@ -179,16 +167,13 @@ extern std::vector<int> busy_req;
 
 extern int Data[7];
 
-extern std::vector<int> high_read_time_vector; // 高峰时段
-
 extern int t; // 表示全局时间步
+
 extern int quit_request; // 放弃请求数
 
 extern int total_write;
 
 extern int zero_request; 
-
-extern int occupy_size; // 占用其他标签的总大小
 
 extern int head_idle_time; // 磁头空闲时间
 
@@ -198,7 +183,6 @@ extern int max_think_num_for_empty_read; // 判断空读时，考虑的最大块
 
 extern bool debug_mode;
 extern bool debug_mode_mark_disk_imfromation; // 判断是否记录磁盘信息，只在 debug 模式下有效
-extern int calcuate_use_time, calcuate_use_time1, calcuate_use_time2, calcuate_use_time3, calcuate_use_time4; // 计算时间
 
 extern int drop_req_num;//被丢弃的请求数量 
 

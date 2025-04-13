@@ -21,9 +21,7 @@ int quit_num1 = 0;
 
 std::vector<int> busy_req;
 
-// std::set<int> wait_request_set;
 std::vector<int> finish_request;
-std::vector<std::vector<int>> most_req_segment;
 
 int Data[7]={64,52,42,34,28,23,19};
 
@@ -32,11 +30,9 @@ int zero_request = 0;
 int t = 1;
 int quit_request = 0;
 int total_write = 0;
-int occupy_size = 0;
 int head_idle_time = 0;
 int all_request_read_size = 0;
 int drop_req_num=0;
-vector<int> high_read_time_vector = {0};
 
 int max_think_num_for_empty_read = 3;
 int segment_size; // 端长度在初始化时动态生成，不预先设置
@@ -73,7 +69,6 @@ int select_zero_request = 0;
 int all_finish_select = 0;
 double all_mark = 0;
 int segment_num = 36;
-int calcuate_use_time = 0, calcuate_use_time1 = 0, calcuate_use_time2 = 0, calcuate_use_time3 = 0, calcuate_use_time4 = 0;
 
 int select_but_not_finish = 0;
 

@@ -36,8 +36,6 @@ void pre_process(){
 
     segment_size = V_block_per_disk / segment_num;
 
-    most_req_segment=vector<vector<int>>(N_disk_num+1,vector<int>(MAGNERIC_HEAD_NUM,-1));
-
     // 初始化时间片信息
     for (int i = 1; i <= M_tag_num; i++) {
         tag_array[i].fre_del = vector<int>((T_time_step_length - 1) / FRE_PER_SLICING + 2);

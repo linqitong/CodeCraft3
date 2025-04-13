@@ -46,7 +46,6 @@ int main()
         std::cout << "Analyze the total run time is : " << duration.count() / 1000 << "ms" << std::endl; 
         std::cout << "zero_request: " << zero_request << std::endl;
         std::cout << "quit_request: " << quit_request << std::endl;
-        std::cout << "occupy_size: " << occupy_size << std::endl;
         std::cout << "head_idle_time: " << head_idle_time << std::endl;
         std::cout << "all_request_read_size: " << all_request_read_size << std::endl;
         std::cout << "tag_first_write_size: " << tag_first_write_size << std::endl;
