@@ -163,7 +163,7 @@ int pass_length(int have_read_time){
     }
 }
 
-void read_action2(){
+void read_action(){
     int n_read;
     int request_id, object_id;
     scanf("%d", &n_read);

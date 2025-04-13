@@ -42,8 +42,8 @@ int main()
         }
         time_step_action();
         delete_action();
-        write_action3();
-        read_action2();
+        write_action();
+        read_action();
         exchange_action();
         /*
         if(t >= 29898 && t <= 30001){

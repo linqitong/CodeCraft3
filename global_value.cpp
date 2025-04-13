@@ -109,62 +109,6 @@ int advance_position(int current, int distance) {
     return newPosition;
 }
 
-int find_tag(int disk_id, int block_id) {
-    if(mode == 0 || mode == 1){
-        for(int i = 2; i <= M_tag_num; i++){
-            if(block_id >= tag_array[i - 1].allocate_disk[disk_id].begin && block_id < tag_array[i].allocate_disk[disk_id].begin){
-                return i - 1;
-            }
-        }
-        return M_tag_num;
-    }
-    else if(mode == 2){
-        if(disk_id <= 3){
-            for(int i = 2; i < 6; i++){
-                int tag_id = high_read_time_vector[i], tag_id_1 = high_read_time_vector[i - 1];
-                if(block_id >= tag_array[tag_id_1].default_disk[0].begin && block_id < tag_array[tag_id].default_disk[0].begin)
-                    return tag_id_1;
-            }
-            return high_read_time_vector[5];
-        }
-        if(disk_id > 3 && disk_id <= 7){
-            for(int i = 7; i <= 11; i++){
-                int tag_id = high_read_time_vector[i], tag_id_1 = high_read_time_vector[i - 1];
-                if(block_id >= tag_array[tag_id_1].default_disk[0].begin && block_id < tag_array[tag_id].default_disk[0].begin)
-                    return tag_id_1;
-            }
-            return high_read_time_vector[11];
-        }
-        if(disk_id > 7 && disk_id <= 10){
-            for(int i = 13; i <= 16; i++){
-                int tag_id = high_read_time_vector[i], tag_id_1 = high_read_time_vector[i - 1];
-                if(block_id >= tag_array[tag_id_1].default_disk[0].begin && block_id < tag_array[tag_id].default_disk[0].begin)
-                    return tag_id_1;
-            }
-            return high_read_time_vector[16];
-        }
-    }
-}
-
-int find_max_disk(int tag_id) {
-    int max_disk = 1;
-    for(int i = 2; i <= N_disk_num; i++){
-        if(tag_array[tag_id].allocate_disk[i].size > tag_array[tag_id].allocate_disk[max_disk].size){
-            max_disk = i;
-        }
-    }
-    return max_disk;
-}
-
-int find_max_disk1(){
-    int max_disk = 1;
-    for(int i = 2; i <= N_disk_num; i++){
-        if(disk_array[i].empty_size > disk_array[max_disk].empty_size){
-            max_disk = i;
-        }
-    }
-    return max_disk;
-}
 
 double calculate_score(int block_id, int disk_id){
     int obj_id = disk[disk_id][block_id], size = object_array[obj_id].size;

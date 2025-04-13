@@ -443,7 +443,7 @@ vector<pair<int, vector<int>>> allocate_object(int object_id) {
     throw runtime_error("Allocation failed for object " + to_string(object_id));
 }
 
-void write_action3(){
+void write_action(){
     int n_write;
     scanf("%d", &n_write);
     vector<int> write_array(n_write + 1); // 要写入的对象 id 序列
