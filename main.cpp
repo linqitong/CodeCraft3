@@ -12,9 +12,9 @@ int main()
     
     auto start_time = std::chrono::high_resolution_clock::now();
     pre_process();
-    // allocate_disk();
+    
     for (; t <= T_time_step_length + EXTRA_TIME; t++) {
-        busy_req = std::vector<int>();
+        
         if(t % FRE_PER_SLICING == 1){
             if(debug_mode){
                 freopen("CON", "w", stdout);

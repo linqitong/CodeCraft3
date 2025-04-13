@@ -452,6 +452,7 @@ void read_action(){
     for(int req_id:busy_req){
         printf("%d\n",req_id);
     }
+    busy_req = std::vector<int>();
 
     fflush(stdout);
     return;

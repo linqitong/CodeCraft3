@@ -3,8 +3,6 @@ using namespace std;
 
 // 在这里定义全局变量，仍然需要在 common.h 中声明
 
-std::string default_disk_block_index_mode = "average"; // average/difference
-
 int T_time_step_length, M_tag_num, N_disk_num, V_block_per_disk, G_token_per_time_step,K_max_exchange_block;
 
 Disk disk_array[MAX_DISK_NUM];

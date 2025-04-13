@@ -11,8 +11,6 @@
 #define MAX_OBJECT_SIZE (5)
 #define MAGNERIC_HEAD_NUM (2)
 
-extern std::string default_disk_block_index_mode; 
-
 extern int G;
 extern int T_time_step_length; // 1 ~ 86400，时间片编号 1 ~ T+105
 extern int M_tag_num; // 1 ~ 16，标签编号 1 ~ 16
@@ -20,17 +18,6 @@ extern int N_disk_num; // 3 ~ 10
 extern int V_block_per_disk; // 1 ~ 16384，存储单元编号 1 ~ V
 extern int G_token_per_time_step; // 64 ~ 1000
 extern int K_max_exchange_block; //代表每次垃圾回收事件每个硬盘最多的交换存储单元的操作次数。0~100
-
-class StorgeNode{
-    public:
-        int begin = 1; // 空块起始编号
-        int size; // 空闲长度
-        int tag_id; // 标签编号
-    // 若进行sort, 根据begin的大小进行升序排列
-    bool operator<(const StorgeNode& other) const {
-        return begin < other.begin;
-    }
-};
 
 class ExchangeBlock{
     public:
@@ -157,8 +144,7 @@ extern int disk_block_index[MAX_DISK_NUM][MAX_DISK_SIZE]; // 记录磁盘对应�
 extern int disk_block_request[MAX_DISK_NUM][MAX_DISK_SIZE];
 
 extern std::vector<int> finish_request; // 当前时间片完成的请求
-
-extern std::vector<int> busy_req;
+extern std::vector<int> busy_req;       // 当前时间片放弃的请求
 
 extern int Data[7];
 
