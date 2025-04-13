@@ -461,8 +461,8 @@ void write_action(){
         
         for(int n1 = 0; n1 < allocate_result.size(); n1++){
             object_array[write_array[i]].disk_array[n1 + 1] = allocate_result[n1].first;
-            object_array[write_array[i]].storge_data[n1 + 1].object_storge = allocate_result[n1].second;
-            assert(object_array[write_array[i]].storge_data[n1 + 1].object_storge.size() == object_array[write_array[i]].size);
+            object_array[write_array[i]].storge_data[n1 + 1] = allocate_result[n1].second;
+            assert(object_array[write_array[i]].storge_data[n1 + 1].size() == object_array[write_array[i]].size);
             assert(allocate_result[n1].first >= 1 && allocate_result[n1].first <= M_tag_num);
             for(int n2 = 0; n2 < allocate_result[n1].second.size(); n2++){
                 assert(allocate_result[n1].second[n2] >= 1 && allocate_result[n1].second[n2] <= V_block_per_disk);
@@ -474,7 +474,7 @@ void write_action(){
         for (int j = 1; j <= REP_NUM; j++){
             cout << object_array[write_array[i]].disk_array[j];
             for(int k = 0; k < object_array[write_array[i]].size; k++){
-                cout << " " << object_array[write_array[i]].storge_data[j].object_storge[k]; 
+                cout << " " << object_array[write_array[i]].storge_data[j][k]; 
             }
             printf("\n");
         }

@@ -24,14 +24,14 @@ int find_request_block(int disk_id, int block_id, int start_block, int tag_id){
 
 int change_object_storge(Object& obj, int empty_id, int request_id, int rep_id, int disk_id){
     for(int i = 0; i < obj.size; i++){
-        if(obj.storge_data[rep_id].object_storge[i] == request_id){
+        if(obj.storge_data[rep_id][i] == request_id){
             int temp1 = disk_block_index[disk_id][request_id];
             disk_block_index[disk_id][request_id] = disk_block_index[disk_id][empty_id];
             disk_block_index[disk_id][empty_id] = temp1;
             int temp2 = disk_block_request[disk_id][request_id];
             disk_block_request[disk_id][request_id] = disk_block_request[disk_id][empty_id];
             disk_block_request[disk_id][empty_id] = temp2;
-            obj.storge_data[rep_id].object_storge[i] = empty_id;
+            obj.storge_data[rep_id][i] = empty_id;
             disk[disk_id][empty_id] = disk[disk_id][request_id];
             disk[disk_id][request_id] = 0;
             break;
@@ -112,17 +112,17 @@ void exchange_action()
                 int judge = true;
                 for(int k = 0; k < target_object.size; k++){
                     empty.push_back(block_empty_id);
-                    request.push_back(target_object.storge_data[j + 1].object_storge[k]);
+                    request.push_back(target_object.storge_data[j + 1][k]);
                     block_empty_id++;
                     block_empty_id = find_empty_block(disk_id, block_empty_id, block_request_id);
-                    if(block_empty_id == -1 || block_empty_id > target_object.storge_data[j + 1].object_storge[0]){
+                    if(block_empty_id == -1 || block_empty_id > target_object.storge_data[j + 1][0]){
                         judge = false;
                         break; // 该块未被分配或者不在实际段中
                     }
                 }
                 if(judge == false)
                     break; // 该段空间不足，无法交换
-                block_request_id = target_object.storge_data[j + 1].object_storge[0] - 1;
+                block_request_id = target_object.storge_data[j + 1][0] - 1;
 
                 // 交换块并更新磁盘块信息
                 for(int k = 0; k < target_object.size; k++){

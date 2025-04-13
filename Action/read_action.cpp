@@ -15,7 +15,7 @@ bool block_need_read2(int block_id, int disk_id){
     }
     
     while(1){
-        if(obj.storge_data[copy_id].object_storge[obj_block_num]==block_id)
+        if(obj.storge_data[copy_id][obj_block_num] == block_id)
             break;
         obj_block_num++;
     }
@@ -63,8 +63,8 @@ void read_action(){
             
             int disk_id = object_array[object_id].disk_array[n1];
             set<int> obj_segment_id;
-            for(int i=0;i<object_array[object_id].storge_data[n1].object_storge.size();i++){
-                int actualSegment_id = (object_array[object_id].storge_data[n1].object_storge[i] - 1) / segment_size;
+            for(int i=0;i<object_array[object_id].storge_data[n1].size();i++){
+                int actualSegment_id = (object_array[object_id].storge_data[n1][i] - 1) / segment_size;
                 obj_segment_id.insert(actualSegment_id);
             } 
             if(obj_segment_id.size()==2){
@@ -97,7 +97,7 @@ void read_action(){
         Object& target_object = object_array[object_id];
         for(int n1 = 1; n1 <= 3; n1++){
             int disk_id = target_object.disk_array[n1];
-            int actualSegment_id = (target_object.storge_data[n1].object_storge[0] - 1) / segment_size;
+            int actualSegment_id = (target_object.storge_data[n1][0] - 1) / segment_size;
             if(disk_id==5 and actualSegment_id==25){
                 int a=1;
             }
@@ -106,7 +106,7 @@ void read_action(){
                 int a=1;
             }
             for(int n2 = 0; n2 < target_object.size; n2++){
-                int block_id = target_object.storge_data[n1].object_storge[n2];
+                int block_id = target_object.storge_data[n1][n2];
                 disk_block_request[disk_id][block_id]++;
             }
         }
@@ -116,7 +116,7 @@ void read_action(){
             bool select = false;
             for(int n1 = 1; n1 <= 3; n1++){
                 Disk& target_disk = disk_array[target_object.disk_array[n1]];
-                int act_index = (target_object.storge_data[n1].object_storge[0] - 1) / segment_size;
+                int act_index = (target_object.storge_data[n1][0] - 1) / segment_size;
                 ActualSegment& actualSegment = target_disk.segment_array[act_index];
                 if(select_VirtualSegment.find(actualSegment.virtual_id) != select_VirtualSegment.end()){
                     select = true;
@@ -412,7 +412,7 @@ void read_action(){
                 }
                 for(int n1 = 1; n1 <= 3; n1++){
                     int disk_id = target_object.disk_array[n1];
-                    int actualSegment_id = (target_object.storge_data[n1].object_storge[0] - 1) / segment_size;
+                    int actualSegment_id = (target_object.storge_data[n1][0] - 1) / segment_size;
                     if(disk_id==5 and actualSegment_id==25){
                         int a=1;
                     }
@@ -425,7 +425,7 @@ void read_action(){
                     for(int n3 = 0; n3 < target_object.size; n3++){
                         if(request_array[req_id].read[n3] == false){
                             int disk_id = target_object.disk_array[n1];
-                            int block_id = target_object.storge_data[n1].object_storge[n3];
+                            int block_id = target_object.storge_data[n1][n3];
                             disk_block_request[disk_id][block_id]--;
                         }
                     }

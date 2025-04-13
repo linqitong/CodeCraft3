@@ -37,12 +37,12 @@ void delete_action()
         // 清除对象的磁盘块信息并修改 allocate_disk
         for (int j = 1; j <= REP_NUM; j++) {
             int disk_id = object_array[id].disk_array[j];
-            int first_block = object_array[id].storge_data[j].object_storge[0];
+            int first_block = object_array[id].storge_data[j][0];
             ActualSegment& target_actual_segment = disk_array[disk_id].segment_array[(first_block - 1) / segment_size];
 
             for(int n1 = object_array[id].size - 1; n1 >= 0; n1--){
                 disk[disk_id] // 清除磁盘块信息
-                    [object_array[id].storge_data[j].object_storge[n1]] = 0;
+                    [object_array[id].storge_data[j][n1]] = 0;
                 target_actual_segment.all_size--;
                 while(target_actual_segment.first_write_index - 1>= 0 
                     && disk[disk_id][target_actual_segment.begin_index + target_actual_segment.first_write_index - 1] == 0){

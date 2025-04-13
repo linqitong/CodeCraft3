@@ -36,11 +36,6 @@ class ExchangeBlock{
     public:
     std::vector<std::pair<int, int>> exchange_block; // 交换块的数组
 };
-
-class Object_storge{
-public:
-    std::vector<int> object_storge; // 从 0 开始索引
-};
     
 class VirtualSegment{
 public:
@@ -114,7 +109,7 @@ public:
     int tag; // 标签
     int size;
     std::set<int> wait_request_set; // 该物品还没有执行完毕的请求的编号
-    Object_storge storge_data[REP_NUM + 1]; // 该对象三个副本存储的位置
+    std::vector<int> storge_data[REP_NUM + 1]; // 该对象三个副本存储的位置
     int virtual_segment_id = -1; // 该对象对应的虚拟段编号
     int disk_array[REP_NUM + 1]; // 该对象三个副本存储的磁盘 id 
     void check_finish(); // 检查 wait_request_set 是否部分已完成
