@@ -41,6 +41,8 @@ public:
         
 class ActualSegment{
 public:
+    int tag_index; // 分配该段的 tag 索引
+    int tag_occupy_size[17] = {0}; // 不同tag在该段的占用大小
     int disk_id; // 所在磁盘 id
     int begin_index; // 该段起始位置，该段在磁盘上的索引 = begin_index % segment_size
     int segment_length; // 段大小
@@ -99,7 +101,8 @@ public:
     int size;
     std::set<int> wait_request_set; // 该物品还没有执行完毕的请求的编号
     std::vector<int> storge_data[REP_NUM + 1]; // 该对象三个副本存储的位置
-    int virtual_segment_id = -1; // 该对象对应的虚拟段编号
+    int virtual_segment_id = -1; // 【已被弃用】该对象对应的虚拟段编号
+    int segment_id = -1; // 该对象对应的段编号
     int disk_array[REP_NUM + 1]; // 该对象三个副本存储的磁盘 id 
     void check_finish(); // 检查 wait_request_set 是否部分已完成
     void quit_all_request();
@@ -126,7 +129,7 @@ public:
     std::vector<int> fre_read; // 多个时间段内读取的对象大小之和
     std::vector<double> pearson_tag;
     int all_write_size;
-    std::vector<int> virtual_segment = std::vector<int>(); // 分配给该 tag 的虚拟段索引,从 0 开始
+    // std::vector<int> virtual_segment = std::vector<int>(); // 分配给该 tag 的虚拟段索引,从 0 开始
 };
 
 extern int quit_num1;

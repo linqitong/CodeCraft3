@@ -1,11 +1,104 @@
 #include "../common.h"
 using namespace std;
 
-vector<pair<int, vector<int>>> allocate_object(int object_id) {
-    // 有效段分配
+// 分配有效区的空间
+pair<int, vector<int>> efficient_allocate_object(int object_id){
     Object& obj = object_array[object_id];
     int current_tag = obj.tag;
     int size = obj.size;
+
+    // 优先级1：对该 tag 的段尝试连续分配
+    for(int n1 = 1; n1 <= N_disk_num; n1++){
+        Disk& target_disk = disk_array[n1];
+        for(int n2 = 0; n2 < target_disk.segment_array.size(); n2++){
+            ActualSegment& actualSegment = target_disk.segment_array[n2];
+            if(actualSegment.tag_index != current_tag){
+                continue; // 跳过不属于该 tag 的段
+            }
+            if(actualSegment.get_first_empty() >= size){
+                tag_first_write_size += size;
+                actualSegment.tag_occupy_size[current_tag] += size;
+                object_array[object_id].segment_id = n2;
+                return {n1, actualSegment.first_write(object_id)};
+            }
+        }
+    }
+
+    // 优先级2：对该 tag 的段尝试非连续分配
+    for(int n1 = 1; n1 <= N_disk_num; n1++){
+        Disk& target_disk = disk_array[n1];
+        for(int n2 = 0; n2 < target_disk.segment_array.size(); n2++){
+            ActualSegment& actualSegment = target_disk.segment_array[n2];
+            if(actualSegment.tag_index != current_tag){
+                continue; // 跳过不属于该 tag 的段
+            }
+            if(actualSegment.get_empty() >= size){
+                tag_first_write_size += size;
+                actualSegment.tag_occupy_size[current_tag] += size;
+                object_array[object_id].segment_id = n2;
+                return {n1, actualSegment.write(object_id)};
+            }
+        }
+    }
+
+    // 优先级3：对于其他 tag 的段且有当前 tag 的占用，按照当前 tag 占用大小顺序连续分配
+    // vector<pair<>>
+
+    // 优先级4：对于其他 tag 的段且没有当前 tag 的占用，按与当前 tag 的相关系数顺序连续分配
+
+    // 优先级5：对于其他 tag 的段且有当前 tag 的占用，按照当前 tag 占用大小顺序非连续分配
+
+    // 优先级6：对于其他 tag 的段且没有当前 tag 的占用，按与当前 tag 的相关系数顺序非连续分配
+
+    throw runtime_error("efficient allocation failed for object " + to_string(object_id));
+}
+
+vector<pair<int, vector<int>>> allocate_object(int object_id) {
+    Object& obj = object_array[object_id];
+    int current_tag = obj.tag;
+    int size = obj.size;
+
+    // 分配有效区的空间
+    pair<int, vector<int>> efficient_allocate = efficient_allocate_object(object_id);
+
+    vector<pair<int, vector<int>>> rubbish_allocate;
+    // 分配垃圾区的空间
+    vector<pair<int, int>> disk_array_for_rubbish;
+    for(int n1 = 1; n1 <= N_disk_num; n1++){
+        if(n1 == efficient_allocate.first){
+            continue;
+        }
+        Disk& target_disk = disk_array[n1];
+        disk_array_for_rubbish.push_back({target_disk.rubbish_stack.size(), n1});
+    }
+
+    sort(disk_array_for_rubbish.begin(), disk_array_for_rubbish.end(), greater<pair<int, int>>());
+
+    for(int n1 = 0; n1 < disk_array_for_rubbish.size(); n1++){
+        Disk& target_disk = disk_array[disk_array_for_rubbish[n1].second];
+        if(target_disk.rubbish_stack.size() < size){
+            continue; // 跳过剩余空间不足的情况 
+        }
+        pair<int, vector<int>> allocate_item = {disk_array_for_rubbish[n1].second, {}};
+        for(int n2 = 0; n2 < size; n2++){
+            int block_index = target_disk.rubbish_stack.top();
+
+            disk[disk_array_for_rubbish[n1].second][block_index] = object_id;
+
+            allocate_item.second.push_back(block_index);
+            target_disk.rubbish_stack.pop();
+        }
+        rubbish_allocate.push_back(allocate_item);
+        if(rubbish_allocate.size() >= 2){
+            break;
+        }
+    }
+
+    if(rubbish_allocate.size() < 2){
+        throw runtime_error("rubbish allocation failed for object " + to_string(object_id));
+    }
+    
+    return {efficient_allocate, rubbish_allocate[0], rubbish_allocate[1]};
 
     // 优先级1：对该 tag 的虚拟段尝试连续分配
     for (int vs_index : tag_array[current_tag].virtual_segment) {
