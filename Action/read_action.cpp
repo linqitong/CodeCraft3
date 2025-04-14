@@ -107,26 +107,7 @@ void read_action(){
                 disk_block_request[disk_id][block_id]++;
             }
         }
-
-        // 下面的代码都是记录调试信息的
-        /*
-        if(debug_mode){
-            bool select = false;
-            for(int n1 = 1; n1 <= 3; n1++){
-                Disk& target_disk = disk_array[target_object.disk_array[n1]];
-                int act_index = (target_object.storge_data[n1][0] - 1) / segment_size;
-                ActualSegment& actualSegment = target_disk.segment_array[act_index];
-            }
-            if(select){
-                selected_r++;
-                request_array[request_id].select = true;
-                all_select_efficiency += target_object.size;
-    
-            }else{
-                un_selected_r++;
-            }
-        }
-        */
+        selected_r++;
     }
         
 

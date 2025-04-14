@@ -18,7 +18,7 @@ int main()
         if(t % FRE_PER_SLICING == 1){
             if(debug_mode){
                 freopen("CON", "w", stdout);
-                printf("current time step %d   %d   %d   %d\n", t, zero_request, selected_r, un_selected_r);
+                printf("current time step %d   %d   %d\n", t, zero_request, selected_r);
                 std::cout << "  empty_object_read: " << empty_object_read << std::endl;
                 std::cout << "  empty_request_read: " << empty_request_read << std::endl;
                 std::cout << "  effective_read: " << effective_read << std::endl;
@@ -28,6 +28,7 @@ int main()
                 std::cout << "  all_finish_select: " << all_finish_select << std::endl;
                 std::cout << "  select_but_not_finish: " << select_but_not_finish << std::endl;
                 std::cout << "  drop_req_num: " << drop_req_num << std::endl;
+                std::cout << "  all_mark: " << all_mark << std::endl;
                 freopen(".\\output.txt", "a+", stdout);
             }
         }

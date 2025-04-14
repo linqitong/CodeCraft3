@@ -51,12 +51,11 @@ void delete_action()
         for(int n1 = 0; n1 < target_object.size; n1++){
             disk[disk_1][target_object.storge_data[2][n1]] = 0;
             disk[disk_2][target_object.storge_data[3][n1]] = 0;
-            Disk& target_disk = disk_array[disk_1];
-            target_disk.rubbish_stack.push(target_object.storge_data[2][n1]);
-            target_disk.rubbish_stack.push(target_object.storge_data[3][n1]);
+            Disk& target_disk1 = disk_array[disk_1];
+            Disk& target_disk2 = disk_array[disk_2];
+            target_disk1.rubbish_stack.push(target_object.storge_data[2][n1]);
+            target_disk2.rubbish_stack.push(target_object.storge_data[3][n1]);
         }
-
-
     }
 
     fflush(stdout);

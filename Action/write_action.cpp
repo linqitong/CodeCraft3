@@ -212,6 +212,7 @@ vector<pair<int, vector<int>>> allocate_object(int object_id) {
             disk[disk_array_for_rubbish[n1].second][block_index] = object_id;
 
             allocate_item.second.push_back(block_index);
+
             target_disk.rubbish_stack.pop();
         }
         rubbish_allocate.push_back(allocate_item);
@@ -259,6 +260,7 @@ void write_action(){
             cout << object_array[write_array[i]].disk_array[j];
             for(int k = 0; k < object_array[write_array[i]].size; k++){
                 cout << " " << object_array[write_array[i]].storge_data[j][k]; 
+
             }
             printf("\n");
         }
