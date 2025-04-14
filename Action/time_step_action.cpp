@@ -53,8 +53,8 @@ void time_step_action()
                     continue;
                 }
                 
-                for(int size = 0; size < max_segment_select_size; size++){
-                    if(array[size].second <= 0 || array[size].second >= segment_array.size())
+                for(int size = 0; size < max_segment_select_size and size<array.size() ;size++){
+                    if(array[size].second <= 0)
                         continue;
                     target_disk.target_actual_array[magnetic_head_id].push_back(array[size].second);
                     int actual_id = array[size].second;
