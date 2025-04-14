@@ -266,7 +266,6 @@ void read_action(){
                                 target_disk.head_advance(length, "pass",magnetic_head_id);
                                 have_read_time = 0;
                                 current_token += length;
-                                target_disk.segment_read_time[magnetic_head_id][actualSegment_index]++;
                                 target_disk.current_time_segment[magnetic_head_id] = time_segment_index;
                                 continue;
                             }else{
@@ -280,7 +279,6 @@ void read_action(){
                                 target_disk.head_advance(calculate_distance(magnetic_head, jump_index), "jump",magnetic_head_id);
                                 have_read_time = 0;
                                 current_token = G_token_per_time_step;
-                                target_disk.segment_read_time[magnetic_head_id][actualSegment_index]++;
                                 target_disk.current_time_segment[magnetic_head_id] = time_segment_index;
                                 
                                 break; // 退出循环，让下一个磁盘行动

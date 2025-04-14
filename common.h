@@ -67,8 +67,9 @@ class Disk{
         void head_advance(int length, std::string way,int magnetic_head_id); // 磁头前进，仅记录信息和改变 magnetic_head
 
         std::vector<int> current_G_token=std::vector<int>(MAGNERIC_HEAD_NUM); // 当前时间片消耗的时间数
+
         int disk_id; // 磁盘编号
-        
+
         std::vector<std::string> order=std::vector<std::string>(MAGNERIC_HEAD_NUM); // 当前时间片的指令序列
 
         std::vector<ActualSegment> segment_array; // 实际段序列;
@@ -87,7 +88,6 @@ class Disk{
         std::vector<std::vector<int>> target_actual_array = std::vector<std::vector<int>>(MAGNERIC_HEAD_NUM); // 当前时间段分配给该 disk 的 actual 序列
 
         bool is_target_actual(int index, int head_id); // 判断对应段索引是否在 target_actual_array 中
-        std::vector<std::vector<int>> segment_read_time=std::vector<std::vector<int>>(MAGNERIC_HEAD_NUM);//记录选中实际段的跳转次数
 
 };
 

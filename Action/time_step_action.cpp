@@ -81,16 +81,6 @@ void time_step_action()
             
             sort(target_disk.target_actual_array[0].begin(), target_disk.target_actual_array[0].end());
             sort(target_disk.target_actual_array[1].begin(), target_disk.target_actual_array[1].end());
-            for(int i=0;i<MAGNERIC_HEAD_NUM;i++){
-                target_disk.segment_read_time[i].clear();
-                if(target_disk.target_actual_array[i].size()==0){
-                    int a=1;
-                }
-                for(int j=0;j<target_disk.target_actual_array[i].size();j++){
-                    target_disk.segment_read_time[i].push_back(0);
-                }
-                    
-            }
         }
 
         for(int n1 = 0; n1 < virtual_segment_array.size(); n1++){
