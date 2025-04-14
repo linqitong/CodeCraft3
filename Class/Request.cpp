@@ -58,7 +58,7 @@ void Request::clear_read_information(){
         }
     }
 
-    for(int n1 = 1; n1 <= 3; n1++){
+    for(int n1 = 1; n1 <= 1; n1++){
         int disk_id = target_object.disk_array[n1];
         int actualSegment_id = (target_object.storge_data[n1][0] - 1) / segment_size;
         disk_array[disk_id].segment_array[actualSegment_id].request_size -= target_object.size;

@@ -132,17 +132,9 @@ void read_action(){
 
     for(int disk_id = 1; disk_id < MAX_DISK_NUM; disk_id++){
         Disk& target_disk = disk_array[disk_id];
-        if(time_step==1601 and disk_id==1){
-            int a=1;
-        }
+
         for(int seg_id=0;seg_id<target_disk.segment_array.size();seg_id++){
             ActualSegment& segment=target_disk.segment_array[seg_id];
-
-            if(segment.all_request_wait_time<0 ){
-                int a=1;
-            }
-
-           
 
             segment.all_request_wait_time+=segment.get_request_num();
         }
@@ -364,9 +356,7 @@ void read_action(){
                 select_zero_request++;
             }
         }
-        if(finish_request[n1] == 1061){
-            int a = 1;
-        }
+
         printf("%d\n", finish_request[n1]);
         if(request_array[finish_request[n1]].select){
             // all_finish_select_size 和 all_finish_request_efficiency 只记录当前时间段的
