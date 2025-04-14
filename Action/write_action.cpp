@@ -6,9 +6,6 @@ vector<pair<int, vector<int>>> allocate_object(int object_id) {
     int current_tag = obj.tag;
     int size = obj.size;
 
-    if(time_step == 20856)
-        int a = 1;
-    
     // 优先级1：对该 tag 的虚拟段尝试连续分配
     for (int vs_index : tag_array[current_tag].virtual_segment) {
         VirtualSegment& vs = virtual_segment_array[vs_index];

@@ -84,6 +84,8 @@ class Disk{
         int default_jump = 0; // 该磁头默认 jump 位置
         int assigned_segment = 0; // 该磁盘分配的虚拟段数
 
+        std::stack<int> rubbish_stack; // 垃圾栈
+
         std::vector<int> current_time_segment = std::vector<int>(MAGNERIC_HEAD_NUM); // 当前正在执行的命令的时间段，初始是第一段
         std::vector<std::vector<int>> target_actual_array = std::vector<std::vector<int>>(MAGNERIC_HEAD_NUM); // 当前时间段分配给该 disk 的 actual 序列
 
