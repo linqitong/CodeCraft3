@@ -72,7 +72,8 @@ void allocate_segments() {
         }
         allocated[selected_tag]++;
         tag_allocated_space[selected_tag][disk_selected]++;
-        available_disks[disk_selected]--;
+        disk_assignable_actual_num[disk_selected]--;
+        //available_disks[disk_selected]--;
         //更新disk_read_prob
         for(int j=1;j<=(T_time_step_length - 1) / FRE_PER_SLICING + 1;j++){
             disk_read_prob[j][disk_selected]+=tag_read_freq[selected_tag][j];
@@ -113,7 +114,7 @@ void allocate_segments() {
             }
             
         }
-        assert(now_segment<segment_num);
+        assert(now_segment<=segment_num);
     }
 }
 
