@@ -12,7 +12,7 @@ int main()
     
     auto start_time = std::chrono::high_resolution_clock::now();
     pre_process();
-    
+
     for (; t <= T_time_step_length + EXTRA_TIME; t++) {
         
         if(t % FRE_PER_SLICING == 1){

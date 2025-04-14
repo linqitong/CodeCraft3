@@ -70,6 +70,9 @@ int segment_num = 36;
 
 int select_but_not_finish = 0;
 
+double efficient_disk_rate = 0.34;
+int efficient_disk_end; // 不预先设置
+
 int calculate_distance(int start, int end){
     if (start < 1 || start > V_block_per_disk || end < 1 || end > V_block_per_disk) {
         throw std::invalid_argument("Invalid start or end position.");

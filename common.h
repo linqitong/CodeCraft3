@@ -68,7 +68,7 @@ class Disk{
 
         std::vector<int> current_G_token=std::vector<int>(MAGNERIC_HEAD_NUM); // 当前时间片消耗的时间数
         int disk_id; // 磁盘编号
-        int empty_size; // 空闲空间大小
+        
         std::vector<std::string> order=std::vector<std::string>(MAGNERIC_HEAD_NUM); // 当前时间片的指令序列
 
         std::vector<ActualSegment> segment_array; // 实际段序列;
@@ -203,6 +203,10 @@ extern std::vector<int> disk_assignable_actual_num; // 每个磁盘的可分配�
 extern std::vector<VirtualSegment> virtual_segment_array; // 包含所有的虚拟段
 extern std::vector<std::pair<int, int>> empty_segment_array; // 包含所有空段，第一个是段在磁盘内的索引，第二个是磁盘id
 extern std::vector<std::vector<int>> request_per_time;//记录每个时间片的读取请求号
+
+
+extern double efficient_disk_rate;
+extern int efficient_disk_end; // 有效磁盘段的结尾
 
 void pre_process();
 void time_step_action();
