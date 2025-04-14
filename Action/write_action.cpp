@@ -2,6 +2,7 @@
 using namespace std;
 
 vector<pair<int, vector<int>>> allocate_object(int object_id) {
+    // 有效段分配
     Object& obj = object_array[object_id];
     int current_tag = obj.tag;
     int size = obj.size;
@@ -91,7 +92,7 @@ vector<pair<int, vector<int>>> allocate_object(int object_id) {
             }   
         }
     }
-    
+
     // 优先级4：遍历所有虚拟段，尝试非连续分配
     virtual_rank = vector<pair<int, int>>(), tag_occupy_rank = vector<pair<int, int>>();
     for(int n1 = 0; n1 < virtual_segment_array.size(); n1++){
@@ -152,75 +153,6 @@ vector<pair<int, vector<int>>> allocate_object(int object_id) {
         }
     }
     // 可注释代码结尾
-
-    // for(int n1 = 0; n1 < virtual_rank.size(); n1++){
-    //     if(virtual_rank[n1].first >= size){
-    //         VirtualSegment& vs = virtual_segment_array[virtual_rank[n1].second];
-    //         write_size += size;
-    //         vs.tag_occupy_size[current_tag] += size;
-    //         object_array[object_id].virtual_segment_id = virtual_rank[n1].second;
-    //         return vs.write(object_id);
-    //     }else{
-    //         break;
-    //     }
-    // }
-
-    // 优先级5：尝试分配到空段
-    // 分配到空段的辅助函数
-    auto find_valid_segments = [&](bool check_continuous) -> vector<pair<int, vector<int>>> {
-        vector<pair<ActualSegment*, int>> candidates;
-        
-        for (auto& entry : empty_segment_array) {
-            int seg_idx = entry.first;
-            int disk_id = entry.second;
-            ActualSegment& as = disk_array[disk_id].segment_array[seg_idx];
-            
-            int available = check_continuous ? as.get_first_empty() : as.get_empty();
-            if (available >= size) {
-                candidates.emplace_back(&as, available);
-            }
-        }
-
-        // 排序所有空段的剩余空间
-        sort(candidates.begin(), candidates.end(), 
-            [](const auto& a, const auto& b) { return a.second > b.second; });
-
-        // 选择三个副本的实际段
-        vector<ActualSegment*> selected;
-        unordered_set<int> used_disks;
-        for (auto& [as, _] : candidates) {
-            if (used_disks.find(as->disk_id) == used_disks.end()) {
-                selected.push_back(as);
-                used_disks.insert(as->disk_id);
-                if (selected.size() == 3) break;
-            }
-        }
-        // 进行连续分配或者非连续分配
-        if (selected.size() == 3) {
-            vector<pair<int, vector<int>>> result;
-            for (auto as : selected) {
-                vector<int> positions = check_continuous ? 
-                    as->first_write(object_id) : as->write(object_id);
-                result.emplace_back(as->disk_id, positions);
-            }
-            return result;
-        }
-        return {};
-    };
-
-
-    // 优先级5.1: 尝试连续分配到空段
-    if (auto res = find_valid_segments(true); !res.empty()) {
-        empty_first_write_size += size;
-        return res;
-    }
-
-    // 优先级5.2: 尝试非连续分配到空段
-    if (auto res = find_valid_segments(false); !res.empty()) {
-        empty_write_size += size;
-        return res;
-    }
-    
 
     // Priority 6: 都失败，报错
     throw runtime_error("Allocation failed for object " + to_string(object_id));

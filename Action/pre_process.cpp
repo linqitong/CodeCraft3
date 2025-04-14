@@ -144,16 +144,6 @@ void allocate_segments() {
     // 到现在为止的结果
     // {disk_assignable_actual_num, disk_virtual_segments};
 
-    // 向 empty_segment 中增加空段
-    for(int n1 = 1; n1 <= N_disk_num; n1++){
-        int disk_actual_num = disk_array[n1].segment_array.size();
-        int index = disk_virtual_segments[n1].size(); 
-        for(int n2 = 0; n2 < disk_assignable_actual_num[n1]; index++, n2++){
-            empty_segment_array.push_back({index, n1});
-        }
-    }
-
-
     /*
     // 解决 TSP 制定 tag 在段内的优先级
     // 准备数据
@@ -317,14 +307,6 @@ void pre_process(){
             actualSegment.begin_index = n2 * segment_size + 1;
             actualSegment.segment_length = segment_size;
             target_disk.segment_array.push_back(actualSegment);
-        }
-        if(V_block_per_disk % segment_size != 0){
-            ActualSegment actualSegment = ActualSegment();
-            actualSegment.disk_id = n1;
-            actualSegment.begin_index = disk_assignable_actual_num[n1] * segment_size + 1;
-            actualSegment.segment_length = V_block_per_disk % segment_size;
-            target_disk.segment_array.push_back(actualSegment);
-            empty_segment_array.push_back({target_disk.segment_array.size() - 1, n1});
         }
     }
     allocate_segments();

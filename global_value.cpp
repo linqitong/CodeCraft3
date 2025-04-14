@@ -42,7 +42,6 @@ vector<vector<int>> tag_write;
 vector<vector<int>> tag_content;
 vector<vector<long long>> tag_read;
 std::vector<VirtualSegment> virtual_segment_array;
-std::vector<pair<int, int>> empty_segment_array;
 std::vector<int> g;
 int G;
 
