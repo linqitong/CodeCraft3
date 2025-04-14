@@ -24,21 +24,13 @@ void allocate_segments() {
     // Step 2: 计算每个tag在每个时间段的读取频率
     vector<vector<double>> tag_read_freq(M_tag_num + 1, vector<double>(((T_time_step_length - 1) / FRE_PER_SLICING + 2), 0.0));
     for (int i = 1; i <= M_tag_num; ++i) {
-        
-            
         for (int t = 1; t <= (T_time_step_length - 1) / FRE_PER_SLICING + 1; ++t) {
-               
             tag_read_freq[i][t]=static_cast<double>(tag_array[i].fre_read[t])/content_size[i][t];
-              
         }
-           
-            
-        
     }
 
     // 初始化磁盘的读取概率和虚拟段列表
     vector<vector<double>> disk_read_prob(((T_time_step_length - 1) / FRE_PER_SLICING + 2), vector<double>(N_disk_num + 1, 0.0));
-    vector<vector<int>> disk_virtual_segments(N_disk_num + 1);
     vector<int> allocated(M_tag_num + 1, 0);
     vector<vector<int>> tag_allocated_space(M_tag_num+1,vector<int>(N_disk_num+1,0));//记录每个tag在每个磁盘中分配的空间；
     while (true) {
@@ -123,7 +115,6 @@ void allocate_segments() {
         }
         assert(now_segment<segment_num);
     }
-
 }
 
 
