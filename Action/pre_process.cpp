@@ -242,7 +242,7 @@ void pre_process(){
     efficient_disk_end = segment_size * segment_num;
 
     // 所有磁盘垃圾栈初始化
-    for(int n1 = 1; n1 <= M_tag_num; n1++){
+    for(int n1 = 1; n1 <= N_disk_num; n1++){
         disk_array[n1].rubbish_stack = stack<int>();
         for(int n2 = V_block_per_disk; n2 > efficient_disk_end; n2--){
             disk_array[n1].rubbish_stack.push(n2);
