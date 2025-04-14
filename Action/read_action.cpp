@@ -57,9 +57,11 @@ void read_action(){
         request_array[request_id].object_id = object_id;
         request_array[request_id].request_id = request_id;
         request_array[request_id].recieve_time = time_step;
+
         //查找是否在磁盘读取区域中
         bool if_need_read=false;
-        for(int n1 = 1; n1 <= 3; n1++){
+
+        for(int n1 = 1; n1 <= 1; n1++){
             
             int disk_id = object_array[object_id].disk_array[n1];
             set<int> obj_segment_id;
@@ -77,9 +79,8 @@ void read_action(){
                     in_need_read = in_need_read & disk_array[disk_id].is_target_actual(*it, magnetic_head_id); 
                     
                 }
-                
-
-                if_need_read=if_need_read|in_need_read;
+            
+                if_need_read = if_need_read | in_need_read;
             }
             
         }
@@ -95,16 +96,12 @@ void read_action(){
         all_request_read_size += object_array[object_id].size;
 
         Object& target_object = object_array[object_id];
-        for(int n1 = 1; n1 <= 3; n1++){
+        for(int n1 = 1; n1 <= 1; n1++){
             int disk_id = target_object.disk_array[n1];
             int actualSegment_id = (target_object.storge_data[n1][0] - 1) / segment_size;
-            if(disk_id==5 and actualSegment_id==25){
-                int a=1;
-            }
+
             disk_array[disk_id].segment_array[actualSegment_id].request_size += target_object.size;
-            if(disk_array[disk_id].segment_array[actualSegment_id].request_size>147483647){
-                int a=1;
-            }
+
             for(int n2 = 0; n2 < target_object.size; n2++){
                 int block_id = target_object.storge_data[n1][n2];
                 disk_block_request[disk_id][block_id]++;
@@ -112,6 +109,7 @@ void read_action(){
         }
 
         // 下面的代码都是记录调试信息的
+        /*
         if(debug_mode){
             bool select = false;
             for(int n1 = 1; n1 <= 3; n1++){
@@ -128,6 +126,7 @@ void read_action(){
                 un_selected_r++;
             }
         }
+        */
     }
         
 
@@ -183,8 +182,7 @@ void read_action(){
                             end_index = advance_position(end_index, end_segment.segment_length);
                         }
                         have_r = false;
-                        if(magnetic_head == 12637 && t == 3675)
-                            int a = 1;
+
                         for(int n1 = magnetic_head; n1 < end_index; n1++){
                             if(disk_block_request[disk_id][n1] > 0){
                                 have_r = true;
@@ -404,12 +402,10 @@ void read_action(){
                 if(t > 30000){
                     int a = 1;
                 }
-                for(int n1 = 1; n1 <= 3; n1++){
+                for(int n1 = 1; n1 <= 1; n1++){
                     int disk_id = target_object.disk_array[n1];
                     int actualSegment_id = (target_object.storge_data[n1][0] - 1) / segment_size;
-                    if(disk_id==5 and actualSegment_id==25){
-                        int a=1;
-                    }
+
                     disk_array[disk_id].segment_array[actualSegment_id].request_size -= target_object.size;
                     disk_array[disk_id].segment_array[actualSegment_id].all_request_wait_time-=105*target_object.size;
                     int  rate;

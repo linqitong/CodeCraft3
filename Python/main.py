@@ -10,7 +10,7 @@ import get_tag_rank
 def main():
     original_stdin = sys.stdin
     # f = open('../Data/初赛数据/practice.in', 'r')
-    f = open('../Data/sample_official.in', 'r')
+    f = open('../Data/sample_practice_1.in', 'r')
     sys.stdin = f
 
     user_input = input().split()
@@ -23,6 +23,7 @@ def main():
     common.K_garbage_recycle_size = int(user_input[5])
 
 
+    """
     all_size_all = []
     fre_del_all = []
     fre_write_all = []
@@ -83,7 +84,8 @@ def main():
                 threshold_read_all += int(user_input[n2])
                 size_array[n2] += common.tag_array[n1].fre_all_size[n2]
     get_tag_rank.get_tag_rank()
-    exit()
+    """
+    
     extra_token = input()
     draw_pic = True
     if draw_pic:
