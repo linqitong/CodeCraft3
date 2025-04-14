@@ -68,6 +68,7 @@ void read_action(){
             for(int i=0;i<object_array[object_id].storge_data[n1].size();i++){
                 int actualSegment_id = (object_array[object_id].storge_data[n1][i] - 1) / segment_size;
                 obj_segment_id.insert(actualSegment_id);
+                assert(actualSegment_id<segment_num);
             } 
             if(obj_segment_id.size()==2){
                 int a=1;

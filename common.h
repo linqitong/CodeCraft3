@@ -86,10 +86,10 @@ public:
     int tag; // 标签
     int size;
     std::set<int> wait_request_set; // 该物品还没有执行完毕的请求的编号
-    std::vector<int> storge_data[REP_NUM + 1]; // 该对象三个副本存储的位置
+    std::vector<std::vector<int>> storge_data=std::vector<std::vector<int>>(REP_NUM + 1); // 该对象三个副本存储的位置
     int virtual_segment_id = -1; // 【已被弃用】该对象对应的虚拟段编号
     int segment_id = -1; // 该对象对应的段编号
-    int disk_array[REP_NUM + 1]; // 该对象三个副本存储的磁盘 id 
+    std::vector<int> disk_array=std::vector<int>(REP_NUM + 1);// 该对象三个副本存储的磁盘 id 
     void check_finish(); // 检查 wait_request_set 是否部分已完成
     void quit_all_request();
 };
@@ -100,7 +100,7 @@ public:
     int object_id = 0;
     int recieve_time;
     bool select = false;
-    bool read[MAX_OBJECT_SIZE]; // 记录该请求每个磁盘块的读取情况
+    std::vector<bool> read=std::vector<bool>(MAX_OBJECT_SIZE);// 记录该请求每个磁盘块的读取情况
     int read_num = 0; // 已经读取的磁盘块数量 
     bool read_block(int index);
     void finish();
@@ -120,24 +120,25 @@ public:
 
 extern int quit_num1;
 
-extern Disk disk_array[MAX_DISK_NUM]; // 所有的磁盘数据
-extern Object object_array[MAX_OBJECT_NUM]; // 所有的对象数据
-extern Request request_array[MAX_REQUEST_NUM]; // 所有的请求数据
-extern Tag tag_array[MAX_TAG_NUM]; // 所有的标签数据
+extern std::vector<Disk> disk_array; // 所有的磁盘数据
+extern std::vector<Object> object_array; // 所有的对象数据
+extern std::vector<Request> request_array; // 所有的请求数据
+extern std::vector<Tag> tag_array; // 所有的标签数据
 
 extern int time_step; // 当前时间阶段序号
 
 extern int total_fre_net_demand; // 该时间段净需求综合
 extern int time_segment;
 extern std::vector<int> g;
-extern int disk[MAX_DISK_NUM][MAX_DISK_SIZE];
-extern int disk_block_index[MAX_DISK_NUM][MAX_DISK_SIZE]; // 记录磁盘对应位置是对应物品的第几块，0 ~ size - 1
-extern int disk_block_request[MAX_DISK_NUM][MAX_DISK_SIZE];
+
+extern std::vector<std::vector<int>> disk;
+extern std::vector<std::vector<int>> disk_block_index; // 记录磁盘对应位置是对应物品的第几块，0 ~ size - 1
+extern std::vector<std::vector<int>> disk_block_request;
 
 extern std::vector<int> finish_request; // 当前时间片完成的请求
 extern std::vector<int> busy_req;       // 当前时间片放弃的请求
 
-extern int Data[7];
+extern std::vector<int> Data;
 
 extern int t; // 表示全局时间步
 
