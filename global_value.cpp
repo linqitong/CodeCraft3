@@ -13,25 +13,18 @@ int disk[MAX_DISK_NUM][MAX_DISK_SIZE];
 int disk_block_index[MAX_DISK_NUM][MAX_DISK_SIZE];
 int disk_block_request[MAX_DISK_NUM][MAX_DISK_SIZE];
 int time_segment = 3;
-
 int time_step;
 int quit_num1 = 0;
-
 std::vector<int> busy_req;
-
 std::vector<int> finish_request;
-
 int Data[7]={64,52,42,34,28,23,19};
-
 int zero_request = 0;
-
 int t = 1;
 int quit_request = 0;
 int total_write = 0;
 int head_idle_time = 0;
 int all_request_read_size = 0;
 int drop_req_num=0;
-
 int max_think_num_for_empty_read = 3;
 int segment_size; // 端长度在初始化时动态生成，不预先设置
 int min_read_shold = 6000; 
@@ -41,7 +34,6 @@ vector<int> disk_assignable_actual_num = vector<int>(MAX_DISK_NUM);
 vector<vector<int>> tag_write;
 vector<vector<int>> tag_content;
 vector<vector<long long>> tag_read;
-std::vector<VirtualSegment> virtual_segment_array;
 std::vector<int> g;
 int G;
 
@@ -58,7 +50,6 @@ double all_finish_request_efficiency = 0;
 int all_finish_select_size = 0;
 int all_select_efficiency = 0;
 int time_segment_index = 1;
-
 int empty_object_read = 0; // 空读数量
 int empty_request_read = 0; // 空请求 read 数量
 int effective_read = 0;
@@ -66,8 +57,8 @@ int select_zero_request = 0;
 int all_finish_select = 0;
 double all_mark = 0;
 int segment_num = 36;
-
 int select_but_not_finish = 0;
+set<int> select_ActualSegment;
 
 double efficient_disk_rate = 0.34;
 int efficient_disk_end; // 不预先设置

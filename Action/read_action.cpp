@@ -118,10 +118,6 @@ void read_action(){
                 Disk& target_disk = disk_array[target_object.disk_array[n1]];
                 int act_index = (target_object.storge_data[n1][0] - 1) / segment_size;
                 ActualSegment& actualSegment = target_disk.segment_array[act_index];
-                if(select_VirtualSegment.find(actualSegment.virtual_id) != select_VirtualSegment.end()){
-                    select = true;
-                }else{
-                }
             }
             if(select){
                 selected_r++;

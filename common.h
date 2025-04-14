@@ -23,21 +23,6 @@ class ExchangeBlock{
     public:
     std::vector<std::pair<int, int>> exchange_block; // 交换块的数组
 };
-    
-class VirtualSegment{
-public:
-    int tag_index; // 分配该 虚拟段 tag 索引
-    int tag_occupy_size[17] = {0}; // 不同tag在该虚拟段的占用大小
-    std::vector<int> actual_index; // 对应三个实际段编号
-    std::vector<int> actual_disk; // 对应三个实际段磁盘编号
-    std::vector<std::pair<int, std::vector<int>>> first_write(int object_id); // 回传写入位置，连续空间不足会报错
-    std::vector<std::pair<int, std::vector<int>>> write(int object_id); // 回传写入位置，空间不足会报错
-    int get_first_empty(); // 得到首次写入的剩余空间
-    int get_min_empty(); // 得到占用最小的tag
-    int get_empty(); // 得到总大小的剩余空间
-    double get_mark(); // 得到当前时间段的计分
-    void quit_all_request();
-};
         
 class ActualSegment{
 public:
@@ -178,16 +163,12 @@ extern long long first_write_size;
 extern long long write_size;
 extern long long empty_first_write_size;
 extern long long empty_write_size;
-
 extern int min_read_shold; 
 extern int max_segment_select_size;
 extern int segment_size; // 默认段大小
 extern int segment_num; // 段数目 
-
 extern int selected_r; // 得到分配的请求
 extern int un_selected_r; // 未得到分配的请求
-extern std::set<int> select_VirtualSegment;
-
 extern int empty_object_read; // 空读数量
 extern int empty_request_read; // 空请求 read 数量
 extern int effective_read; // 有效读数量
@@ -198,14 +179,13 @@ extern int select_zero_request; // 被选中的零请求
 extern int all_finish_select; // 被完成的选中请求数
 extern double all_mark; // 估计分数
 extern int time_segment_index; // 当前所在的时间片编号
-
 extern int select_but_not_finish; // 被选中但是没有被完成的请求
+extern std::set<int> select_ActualSegment;
 
 extern std::vector<std::vector<int>> tag_write; // 简化成时间段的 tag 写入
 extern std::vector<std::vector<int>> tag_content; // 简化成时间段的 tag 净含量
 extern std::vector<std::vector<long long>> tag_read; // 简化成时间段的 tag 读取
 extern std::vector<int> disk_assignable_actual_num; // 每个磁盘的可分配实际段数
-extern std::vector<VirtualSegment> virtual_segment_array; // 包含所有的虚拟段
 extern std::vector<std::vector<int>> request_per_time;//记录每个时间片的读取请求号
 
 

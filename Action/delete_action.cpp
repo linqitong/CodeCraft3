@@ -28,11 +28,6 @@ void delete_action()
         // 删除请求
         quit_request += object_array[id].wait_request_set.size();
         object_array[id].wait_request_set = set<int>();
-        int virtual_id = object_array[id].virtual_segment_id;
-        if(virtual_id != -1){
-            VirtualSegment& target_virtual_segment = virtual_segment_array[virtual_id];
-            target_virtual_segment.tag_occupy_size[object_array[id].tag] -= object_array[id].size;
-        }
         
         // 清除对象的磁盘块信息并修改 allocate_disk
         for (int j = 1; j <= REP_NUM; j++) {

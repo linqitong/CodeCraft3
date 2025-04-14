@@ -13,8 +13,7 @@ void time_step_action()
     }
 
     if((time_step) % FRE_PER_SLICING == 0 || time_step == 1){
-        select_VirtualSegment = set<int>();
-        set<int> last_select_VirtualSegment = set<int>();
+        select_ActualSegment = set<int>();
         // 清空所有磁盘上一次分配的段
         for(int n1 = 1; n1 <= N_disk_num; n1++){
             disk_array[n1].target_actual_array = vector<vector<int>>(MAGNERIC_HEAD_NUM);
@@ -32,24 +31,15 @@ void time_step_action()
                     Disk& target_disk = disk_array[n1];
                     vector<ActualSegment>& segment_array = target_disk.segment_array;
     
-                    if(target_disk.target_actual_array[magnetic_head_id].size() >= max_segment_select_size){
-                        continue; // 当前磁盘选择的段已经达到上限，让下一个磁盘选
-                    }
-    
                     vector<pair<int, int>> array;
                     for(int n2 = 0; n2 < segment_array.size(); n2++){
-                        int virtual_id = segment_array[n2].virtual_id;
-                        if(virtual_id != -1 // 不为空段
-                        && select_VirtualSegment.find(virtual_id) == select_VirtualSegment.end() // 未被选择
-                        ){ 
-                            VirtualSegment& virtualSegment = virtual_segment_array[virtual_id];
-                            double virtualSegment_mark = virtualSegment.get_mark();
-                            if(virtualSegment_mark
-                                >= min_read_shold){ // 该段 read >= min_read_shold
-                                // 添加进候选名单
-                                array.push_back({virtualSegment_mark, n2});
-                            }
-                        } 
+                        ActualSegment& actualSegment = target_disk.segment_array[n2];
+                        double actualSegment_mark = actualSegment.get_request_num();
+                        if(actualSegment_mark
+                            >= min_read_shold){ // 该段 read >= min_read_shold
+                            // 添加进候选名单
+                            array.push_back({actualSegment_mark, n2});
+                        }
                     }
     
                     sort(array.begin(), array.end(), greater<pair<int, int>>());
@@ -57,22 +47,17 @@ void time_step_action()
                     if(array.size() == 0){ // 如果没有符合要求的段，就跳过
                         continue;
                     }
-    
-                    target_disk.target_actual_array[magnetic_head_id].push_back(array[0].second);
-    
-                    int virtual_id = segment_array[array[0].second].virtual_id;
-                    select_VirtualSegment.insert(virtual_id);
-                    if(time_segment_index == 20 && virtual_id == 67){
-                        int a = 1;
+                    
+                    for(int size = 0; size < max_segment_select_size; size++){
+                        target_disk.target_actual_array[magnetic_head_id].push_back(array[size].second);
+                        int actual_id = array[size].second;
+                        select_ActualSegment.insert(actual_id);
                     }
+                    
                 }
             }
             // 判定当前选择的虚拟段和上一次的虚拟段是否相同
             // 如果相同，就代表该次循环没有有效分配，就退出
-            if(select_VirtualSegment == last_select_VirtualSegment){
-                break;
-            }
-            last_select_VirtualSegment = select_VirtualSegment;
         }
 
         for(int n1 = 1; n1 <= N_disk_num; n1++){
@@ -81,13 +66,6 @@ void time_step_action()
             
             sort(target_disk.target_actual_array[0].begin(), target_disk.target_actual_array[0].end());
             sort(target_disk.target_actual_array[1].begin(), target_disk.target_actual_array[1].end());
-        }
-
-        for(int n1 = 0; n1 < virtual_segment_array.size(); n1++){
-            if(select_VirtualSegment.find(n1) != select_VirtualSegment.end()){
-                continue;
-            }
-            // virtual_segment_array[n1].quit_all_request();
         }
 
         if(debug_mode){
