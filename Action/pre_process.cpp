@@ -70,6 +70,7 @@ void allocate_segments() {
             for(int j=1;j<=(T_time_step_length - 1) / FRE_PER_SLICING + 1;j++){
                 vector<double> v=disk_read_prob[j];
                 v[disk_id]+=tag_read_freq[selected_tag][j];
+                v=vector<double>(v.begin()+1,v.end());
                 var+=calculate_variance_double(v);
             }
             if(var<min_var){
