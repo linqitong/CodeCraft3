@@ -54,7 +54,7 @@ void allocate_segments() {
         }
         if (available_disks.size() == 0) break;
         //计算方差，选择磁盘
-        double min_var=10000000;
+        double min_var=100000000000;
         int disk_selected;
         for(int i=0;i<available_disks.size();i++){
             int disk_id=available_disks[i];
@@ -62,6 +62,7 @@ void allocate_segments() {
             for(int j=1;j<=(T_time_step_length - 1) / FRE_PER_SLICING + 1;j++){
                 vector<double> v=disk_read_prob[j];
                 v[disk_id]+=tag_read_freq[selected_tag][j];
+                //[disk_id]+=tag_array[selected_tag].fre_read[j];
                 v=vector<double>(v.begin()+1,v.end());
                 var+=calculate_variance_double(v);
             }
@@ -77,6 +78,7 @@ void allocate_segments() {
         //更新disk_read_prob
         for(int j=1;j<=(T_time_step_length - 1) / FRE_PER_SLICING + 1;j++){
             disk_read_prob[j][disk_selected]+=tag_read_freq[selected_tag][j];
+            //disk_read_prob[j][disk_selected]+=tag_array[selected_tag].fre_read[j];
         }
         
     }

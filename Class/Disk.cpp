@@ -67,7 +67,6 @@ void Disk::head_advance(int length, std::string way,int head_id){
         }
     }
 
-    
     magnetic_head[head_id] = newPosition;
 
     return;
