@@ -13,7 +13,6 @@ void time_step_action()
     }
 
     if((time_step) % FRE_PER_SLICING == 0 || time_step == 1){
-        select_ActualSegment = set<int>();
         // 清空所有磁盘上一次分配的段
         for(int n1 = 1; n1 <= N_disk_num; n1++){
             disk_array[n1].target_actual_array = vector<vector<int>>(MAGNERIC_HEAD_NUM);
@@ -26,6 +25,7 @@ void time_step_action()
         // 4、该实际段对应的虚拟段不能被选择过
         // 5、不考虑空段
         for(int n1 = 1; n1 <= N_disk_num; n1++){
+            select_ActualSegment = set<int>();
             for(int magnetic_head_id=0;magnetic_head_id<MAGNERIC_HEAD_NUM;magnetic_head_id++){
                 Disk& target_disk = disk_array[n1];
                 vector<ActualSegment>& segment_array = target_disk.segment_array;
