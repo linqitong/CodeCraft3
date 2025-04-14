@@ -24,7 +24,7 @@ void Request::finish(){
     }
 
     Object& target_object = object_array[object_id];
-    for(int n1 = 1; n1 <= 3; n1++){
+    for(int n1 = 1; n1 <= 1; n1++){
         int disk_id = target_object.disk_array[n1];
         int actualSegment_id = (target_object.storge_data[n1][0] - 1) / segment_size;
        
