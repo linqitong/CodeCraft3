@@ -5,24 +5,19 @@ using namespace std;
 
 int T_time_step_length, M_tag_num, N_disk_num, V_block_per_disk, G_token_per_time_step,K_max_exchange_block;
 
-
-vector<Disk> disk_array=vector<Disk>(MAX_DISK_NUM);
-vector<Object> object_array=vector<Object>(MAX_OBJECT_NUM);
-vector<Request> request_array=vector<Request>(MAX_REQUEST_NUM);
-vector<Tag> tag_array=vector<Tag>(MAX_TAG_NUM);
-
-
-std::vector<std::vector<int>> disk=std::vector<std::vector<int>>(MAX_DISK_NUM,vector<int>(MAX_DISK_SIZE));
-std::vector<std::vector<int>> disk_block_index=std::vector<std::vector<int>>(MAX_DISK_NUM,vector<int>(MAX_DISK_SIZE));
-std::vector<std::vector<int>> disk_block_request=std::vector<std::vector<int>>(MAX_DISK_NUM,vector<int>(MAX_DISK_SIZE));
-
-
+Disk disk_array[MAX_DISK_NUM];
+Object object_array[MAX_OBJECT_NUM];
+Request request_array[MAX_REQUEST_NUM];
+Tag tag_array[MAX_TAG_NUM];
+int disk[MAX_DISK_NUM][MAX_DISK_SIZE];
+int disk_block_index[MAX_DISK_NUM][MAX_DISK_SIZE];
+int disk_block_request[MAX_DISK_NUM][MAX_DISK_SIZE];
 int time_segment = 3;
 int time_step;
 int quit_num1 = 0;
 std::vector<int> busy_req;
 std::vector<int> finish_request;
-vector<int> Data={64,52,42,34,28,23,19};
+int Data[7]={64,52,42,34,28,23,19};
 int zero_request = 0;
 int t = 1;
 int quit_request = 0;
