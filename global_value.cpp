@@ -27,7 +27,7 @@ int all_request_read_size = 0;
 int drop_req_num=0;
 int max_think_num_for_empty_read = 3;
 int segment_size; // 端长度在初始化时动态生成，不预先设置
-int min_read_shold = 6000; 
+int min_read_shold = 10; 
 int max_segment_select_size = 3;
 vector<vector<int>> request_per_time=vector<vector<int>>(86400+1);
 vector<int> disk_assignable_actual_num = vector<int>(MAX_DISK_NUM);

@@ -140,8 +140,8 @@ void exchange_action()
     for(int n = 1; n <= N_disk_num; n++){
         cout << "0" << endl;
 
-        int size = exchange_block_array[n].exchange_block.size();
-        cout << size << endl;
+        // int size = exchange_block_array[n].exchange_block.size();
+        // cout << size << endl;
         // for(int i = 0; i < size; i++){
         //     cout << exchange_block_array[n].exchange_block[i].first << " " << exchange_block_array[n].exchange_block[i].second << endl;
         // }
