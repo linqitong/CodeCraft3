@@ -40,6 +40,9 @@ void time_step_action()
                     if(actualSegment_mark
                         >= min_read_shold){ // 该段 read >= min_read_shold
                         // 添加进候选名单
+                        if(select_ActualSegment.find(n2) != select_ActualSegment.end()){
+                            continue;
+                        }
                         array.push_back({actualSegment_mark, n2});
                     }
                 }
