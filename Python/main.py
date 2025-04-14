@@ -87,7 +87,8 @@ def main():
     """
     
     extra_token = input()
-    draw_pic = True
+
+    draw_pic = False
     if draw_pic:
         # 绘制 tag 图像
         for n1 in range(1, common.M_tag_num + 1):
@@ -107,7 +108,6 @@ def main():
         data = fre_read_all
         save_line_plot(data, os.path.join(picture_addr), "all_tag_read")
 
-    exit()
     for time in tqdm(range(1, common.T_time_step_length + common.EXTRA_TIME + 1)):
         common.t_segment = math.floor(time / 1800)
         # if (common.t % 1800) == 0:
