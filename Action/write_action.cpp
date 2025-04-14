@@ -91,21 +91,7 @@ vector<pair<int, vector<int>>> allocate_object(int object_id) {
             }   
         }
     }
-    // 可注释代码结尾
     
-
-    // for(int n1 = 0; n1 < virtual_rank.size(); n1++){
-    //     if(virtual_rank[n1].first >= size){
-    //         VirtualSegment& vs = virtual_segment_array[virtual_rank[n1].second];
-    //         first_write_size += size;
-    //         vs.tag_occupy_size[current_tag] += size;
-    //         object_array[object_id].virtual_segment_id = virtual_rank[n1].second;
-    //         return vs.first_write(object_id);
-    //     }else{
-    //         break;
-    //     }
-    // }
-
     // 优先级4：遍历所有虚拟段，尝试非连续分配
     virtual_rank = vector<pair<int, int>>(), tag_occupy_rank = vector<pair<int, int>>();
     for(int n1 = 0; n1 < virtual_segment_array.size(); n1++){

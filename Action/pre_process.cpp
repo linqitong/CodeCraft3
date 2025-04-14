@@ -230,13 +230,24 @@ void calc_pearson()
     }
 }
 
+
 // 预处理
 void pre_process(){
 
     // 读取全局参数
     scanf("%d%d%d%d%d%d", &T_time_step_length, &M_tag_num, &N_disk_num, &V_block_per_disk, &G,&K_max_exchange_block);
 
-    segment_size = V_block_per_disk / segment_num;
+    int efficient_size = ceil((double)V_block_per_disk * efficient_disk_rate);
+    segment_size = ceil((double)efficient_size / (double)segment_num);
+    efficient_disk_end = segment_size * segment_num;
+
+    // 所有磁盘垃圾栈初始化
+    for(int n1 = 1; n1 <= M_tag_num; n1++){
+        disk_array[n1].rubbish_stack = stack<int>();
+        for(int n2 = V_block_per_disk; n2 > efficient_disk_end; n2--){
+            disk_array[n1].rubbish_stack.push(n2);
+        }
+    }
 
     // 初始化时间片信息
     for (int i = 1; i <= M_tag_num; i++) {
