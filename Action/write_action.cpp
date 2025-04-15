@@ -236,6 +236,7 @@ void write_action(){
         int id, size, tag;
         scanf("%d%d%d", &id, &size, &tag);
         object_array[id].size = size;
+        if(tag==0) tag=predictObject(possibility);
         object_array[id].tag = tag;
         write_array[i] = id;
 

@@ -89,3 +89,35 @@ all_finish_request_efficiency: 0.000000
 all_mark: 19473771.844915
 choose rate: 0.805747
 choosed mark rate: nan
+
+{"error_code":"interaction_successful","score":"20084437.2435","message":"Interaction successful, score: 20084437.2435 (59.2226%)(read:60.6412%, busy:-1.4186%), used: 97.7090s."}
+
+{"error_code":"interaction_successful","score":"20604174.2563","message":"Interaction successful, score: 20604174.2563 (60.7551%)(read:61.7429%, busy:-0.9878%), used: 98.2940s."}
+
+{"error_code":"interaction_successful","score":"20883119.4982","message":"Interaction successful, score: 20883119.4982 (61.5776%)(read:62.1711%, busy:-0.5934%), used: 99.3200s."}
+
+{"error_code":"interaction_successful","score":"21096600.9584","message":"Interaction successful, score: 21096600.9584 (62.2071%)(read:62.5233%, busy:-0.3162%), used: 97.6490s."}
+
+{"error_code":"interaction_successful","score":"20753891.3035","message":"Interaction successful, score: 20753891.3035 (61.1966%)(read:61.3696%, busy:-0.1731%), used: 96.3680s."}
+
+{"error_code":"interaction_successful","score":"20744459.2666","message":"Interaction successful, score: 20744459.2666 (61.1688%)(read:61.9754%, busy:-0.8067%), used: 98.2140s."}
+
+{"error_code":"interaction_successful","score":"21038604.8144","message":"Interaction successful, score: 21038604.8144 (62.0361%)(read:62.4070%, busy:-0.3709%), used: 97.5660s."}
+
+select_but_not_finish: 836859
+  drop_req_num: 2938677
+  all_mark: 21256847.317385
+success! Analyze the total run time is : 78361ms
+zero_request: 0
+quit_request: 5937
+head_idle_time: 0
+all_request_read_size: 40708918
+tag_first_write_size: 38793
+tag_write_size: 9050
+first_write_size: 0
+write_size: 0
+empty_first_write_size: 0
+empty_write_size: 0
+all_finish_select_size: 0
+all_finish_request_efficiency: 0.000000
+all_mark: 21256862.417385

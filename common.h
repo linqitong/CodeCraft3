@@ -124,6 +124,8 @@ extern Disk disk_array[MAX_DISK_NUM]; // 所有的磁盘数据
 extern Object object_array[MAX_OBJECT_NUM]; // 所有的对象数据
 extern Request request_array[MAX_REQUEST_NUM]; // 所有的请求数据
 extern Tag tag_array[MAX_TAG_NUM]; // 所有的标签数据
+extern std::vector<std::pair<double,int>> possibility;
+
 
 extern int time_step; // 当前时间阶段序号
 
@@ -216,3 +218,5 @@ void write_action();
 void read_action();
 
 double get_mark_efficiency(int time);
+
+int predictObject(const std::vector<std::pair<double, int>>& probabilities);
