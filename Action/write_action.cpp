@@ -308,18 +308,19 @@ void write_action(){
         
         object_array[id].size = size;
         if(tag==0) {
-        //     if(t>=2000)
-        //    { vector<pair<double,int>> p;
-        //     for(int i=1;i<=M_tag_num;i++){
-        //         if(time_step!=tag_array[i].calc_t_write){
-        //             tag_array[i].calc_write_score();
-        //         }
-        //         p.emplace_back(tag_array[i].write_score+1.0,i);
-        //     }
-        //     if(t>50000){
-        //         int a=1;
-        //     }
-        //     possibility=p;}
+            if(t>=7000){
+                vector<pair<double,int>> p;
+                for(int i=1;i<=M_tag_num;i++){
+                    if(time_step!=tag_array[i].calc_t_write){
+                        tag_array[i].calc_write_score();
+                    }
+                    p.emplace_back(tag_array[i].write_score+1.0, i);
+                }
+                if(t>50000){
+                    int a=1;
+                }
+                possibility=p;
+            }  
             tag=predictObject(possibility);
         }    
         else{
