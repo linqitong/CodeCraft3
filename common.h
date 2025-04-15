@@ -118,6 +118,8 @@ public:
     // std::vector<int> virtual_segment = std::vector<int>(); // 分配给该 tag 的虚拟段索引,从 0 开始
 };
 
+extern int global_turn;
+
 extern int quit_num1;
 
 extern Disk disk_array[MAX_DISK_NUM]; // 所有的磁盘数据

@@ -63,6 +63,8 @@ set<int> select_ActualSegment;
 double efficient_disk_rate = 0.33;
 int efficient_disk_end; // 不预先设置
 
+int global_turn;
+
 int calculate_distance(int start, int end){
     if (start < 1 || start > V_block_per_disk || end < 1 || end > V_block_per_disk) {
         throw std::invalid_argument("Invalid start or end position.");
