@@ -28,7 +28,7 @@ int drop_req_num=0;
 int max_think_num_for_empty_read = 3;
 int segment_size; // 端长度在初始化时动态生成，不预先设置
 int min_read_shold = 6000; 
-int max_segment_select_size = 10;
+int max_segment_select_size = 3;
 vector<vector<int>> request_per_time=vector<vector<int>>(86400+1);
 vector<int> disk_assignable_actual_num = vector<int>(MAX_DISK_NUM);
 vector<vector<int>> tag_write;
@@ -56,10 +56,14 @@ int effective_read = 0;
 int select_zero_request = 0;
 int all_finish_select = 0;
 double all_mark = 0;
-int segment_num = 48;
+int segment_num = 13;
 int select_but_not_finish = 0;
 set<int> select_ActualSegment;
-
+std::vector<std::vector<int>> object_record;
+std::vector<std::vector<int>> read_record;
+std::vector<std::vector<int>> write_record;
+std::vector<std::vector<int>> del_record;
+std::vector<std::pair<double,int>> possibility;
 double efficient_disk_rate = 0.33;
 int efficient_disk_end; // 不预先设置
 
@@ -164,4 +168,47 @@ double get_mark_efficiency(int time){
     }else{
         return 0.0;
     }
+}
+
+void setGlobalRandomSeed(unsigned int seed) {
+    global_random_state.engine.seed(seed);
+    global_random_state.seed = seed;
+    global_random_state.call_count = 0;
+}
+
+int predictObject(const std::vector<std::pair<double, int>>& probabilities) {
+    if (probabilities.empty()) {
+        throw std::invalid_argument("Input vector must not be empty.");
+    }
+
+    // 计算概率总和
+    double sum = 0.0;
+    for (const auto& p : probabilities) {
+        sum += p.first;
+    }
+
+    const double original_sum = sum;
+    
+    // 处理所有概率为零的情况（视为均匀分布）
+    if (original_sum == 0.0) {
+        sum = probabilities.size();
+    }
+
+    // 生成随机数 (O(1)时间)
+    std::uniform_real_distribution<double> dist(0.0, sum);
+    const double r = dist(global_random_state.engine);
+    global_random_state.call_count++;
+
+    // 执行轮盘赌选择
+    double cumulative = 0.0;
+    for (const auto& p : probabilities) {
+        const double weight = (original_sum == 0.0) ? 1.0 : p.first;
+        cumulative += weight;
+        
+        if (cumulative >= r) {
+            return p.second;
+        }
+    }
+
+    return probabilities.back().second;
 }

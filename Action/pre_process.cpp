@@ -105,6 +105,7 @@ void allocate_segments() {
     // 在 磁盘 内部分配虚拟段
     // 暂定按照第二时间段的消耗时间分配
     vector<int> tag_rank = {14, 12, 9, 4, 16, 6, 5, 11, 15, 13, 3, 2, 7, 8, 10, 1};
+    //vector<int> tag_rank = {1, 2, 3, 4, 5, 6, 7,8, 9, 10, 11,12, 13, 14, 15, 16};
     for(int n1 = 1; n1 <= N_disk_num; n1++){
         int now_segment=0;
         Disk &target_disk= disk_array[n1];
@@ -167,40 +168,45 @@ void pre_process(){
         }
     }
 
-    // 初始化时间片信息
-    for (int i = 1; i <= M_tag_num; i++) {
-        tag_array[i].fre_del = vector<int>((T_time_step_length - 1) / FRE_PER_SLICING + 2);
-        tag_array[i].fre_write = vector<int>((T_time_step_length - 1) / FRE_PER_SLICING + 2);
-        tag_array[i].fre_read = vector<int>((T_time_step_length - 1) / FRE_PER_SLICING + 2);
-        g = vector<int>((T_time_step_length - 1 + 105) / FRE_PER_SLICING + 2);
+    // // 初始化时间片信息
+    // for (int i = 1; i <= M_tag_num; i++) {
+    //     tag_array[i].fre_del = vector<int>((T_time_step_length - 1) / FRE_PER_SLICING + 2,1);
+    //     tag_array[i].fre_write = vector<int>((T_time_step_length - 1) / FRE_PER_SLICING + 2,1);
+    //     tag_array[i].fre_read = vector<int>((T_time_step_length - 1) / FRE_PER_SLICING + 2,1);
+    //     g = vector<int>((T_time_step_length - 1 + 105) / FRE_PER_SLICING + 2);
+    // }
+    read_record=std::vector<std::vector<int>>(T_time_step_length+106);
+    write_record=std::vector<std::vector<int>>(T_time_step_length+106);
+    del_record=std::vector<std::vector<int>>(T_time_step_length+106);
+    for (int i = 1; i <= M_tag_num; i++){
+        possibility.emplace_back(1.0,i);
     }
+    // // 删除时间片信息
+    // for (int i = 1; i <= M_tag_num; i++) {
+    //     for (int j = 1; j <= (T_time_step_length - 1) / FRE_PER_SLICING + 1; j++) {
+    //         scanf("%d", &tag_array[i].fre_del[j]);
+    //     }
+    // }
+    // // 写入时间片信息
+    // for (int i = 1; i <= M_tag_num; i++) {
+    //     for (int j = 1; j <= (T_time_step_length - 1) / FRE_PER_SLICING + 1; j++) {
+    //         scanf("%d", &tag_array[i].fre_write[j]);
+    //         tag_array[i].all_write_size += tag_array[i].fre_write[j];
+    //         total_write += tag_array[i].fre_write[j];
+    //     }
+    // }
 
-    // 删除时间片信息
-    for (int i = 1; i <= M_tag_num; i++) {
-        for (int j = 1; j <= (T_time_step_length - 1) / FRE_PER_SLICING + 1; j++) {
-            scanf("%d", &tag_array[i].fre_del[j]);
-        }
-    }
-    // 写入时间片信息
-    for (int i = 1; i <= M_tag_num; i++) {
-        for (int j = 1; j <= (T_time_step_length - 1) / FRE_PER_SLICING + 1; j++) {
-            scanf("%d", &tag_array[i].fre_write[j]);
-            tag_array[i].all_write_size += tag_array[i].fre_write[j];
-            total_write += tag_array[i].fre_write[j];
-        }
-    }
-
-    // 读取时间片信息
-    for (int i = 1; i <= M_tag_num; i++) {
-        for (int j = 1; j <= (T_time_step_length - 1) / FRE_PER_SLICING + 1; j++) {
-            scanf("%d", &tag_array[i].fre_read[j]);
-        }
-    }
+    // // 读取时间片信息
+    // for (int i = 1; i <= M_tag_num; i++) {
+    //     for (int j = 1; j <= (T_time_step_length - 1) / FRE_PER_SLICING + 1; j++) {
+    //         scanf("%d", &tag_array[i].fre_read[j]);
+    //     }
+    // }
 
     
-    for (int j = 1; j <= (T_time_step_length - 1 + 105) / FRE_PER_SLICING + 1; j++) {
-        scanf("%d", &g[j]);
-    }
+    // for (int j = 1; j <= (T_time_step_length - 1 + 105) / FRE_PER_SLICING + 1; j++) {
+    //     scanf("%d", &g[j]);
+    // }
 
     // 计算 tag_write，tag_content，tag_read
     vector<int> b = vector<int>(5);

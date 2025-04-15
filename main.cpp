@@ -1,10 +1,11 @@
 #include "common.h"
 
-bool debug_mode = true;
+bool debug_mode = false;
 bool debug_mode_mark_disk_imfromation = false;
 
 int main()
 {
+    setGlobalRandomSeed(42);
     if(debug_mode){
         freopen(".\\Data\\sample_official.in", "r", stdin);
         freopen(".\\output.txt", "w", stdout);

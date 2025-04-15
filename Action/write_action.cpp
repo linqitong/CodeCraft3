@@ -294,10 +294,10 @@ void write_action(){
         int id, size, tag;
         scanf("%d%d%d", &id, &size, &tag);
         object_array[id].size = size;
+        if(tag==0) tag=predictObject(possibility);
         object_array[id].tag = tag;
         write_array[i] = id;
-
-        
+        write_record[time_step].push_back(id);
         auto allocate_result = allocate_object(id);
 
         assert(allocate_result.size() == 3);
