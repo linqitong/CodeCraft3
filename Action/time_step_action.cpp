@@ -5,6 +5,7 @@ void time_step_action()
 {
     int this_time_step;
     scanf("%*s%d", &this_time_step);
+    if(this_time_step != time_step)
     assert(this_time_step == time_step);
     printf("TIMESTAMP %d\n", time_step);
 

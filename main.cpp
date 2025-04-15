@@ -47,7 +47,7 @@ int main()
    
     // 根据上一轮的全局信息进行统计
 
-    for (t = 1, time_step = 1; t <= T_time_step_length + EXTRA_TIME; t++) {
+    for (t = 1, time_step = 1; t <= T_time_step_length + EXTRA_TIME; t++,time_step++) {
         
         if(t % FRE_PER_SLICING == 1){
             if(debug_mode){

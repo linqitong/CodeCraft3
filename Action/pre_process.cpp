@@ -159,14 +159,18 @@ void pre_process_2(){
             disk_block_request[n1][n2] = 0;
         }
     }
-    for(int n1 = 0; n1 < MAX_OBJECT_NUM; n1++){
-        object_array[n1] = Object();
-    }
-    for(int n1 = 0; n1 < MAX_REQUEST_NUM; n1++){
-        request_array[n1] = Request();
-    }
+   
+    
     for(int n1 = 0; n1 < MAX_TAG_NUM; n1++){
         tag_array[n1] = Tag();
+    }
+
+    // 所有磁盘垃圾栈初始化
+    for(int n1 = 1; n1 <= N_disk_num; n1++){
+        disk_array[n1].rubbish_stack = stack<int>();
+        for(int n2 = V_block_per_disk; n2 > efficient_disk_end; n2--){
+            disk_array[n1].rubbish_stack.push(n2);
+        }
     }
     int n;
     scanf("%d",&n);
@@ -182,7 +186,9 @@ void pre_process_2(){
     }
     for(int time=1;time<=T_time_step_length + EXTRA_TIME;time++){
         for(int i=0;i<read_record[time].size();i++){
-            Object obj=object_array[read_record[time][i]];
+            int req=read_record[time][i];
+            int obj_id=request_array[req].object_id;
+            Object obj=object_array[obj_id];
             tag_array[obj.tag].fre_read[(time - 1) / FRE_PER_SLICING + 1]+=obj.size;
         }
         for(int i=0;i<write_record[time].size();i++){
@@ -195,7 +201,7 @@ void pre_process_2(){
         }
     }
      // 计算 tag_write，tag_content，tag_read
-     vector<int> b = vector<int>(5);
+     
      tag_write = vector<vector<int>>(M_tag_num + 1, vector<int>(3, 0));
      tag_content = vector<vector<int>>(M_tag_num + 1, vector<int>(3, 0));
      tag_read = vector<vector<long long>>(M_tag_num + 1, vector<long long>(3, 0));
@@ -215,7 +221,7 @@ void pre_process_2(){
              tag_content[i][j / time_segment] = max(tag_content[i][j / time_segment], content);
          }
      }
-     vector<int> b = vector<int>(5);
+ 
      // 初始化 Disk 信息 和 disk_assignable_actual_num
      for(int n1 = 1; n1 <= N_disk_num; n1++){
          Disk& target_disk = disk_array[n1];
@@ -293,7 +299,7 @@ void pre_process(){
     // }
 
     // 计算 tag_write，tag_content，tag_read
-    vector<int> b = vector<int>(5);
+    
     tag_write = vector<vector<int>>(M_tag_num + 1, vector<int>(3, 0));
     tag_content = vector<vector<int>>(M_tag_num + 1, vector<int>(3, 0));
     tag_read = vector<vector<long long>>(M_tag_num + 1, vector<long long>(3, 0));
@@ -313,7 +319,7 @@ void pre_process(){
     //         tag_content[i][j / time_segment] = max(tag_content[i][j / time_segment], content);
     //     }
     // }
-    // vector<int> b = vector<int>(5);
+   
     // 初始化 Disk 信息 和 disk_assignable_actual_num
     for(int n1 = 1; n1 <= N_disk_num; n1++){
         Disk& target_disk = disk_array[n1];

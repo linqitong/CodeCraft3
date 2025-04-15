@@ -48,16 +48,29 @@ int pass_length(int have_read_time){
 }
 
 void read_action(){
+    
     int n_read;
     int request_id, object_id;
-    scanf("%d", &n_read);
-    
+    if(global_turn==1)
+        scanf("%d", &n_read);
+    else
+    n_read=read_record[time_step].size();
     for (int i = 1; i <= n_read; i++) { // 总用时12s+
-        scanf("%d%d", &request_id, &object_id);
-        request_array[request_id].object_id = object_id;
-        request_array[request_id].request_id = request_id;
-        request_array[request_id].recieve_time = time_step;
-        read_record[time_step].push_back(object_id);
+        if(global_turn==1){
+            scanf("%d%d", &request_id, &object_id);
+            request_array[request_id].object_id = object_id;
+            request_array[request_id].request_id = request_id;
+            request_array[request_id].recieve_time = time_step;
+            read_record[time_step].push_back(request_id);
+        }
+        else{
+            request_id=read_record[time_step][i-1];
+            object_id=request_array[request_id].object_id;
+            if(global_turn==2 and request_id==234452){
+                int a=1;
+            }
+        }
+        
         int tag=object_array[object_id].tag;
         tag_array[tag].read_size[time_step]+=object_array[object_id].size;
         //查找是否在磁盘读取区域中

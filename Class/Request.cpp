@@ -1,6 +1,9 @@
 #include "../common.h"
 
 bool Request::read_block(int index){
+    if(global_turn==2 and request_id==234452){
+        int a=1;
+    }
     assert(index >= 0); 
     if(read[index] == false){
         read_num++;

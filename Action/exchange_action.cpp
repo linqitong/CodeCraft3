@@ -70,8 +70,14 @@ void exchange_action()
     
     //写入一个字符串, 并输出该字符串
     string s1 = "", s2 = "";
-    cin >> s1 >> s2;
-    cout << s1 << " " << s2 << endl;
+    if(global_turn==1){
+        cin >> s1 >> s2;
+        cout << s1 << " " << s2 << endl;
+    }else{
+        cout<<"GARBAGE COLLECTION"<<endl;
+    }
+    
+    
 
     vector<int> exchange_disk_array; 
     ExchangeBlock temp = {};

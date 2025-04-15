@@ -289,11 +289,23 @@ vector<pair<int, vector<int>>> allocate_object(int object_id) {
 
 void write_action(){
     int n_write;
-    scanf("%d", &n_write);
+    if(global_turn==1){
+        scanf("%d", &n_write);
+    }else{
+        n_write=write_record[time_step].size();
+    }
+    
     vector<int> write_array(n_write + 1); // 要写入的对象 id 序列
     for (int i = 1; i <= n_write; i++) {
         int id, size, tag;
-        scanf("%d%d%d", &id, &size, &tag);
+        if(global_turn==1){
+            scanf("%d%d%d", &id, &size, &tag);
+        }else{
+            id=write_record[time_step][i-1];
+            size=object_array[id].size;
+            tag=object_array[id].tag;
+        }
+        
         object_array[id].size = size;
         if(tag==0) {
         //     if(t>=2000)
@@ -314,8 +326,8 @@ void write_action(){
             tag_array[tag].write_size[time_step]+=object_array[id].size;
         }
         object_array[id].tag = tag;
-        write_array[i] = id;
         write_record[time_step].push_back(id);
+        write_array[i] = id;
         auto allocate_result = allocate_object(id);
         
 

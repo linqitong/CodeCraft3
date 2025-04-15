@@ -9,11 +9,21 @@ void delete_action()
 
     static int _id[MAX_OBJECT_NUM]; // 要删除的对象 id 序列
 
-    scanf("%d", &n_delete);
-    for (int i = 1; i <= n_delete; i++) {
-        scanf("%d", &_id[i]);
-        del_record[time_step].push_back(_id[i]);
-        abort_num += object_array[_id[i]].wait_request_set.size();
+    if(global_turn==1){
+        scanf("%d", &n_delete);
+        for (int i = 1; i <= n_delete; i++) {
+            scanf("%d", &_id[i]);
+            del_record[time_step].push_back(_id[i]);
+            abort_num += object_array[_id[i]].wait_request_set.size();
+        }
+    }else{
+        n_delete=del_record[time_step].size();
+        for (int i = 0; i < del_record[time_step].size(); i++){
+            
+            Object obj=object_array[del_record[time_step][i]];
+            _id[i+1]=del_record[time_step][i];
+            abort_num += obj.wait_request_set.size();
+        }
     }
 
     printf("%d\n", abort_num);
