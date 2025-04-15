@@ -13,7 +13,7 @@ int main()
     auto start_time = std::chrono::high_resolution_clock::now();
     pre_process();
     global_turn = 1; // 第一轮
-    for (; t <= T_time_step_length + EXTRA_TIME; t++) {
+    for (t = 1, time_step = 1; t <= T_time_step_length + EXTRA_TIME; t++) {
         
         if(t % FRE_PER_SLICING == 1){
             if(debug_mode){
@@ -38,8 +38,30 @@ int main()
         read_action();
         exchange_action();
     }
-    global_turn = 2; // 第二轮
+
+    // 第二轮
+    global_turn = 2; 
+
     // 第二轮初始化相关的代码
+    for(int n1 = 0; n1 < MAX_DISK_NUM; n1++){
+        disk_array[n1] = Disk();
+        for(int n2 = 0; n2 < MAX_DISK_SIZE; n2++){
+            disk[n1][n2] = 0;
+            disk_block_index[n1][n2] = 0;
+            disk_block_request[n1][n2] = 0;
+        }
+    }
+    for(int n1 = 0; n1 < MAX_OBJECT_NUM; n1++){
+        object_array[n1] = Object();
+    }
+    for(int n1 = 0; n1 < MAX_REQUEST_NUM; n1++){
+        request_array[n1] = Request();
+    }
+    for(int n1 = 0; n1 < MAX_TAG_NUM; n1++){
+        tag_array[n1] = Tag();
+    }
+
+    // 根据上一轮的全局信息进行统计
 
     for (t = 1, time_step = 1; t <= T_time_step_length + EXTRA_TIME; t++) {
         
