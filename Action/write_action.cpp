@@ -308,6 +308,7 @@ void write_action(){
         
         object_array[id].size = size;
         if(tag==0) {
+            /*
             if(t>=7000){
                 vector<pair<double,int>> p;
                 for(int i=1;i<=M_tag_num;i++){
@@ -321,6 +322,7 @@ void write_action(){
                 }
                 possibility=p;
             }  
+            */
             tag=predictObject(possibility);
         }    
         else{

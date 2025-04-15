@@ -62,11 +62,14 @@ void read_action(){
             request_array[request_id].request_id = request_id;
             request_array[request_id].recieve_time = time_step;
             read_record[time_step].push_back(request_id);
+            if(request_id==416662){
+                int a=1;
+            }
         }
         else{
             request_id=read_record[time_step][i-1];
             object_id=request_array[request_id].object_id;
-            if(global_turn==2 and request_id==234452){
+            if(global_turn==2 and request_id==416662){
                 int a=1;
             }
         }
@@ -345,6 +348,9 @@ void read_action(){
     // 报告请求完成情况
     printf("%d\n", finish_request.size());
     for(int n1 = 0; n1 < finish_request.size(); n1++){
+        if(finish_request[n1] == 416662 && global_turn == 2){
+            int a = 1;
+        }
         int time = (request_array[finish_request[n1]].recieve_time - 1) / FRE_PER_SLICING + 1;
         int this_time = (time_step - 1) / FRE_PER_SLICING + 1;
         if(time_step - request_array[finish_request[n1]].recieve_time > 105){

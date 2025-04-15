@@ -159,6 +159,13 @@ void pre_process_2(){
             disk_block_request[n1][n2] = 0;
         }
     }
+    for(int n1 = 0; n1 < MAX_REQUEST_NUM; n1++){
+        for(int n2= 0; n2 < MAX_OBJECT_SIZE; n2++){
+            request_array[n1].read[n2] = false;
+        }
+        request_array[n1].read_num = 0;
+        request_array[n1].select = false;
+    }
    
     
     for(int n1 = 0; n1 < MAX_TAG_NUM; n1++){

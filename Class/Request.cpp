@@ -1,7 +1,7 @@
 #include "../common.h"
 
 bool Request::read_block(int index){
-    if(global_turn==2 and request_id==234452){
+    if(global_turn==2 and request_id==416662){
         int a=1;
     }
     assert(index >= 0); 
@@ -25,6 +25,9 @@ void Request::finish(){
     if(read_num != object_array[object_id].size){
         return;
     }
+    if(request_id == 416662 && global_turn == 2){
+        int a = 1;
+    }
 
     Object& target_object = object_array[object_id];
     for(int n1 = 1; n1 <= 1; n1++){
@@ -44,6 +47,7 @@ void Request::finish(){
         }
     }
     finish_request.push_back(request_id);
+    
 
     // 全局等待集合删除，对应物品等待集合删除
     object_array[object_id].wait_request_set.erase(request_id);
