@@ -168,13 +168,16 @@ void pre_process(){
         }
     }
 
-    // 初始化时间片信息
-    for (int i = 1; i <= M_tag_num; i++) {
-        tag_array[i].fre_del = vector<int>((T_time_step_length - 1) / FRE_PER_SLICING + 2,1);
-        tag_array[i].fre_write = vector<int>((T_time_step_length - 1) / FRE_PER_SLICING + 2,1);
-        tag_array[i].fre_read = vector<int>((T_time_step_length - 1) / FRE_PER_SLICING + 2,1);
-        g = vector<int>((T_time_step_length - 1 + 105) / FRE_PER_SLICING + 2);
-    }
+    // // 初始化时间片信息
+    // for (int i = 1; i <= M_tag_num; i++) {
+    //     tag_array[i].fre_del = vector<int>((T_time_step_length - 1) / FRE_PER_SLICING + 2,1);
+    //     tag_array[i].fre_write = vector<int>((T_time_step_length - 1) / FRE_PER_SLICING + 2,1);
+    //     tag_array[i].fre_read = vector<int>((T_time_step_length - 1) / FRE_PER_SLICING + 2,1);
+    //     g = vector<int>((T_time_step_length - 1 + 105) / FRE_PER_SLICING + 2);
+    // }
+    read_record=std::vector<std::vector<int>>(T_time_step_length+106);
+    write_record=std::vector<std::vector<int>>(T_time_step_length+106);
+    del_record=std::vector<std::vector<int>>(T_time_step_length+106);
     for (int i = 1; i <= M_tag_num; i++){
         possibility.emplace_back(1.0,i);
     }

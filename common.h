@@ -193,6 +193,10 @@ extern std::vector<std::vector<long long>> tag_read; // 简化成时间段的 ta
 extern std::vector<int> disk_assignable_actual_num; // 每个磁盘的可分配实际段数
 extern std::vector<std::vector<int>> request_per_time;//记录每个时间片的读取请求号
 
+extern std::vector<std::vector<int>> object_record;//记录所有写入对象 内层vector大小为3 0：id 1：tag 2：size
+extern std::vector<std::vector<int>> read_record;//记录每帧读取对象
+extern std::vector<std::vector<int>> write_record;//记录每帧写入对象
+extern std::vector<std::vector<int>> del_record;//记录每帧删除对象
 
 extern double efficient_disk_rate;
 extern int efficient_disk_end; // 有效磁盘段的结尾
@@ -222,3 +226,11 @@ void read_action();
 double get_mark_efficiency(int time);
 
 int predictObject(const std::vector<std::pair<double, int>>& probabilities);
+
+struct RandomState {
+    std::mt19937 engine;
+    unsigned int seed;
+    unsigned int call_count = 0;
+};
+static RandomState global_random_state{std::mt19937(42), 42};
+void setGlobalRandomSeed(unsigned int seed);

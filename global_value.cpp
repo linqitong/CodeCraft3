@@ -59,7 +59,10 @@ double all_mark = 0;
 int segment_num = 13;
 int select_but_not_finish = 0;
 set<int> select_ActualSegment;
-
+std::vector<std::vector<int>> object_record;
+std::vector<std::vector<int>> read_record;
+std::vector<std::vector<int>> write_record;
+std::vector<std::vector<int>> del_record;
 std::vector<std::pair<double,int>> possibility;
 double efficient_disk_rate = 0.33;
 int efficient_disk_end; // 不预先设置
@@ -167,6 +170,12 @@ double get_mark_efficiency(int time){
     }
 }
 
+void setGlobalRandomSeed(unsigned int seed) {
+    global_random_state.engine.seed(seed);
+    global_random_state.seed = seed;
+    global_random_state.call_count = 0;
+}
+
 int predictObject(const std::vector<std::pair<double, int>>& probabilities) {
     if (probabilities.empty()) {
         throw std::invalid_argument("Input vector must not be empty.");
@@ -185,10 +194,10 @@ int predictObject(const std::vector<std::pair<double, int>>& probabilities) {
         sum = probabilities.size();
     }
 
-    // 初始化随机数生成器
-    static std::mt19937 rng(std::random_device{}());
+    // 生成随机数 (O(1)时间)
     std::uniform_real_distribution<double> dist(0.0, sum);
-    const double r = dist(rng);
+    const double r = dist(global_random_state.engine);
+    global_random_state.call_count++;
 
     // 执行轮盘赌选择
     double cumulative = 0.0;
@@ -201,6 +210,5 @@ int predictObject(const std::vector<std::pair<double, int>>& probabilities) {
         }
     }
 
-    // 浮点精度处理：返回最后一个元素
     return probabilities.back().second;
 }

@@ -239,8 +239,7 @@ void write_action(){
         if(tag==0) tag=predictObject(possibility);
         object_array[id].tag = tag;
         write_array[i] = id;
-
-        
+        write_record[time_step].push_back(id);
         auto allocate_result = allocate_object(id);
 
         assert(allocate_result.size() == 3);
