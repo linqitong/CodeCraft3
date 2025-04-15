@@ -12,6 +12,9 @@ pair<int, vector<int>> efficient_allocate_object(int object_id){
         Disk& target_disk = disk_array[n1];
         for(int n2 = 0; n2 < target_disk.segment_array.size(); n2++){
             ActualSegment& actualSegment = target_disk.segment_array[n2];
+            if(actualSegment.tag_index == 0){
+                continue;
+            }
             if(actualSegment.tag_index != current_tag){
                 continue; // 跳过不属于该 tag 的段
             }
@@ -29,6 +32,9 @@ pair<int, vector<int>> efficient_allocate_object(int object_id){
         Disk& target_disk = disk_array[n1];
         for(int n2 = 0; n2 < target_disk.segment_array.size(); n2++){
             ActualSegment& actualSegment = target_disk.segment_array[n2];
+            if(actualSegment.tag_index == 0){
+                continue;
+            }
             if(actualSegment.tag_index != current_tag){
                 continue; // 跳过不属于该 tag 的段
             }
@@ -41,19 +47,57 @@ pair<int, vector<int>> efficient_allocate_object(int object_id){
         }
     }
 
-    // 优先级3：对于其他 tag 的段且有当前 tag 的占用，按照当前 tag 占用大小顺序连续分配
+    // 优先级3：尝试分配一个空段给当前标签,然后连续写入
+    vector<pair<int, pair<int, int>>> disk_array_for_allocate;
+    for(int n1 = 1; n1 <= N_disk_num; n1++){
+        int empty_segment = 0;
+        int act_id;
+        Disk& target_disk = disk_array[n1];
+        for(int n2 = 0 ; n2 < target_disk.segment_array.size(); n2++){
+            ActualSegment& actualSegment = target_disk.segment_array[n2];
+            if(actualSegment.tag_index != 0){
+                continue; // 排除非空段
+            }
+            empty_segment++;
+            if(empty_segment == 1){
+                act_id = n2;
+            }
+        }
+        if(empty_segment > 0){
+            disk_array_for_allocate.push_back({empty_segment, {n1, act_id}});
+        }
+    }
+
+    sort(disk_array_for_allocate.begin(), disk_array_for_allocate.end(), greater<pair<int, pair<int, int>>>());
+
+    for(int n1 = 0; n1 < disk_array_for_allocate.size(); n1++){
+        int disk_id = disk_array_for_allocate[n1].second.first;
+        int actualSegment_id = disk_array_for_allocate[n1].second.second;
+        Disk& target_disk = disk_array[disk_id];
+        ActualSegment& actualSegment = target_disk.segment_array[actualSegment_id];
+
+        actualSegment.tag_occupy_size[current_tag] += size;
+        object_array[object_id].segment_id = actualSegment_id;
+        return {disk_id, actualSegment.first_write(object_id)};
+    }
+
+    // 优先级4：对于其他 tag 的段且有当前 tag 的占用，按照当前 tag 占用大小顺序连续分配
     vector<pair<int, pair<int, int>>> actSet_array_for_occupy;
     for(int n1 = 1; n1 <= N_disk_num; n1++){
         Disk& target_disk = disk_array[n1];
         for(int n2 = 0; n2 < target_disk.segment_array.size(); n2++){
             ActualSegment& actualSegment = target_disk.segment_array[n2];
+            if(actualSegment.tag_index == 0){
+                continue;
+            }
             if(actualSegment.tag_index == current_tag){
                 continue; // 跳过该 tag 的段
             }
             if(actualSegment.get_first_empty() >= size){
                 int this_tag_size = actualSegment.tag_occupy_size[current_tag];
                 if(this_tag_size == 0){
-                    continue; // 跳过没有当前 tag 占用的段
+                    // 跳过没有当前 tag 占用的段，如果取消相关系数分配就注释掉
+                    // continue; 
                 }
                 actSet_array_for_occupy.push_back({this_tag_size, {n1, n2}});
             }
@@ -73,7 +117,8 @@ pair<int, vector<int>> efficient_allocate_object(int object_id){
         return {disk_id, actualSegment.first_write(object_id)};
     }
 
-    // 优先级4：对于其他 tag 的段且没有当前 tag 的占用，按与当前 tag 的相关系数顺序连续分配
+    // 优先级5：对于其他 tag 的段且没有当前 tag 的占用，按与当前 tag 的相关系数顺序连续分配
+    /*
     vector<pair<double, pair<int, int>>> actSet_array_for_pearson;
     for(int n1 = 1; n1 <= N_disk_num; n1++){
         Disk& target_disk = disk_array[n1];
@@ -84,6 +129,9 @@ pair<int, vector<int>> efficient_allocate_object(int object_id){
             }
             if(actualSegment.get_first_empty() >= size){
                 int this_tag_size = actualSegment.tag_occupy_size[current_tag];
+                if(actualSegment.tag_index == 0){
+                    continue;
+                }
                 if(this_tag_size != 0){
                     continue; // 跳过有当前 tag 占用的段
                 }
@@ -106,21 +154,26 @@ pair<int, vector<int>> efficient_allocate_object(int object_id){
         object_array[object_id].segment_id = actualSegment_id;
         return {disk_id, actualSegment.first_write(object_id)};
     }
+    */
 
 
-    // 优先级5：对于其他 tag 的段且有当前 tag 的占用，按照当前 tag 占用大小顺序非连续分配
+    // 优先级6：对于其他 tag 的段且有当前 tag 的占用，按照当前 tag 占用大小顺序非连续分配
     actSet_array_for_occupy = vector<pair<int, pair<int, int>>>();
     for(int n1 = 1; n1 <= N_disk_num; n1++){
         Disk& target_disk = disk_array[n1];
         for(int n2 = 0; n2 < target_disk.segment_array.size(); n2++){
             ActualSegment& actualSegment = target_disk.segment_array[n2];
+            if(actualSegment.tag_index == 0){
+                continue;
+            }
             if(actualSegment.tag_index == current_tag){
                 continue; // 跳过该 tag 的段
             }
             if(actualSegment.get_empty() >= size){
                 int this_tag_size = actualSegment.tag_occupy_size[current_tag];
                 if(this_tag_size == 0){
-                    continue; // 跳过没有当前 tag 占用的段
+                    // 跳过没有当前 tag 占用的段，如果取消相关系数分配就注释掉
+                    // continue; 
                 }
                 actSet_array_for_occupy.push_back({this_tag_size, {n1, n2}});
             }
@@ -141,12 +194,16 @@ pair<int, vector<int>> efficient_allocate_object(int object_id){
     }
 
 
-    // 优先级6：对于其他 tag 的段且没有当前 tag 的占用，按与当前 tag 的相关系数顺序非连续分配
+    // 优先级7：对于其他 tag 的段且没有当前 tag 的占用，按与当前 tag 的相关系数顺序非连续分配
+    /*
     actSet_array_for_pearson = vector<pair<double, pair<int, int>>>();
     for(int n1 = 1; n1 <= N_disk_num; n1++){
         Disk& target_disk = disk_array[n1];
         for(int n2 = 0; n2 < target_disk.segment_array.size(); n2++){
             ActualSegment& actualSegment = target_disk.segment_array[n2];
+            if(actualSegment.tag_index == 0){
+                continue;
+            }
             if(actualSegment.tag_index == current_tag){
                 continue; // 跳过该 tag 的段
             }
@@ -174,6 +231,7 @@ pair<int, vector<int>> efficient_allocate_object(int object_id){
         object_array[object_id].segment_id = actualSegment_id;
         return {disk_id, actualSegment.write(object_id)};
     }
+    */
 
 
     throw runtime_error("efficient allocation failed for object " + to_string(object_id));
