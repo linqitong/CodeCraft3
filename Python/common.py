@@ -56,7 +56,12 @@ req_is_dones = [False] * MAX_REQUEST_NUM
 objects = [Object() for _ in range(MAX_OBJECT_NUM)]
 tag_array = [Tag() for _ in range(MAX_TAG_NUM)]
 
-picture_addr = r"./Picture/决赛_训练数据1"
+all_write_size = 0
+all_empty_tag_write_size = 0
+all_read_size = 0
+all_empty_tag_read_size = 0
+
+picture_addr = r"./Picture/决赛_训练数据3"
 
 
 

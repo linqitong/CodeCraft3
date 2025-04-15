@@ -10,7 +10,7 @@ import get_tag_rank
 def main():
     original_stdin = sys.stdin
     # f = open('../Data/初赛数据/practice.in', 'r')
-    f = open('../Data/sample_practice_1.in', 'r')
+    f = open('../Data/sample_practice_3.in', 'r')
     sys.stdin = f
 
     user_input = input().split()
@@ -21,6 +21,8 @@ def main():
     common.V_block_per_disk = int(user_input[3])
     common.G_token_per_time_step = int(user_input[4])
     common.K_garbage_recycle_size = int(user_input[5])
+
+    common.tag_array = [common.Tag() for _ in range(common.M_tag_num + 1)]
 
 
     """
@@ -86,7 +88,7 @@ def main():
     get_tag_rank.get_tag_rank()
     """
     
-    extra_token = input()
+    # extra_token = input()
 
     draw_pic = False
     if draw_pic:
@@ -108,6 +110,7 @@ def main():
         data = fre_read_all
         save_line_plot(data, os.path.join(picture_addr), "all_tag_read")
 
+    # 只考虑第一次循环
     for time in tqdm(range(1, common.T_time_step_length + common.EXTRA_TIME + 1)):
         common.t_segment = math.floor(time / 1800)
         # if (common.t % 1800) == 0:
@@ -121,6 +124,14 @@ def main():
             garbage_action()
 
     print("输入数据已经处理完毕")
+
+    # 绘制每个标签的 read 数据
+    step_length = 50
+    for n1 in range(1, common.M_tag_num + 1):
+        data = common.tag_array[n1].read_data[1:]
+        save_line_plot(data, os.path.join(picture_addr, "tag_read"), n1, step_length)
+
+    exit()
 
     data1 = []
     for key, value in common.tag_array[1].object_request_dict.items():

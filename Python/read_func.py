@@ -1,11 +1,6 @@
 import sys
 import common
 
-def do_object_delete(object_unit, disk_unit, size):
-    for i in range(1, size + 1):
-        disk_unit[object_unit[i]] = 0
-
-
 def timestamp_action():
     timestamp = input().split()[1]
     # print(f"TIMESTAMP {timestamp}")
@@ -44,18 +39,6 @@ def delete_action():
     """
 
 
-def do_object_write(object_unit, disk_unit, size, object_id):
-    current_write_point = 0
-    for i in range(1, common.V_block_per_disk + 1):
-        if disk_unit[i] == 0:
-            disk_unit[i] = object_id
-            current_write_point += 1
-            object_unit[current_write_point] = i
-            if current_write_point == size:
-                break
-    assert (current_write_point == size)
-
-
 def write_action():
     n_write = int(input())
     for i in range(1, n_write + 1):
@@ -71,8 +54,12 @@ def write_action():
             common.objects[write_id].isDelete = False
             common.objects[write_id].tag_id = tag_id
             common.objects[write_id].begin_time = common.t
-            common.objects[write_id].size_index = common.tag_array[tag_id].all_size
-            common.tag_array[tag_id].all_size += size
+            common.all_write_size += size
+            if tag_id != 0:
+                common.objects[write_id].size_index = common.tag_array[tag_id].all_size
+                common.tag_array[tag_id].all_size += size
+            else:
+                common.all_empty_tag_write_size += size
             # do_object_write(common.objects[write_id].unit[j], common.disk[common.objects[write_id].replica[j]], size, write_id)
         # 忽略输出
         """
@@ -97,13 +84,17 @@ def read_action():
         common.req_prev_ids[request_id] = common.objects[objectId].lastRequestPoint
         common.objects[objectId].lastRequestPoint = request_id
         common.req_is_dones[request_id] = False
+        common.all_read_size += common.objects[objectId].size
         tag_id = common.objects[objectId].tag_id
-        common.tag_array[tag_id].read_data[common.t] += common.objects[objectId].size
+        if tag_id != 0:
+            common.tag_array[tag_id].read_data[common.t] += common.objects[objectId].size
 
-        if objectId not in common.tag_array[tag_id].object_request_dict:
-            common.tag_array[tag_id].object_request_dict[objectId] = []
+            if objectId not in common.tag_array[tag_id].object_request_dict:
+                common.tag_array[tag_id].object_request_dict[objectId] = []
 
-        common.tag_array[tag_id].object_request_dict[objectId].append(common.t)
+            common.tag_array[tag_id].object_request_dict[objectId].append(common.t)
+        else:
+            common.all_empty_tag_read_size += common.objects[objectId].size
 
     # 忽略输出
     """
