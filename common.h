@@ -26,7 +26,7 @@ class ExchangeBlock{
         
 class ActualSegment{
 public:
-    int tag_index; // 分配该段的 tag 索引
+    int tag_index = 0; // 分配该段的 tag 索引
     int tag_occupy_size[17] = {0}; // 不同tag在该段的占用大小
     int disk_id; // 所在磁盘 id
     int begin_index; // 该段起始位置，该段在磁盘上的索引 = begin_index % segment_size
