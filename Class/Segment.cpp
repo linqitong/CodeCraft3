@@ -81,7 +81,8 @@ int ActualSegment::get_score() {
     double all_mark = 0;
     for(int n1 = 1; n1 <= M_tag_num; n1++){
         double this_mark = (double)tag_occupy_size[n1] / (double)segment_size;
-        this_mark *= tag_array[n1].fre_read[time_segment_index];
+        if(tag_array[n1].calc_t_read!=time_step) tag_array[n1].calc_read_score();
+        this_mark *= tag_array[n1].read_score;
         all_mark += this_mark;
     }
     return all_mark;

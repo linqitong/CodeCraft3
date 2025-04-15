@@ -19,6 +19,7 @@ std::vector<int> busy_req;
 std::vector<int> finish_request;
 int Data[7]={64,52,42,34,28,23,19};
 int zero_request = 0;
+int Derivatives=2;
 int t = 1;
 int quit_request = 0;
 int total_write = 0;
@@ -28,7 +29,7 @@ int drop_req_num=0;
 int max_think_num_for_empty_read = 3;
 int segment_size; // 端长度在初始化时动态生成，不预先设置
 int min_read_shold = 6000; 
-int max_segment_select_size = 3;
+int max_segment_select_size = 4;
 vector<vector<int>> request_per_time=vector<vector<int>>(86400+1);
 vector<int> disk_assignable_actual_num = vector<int>(MAX_DISK_NUM);
 vector<vector<int>> tag_write;
@@ -66,7 +67,9 @@ std::vector<std::vector<int>> del_record;
 std::vector<std::pair<double,int>> possibility;
 double efficient_disk_rate = 0.33;
 int efficient_disk_end; // 不预先设置
-
+int stride_length_read=100;
+int stride_length_write=2000;
+int stride_num=5;
 int global_turn;
 
 int calculate_distance(int start, int end){
@@ -211,4 +214,14 @@ int predictObject(const std::vector<std::pair<double, int>>& probabilities) {
     }
 
     return probabilities.back().second;
+}
+
+
+// 使用滑动窗口平均导数
+double predictNextValue(const vector<double>& y) {
+    double zeroDeriv=y[2],firstDeriv=(y[2]-y[0])/2, secondDeriv=y[2]-y[0]+2*y[1];
+    
+    if(Derivatives==0) return zeroDeriv;
+    if(Derivatives==1) return zeroDeriv + firstDeriv;
+    if(Derivatives==2) return zeroDeriv + firstDeriv + secondDeriv / 2;
 }

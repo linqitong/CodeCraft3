@@ -9,12 +9,13 @@ void time_step_action()
     printf("TIMESTAMP %d\n", time_step);
 
     time_segment_index = ((time_step) / FRE_PER_SLICING) + 1;
-    G_token_per_time_step = G + g[((time_step - 1) / FRE_PER_SLICING) + 1];
+    //G_token_per_time_step = G + g[((time_step - 1) / FRE_PER_SLICING) + 1];
+    G_token_per_time_step = G;
     if(time_step == 23401){
         int a = 1;
     }
 
-    if((time_step) % FRE_PER_SLICING == 0 || time_step == 1){
+    if((time_step) % FRE_PER_SLICING == 0 ){
         // 清空所有磁盘上一次分配的段
         for(int n1 = 1; n1 <= N_disk_num; n1++){
             disk_array[n1].target_actual_array = vector<vector<int>>(MAGNERIC_HEAD_NUM);

@@ -149,6 +149,90 @@ void calc_pearson()
     }
 }
 
+void pre_process_2(){
+    // 第二轮初始化相关的代码
+    for(int n1 = 0; n1 < MAX_DISK_NUM; n1++){
+        disk_array[n1] = Disk();
+        for(int n2 = 0; n2 < MAX_DISK_SIZE; n2++){
+            disk[n1][n2] = 0;
+            disk_block_index[n1][n2] = 0;
+            disk_block_request[n1][n2] = 0;
+        }
+    }
+    for(int n1 = 0; n1 < MAX_OBJECT_NUM; n1++){
+        object_array[n1] = Object();
+    }
+    for(int n1 = 0; n1 < MAX_REQUEST_NUM; n1++){
+        request_array[n1] = Request();
+    }
+    for(int n1 = 0; n1 < MAX_TAG_NUM; n1++){
+        tag_array[n1] = Tag();
+    }
+    int n;
+    scanf("%d",&n);
+    for(int i=0;i<n;i++){
+        int id,tag;
+        scanf("%d%d",&id,&tag);
+        object_array[id].tag=tag;
+    }
+    for (int i = 1; i <= M_tag_num; i++) {
+        tag_array[i].fre_del = vector<int>((T_time_step_length + EXTRA_TIME - 1) / FRE_PER_SLICING + 2);
+        tag_array[i].fre_write = vector<int>((T_time_step_length + EXTRA_TIME - 1) / FRE_PER_SLICING + 2);
+        tag_array[i].fre_read = vector<int>((T_time_step_length + EXTRA_TIME - 1) / FRE_PER_SLICING + 2);
+    }
+    for(int time=1;time<=T_time_step_length + EXTRA_TIME;time++){
+        for(int i=0;i<read_record[time].size();i++){
+            Object obj=object_array[read_record[time][i]];
+            tag_array[obj.tag].fre_read[(time - 1) / FRE_PER_SLICING + 1]+=obj.size;
+        }
+        for(int i=0;i<write_record[time].size();i++){
+            Object obj=object_array[write_record[time][i]];
+            tag_array[obj.tag].fre_write[(time - 1) / FRE_PER_SLICING + 1]+=obj.size;
+        }
+        for(int i=0;i<del_record[time].size();i++){
+            Object obj=object_array[del_record[time][i]];
+            tag_array[obj.tag].fre_del[(time - 1) / FRE_PER_SLICING + 1]+=obj.size;
+        }
+    }
+     // 计算 tag_write，tag_content，tag_read
+     vector<int> b = vector<int>(5);
+     tag_write = vector<vector<int>>(M_tag_num + 1, vector<int>(3, 0));
+     tag_content = vector<vector<int>>(M_tag_num + 1, vector<int>(3, 0));
+     tag_read = vector<vector<long long>>(M_tag_num + 1, vector<long long>(3, 0));
+     for (int i = 1; i <= M_tag_num; i++) {
+         int time_segment = ((T_time_step_length - 1) / FRE_PER_SLICING + 2) / 3;
+         int content = 0;
+         for (int j = 1; j <= (T_time_step_length - 1) / FRE_PER_SLICING + 1; j++) {
+             content += tag_array[i].fre_write[j];
+             double a = tag_array[i].fre_del[j] * 2.5;
+             content -= a;
+             if(j / time_segment > 2){
+                 continue;
+             }
+             tag_write[i][j / time_segment] += tag_array[i].fre_write[j];
+             tag_write[i][j / time_segment] -= tag_array[i].fre_del[j];
+             tag_read[i][j / time_segment] += tag_array[i].fre_read[j];
+             tag_content[i][j / time_segment] = max(tag_content[i][j / time_segment], content);
+         }
+     }
+     vector<int> b = vector<int>(5);
+     // 初始化 Disk 信息 和 disk_assignable_actual_num
+     for(int n1 = 1; n1 <= N_disk_num; n1++){
+         Disk& target_disk = disk_array[n1];
+         target_disk.disk_id = n1;
+         disk_assignable_actual_num[n1] = segment_num;
+         for(int n2 = 0; n2 < disk_assignable_actual_num[n1]; n2++){
+             ActualSegment actualSegment = ActualSegment();
+             actualSegment.disk_id = n1;
+             actualSegment.begin_index = n2 * segment_size + 1;
+             actualSegment.segment_length = segment_size;
+             target_disk.segment_array.push_back(actualSegment);
+         }
+     }
+     allocate_segments();
+     calc_pearson();
+}
+
 
 // 预处理
 void pre_process(){
@@ -213,22 +297,22 @@ void pre_process(){
     tag_write = vector<vector<int>>(M_tag_num + 1, vector<int>(3, 0));
     tag_content = vector<vector<int>>(M_tag_num + 1, vector<int>(3, 0));
     tag_read = vector<vector<long long>>(M_tag_num + 1, vector<long long>(3, 0));
-    for (int i = 1; i <= M_tag_num; i++) {
-        int time_segment = ((T_time_step_length - 1) / FRE_PER_SLICING + 2) / 3;
-        int content = 0;
-        for (int j = 1; j <= (T_time_step_length - 1) / FRE_PER_SLICING + 1; j++) {
-            content += tag_array[i].fre_write[j];
-            double a = tag_array[i].fre_del[j] * 2.5;
-            content -= a;
-            if(j / time_segment > 2){
-                continue;
-            }
-            tag_write[i][j / time_segment] += tag_array[i].fre_write[j];
-            tag_write[i][j / time_segment] -= tag_array[i].fre_del[j];
-            tag_read[i][j / time_segment] += tag_array[i].fre_read[j];
-            tag_content[i][j / time_segment] = max(tag_content[i][j / time_segment], content);
-        }
-    }
+    // for (int i = 1; i <= M_tag_num; i++) {
+    //     int time_segment = ((T_time_step_length - 1) / FRE_PER_SLICING + 2) / 3;
+    //     int content = 0;
+    //     for (int j = 1; j <= (T_time_step_length - 1) / FRE_PER_SLICING + 1; j++) {
+    //         content += tag_array[i].fre_write[j];
+    //         double a = tag_array[i].fre_del[j] * 2.5;
+    //         content -= a;
+    //         if(j / time_segment > 2){
+    //             continue;
+    //         }
+    //         tag_write[i][j / time_segment] += tag_array[i].fre_write[j];
+    //         tag_write[i][j / time_segment] -= tag_array[i].fre_del[j];
+    //         tag_read[i][j / time_segment] += tag_array[i].fre_read[j];
+    //         tag_content[i][j / time_segment] = max(tag_content[i][j / time_segment], content);
+    //     }
+    // }
     // vector<int> b = vector<int>(5);
     // 初始化 Disk 信息 和 disk_assignable_actual_num
     for(int n1 = 1; n1 <= N_disk_num; n1++){
@@ -243,8 +327,8 @@ void pre_process(){
             target_disk.segment_array.push_back(actualSegment);
         }
     }
-    allocate_segments();
-    calc_pearson();
+    // allocate_segments();
+    // calc_pearson();
     printf("OK\n");
     fflush(stdout);
 }

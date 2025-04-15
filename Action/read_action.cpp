@@ -58,6 +58,8 @@ void read_action(){
         request_array[request_id].request_id = request_id;
         request_array[request_id].recieve_time = time_step;
         read_record[time_step].push_back(object_id);
+        int tag=object_array[object_id].tag;
+        tag_array[tag].read_size[time_step]+=object_array[object_id].size;
         //查找是否在磁盘读取区域中
         bool if_need_read=false;
 

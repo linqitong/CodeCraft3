@@ -10,6 +10,7 @@
 #define MAX_TAG_NUM (16 + 1)
 #define MAX_OBJECT_SIZE (5)
 #define MAGNERIC_HEAD_NUM (2)
+#define MAX_TIME (86400)
 
 extern int G;
 extern int T_time_step_length; // 1 ~ 86400，时间片编号 1 ~ T+105
@@ -114,10 +115,19 @@ public:
     std::vector<int> fre_write; // 多个时间段内写入的对象大小之和
     std::vector<int> fre_read; // 多个时间段内读取的对象大小之和
     std::vector<double> pearson_tag;
+    std::vector<int> read_size=std::vector<int>(MAX_TIME+106);//记录每帧读取数量
+    std::vector<int> write_size=std::vector<int>(MAX_TIME+106);//记录每帧写入数量
     int all_write_size;
+    int calc_t_read=0;
+    int calc_t_write=0;
+    double read_score=0,write_score=0;
+    void calc_read_score();
+    void calc_write_score();
     // std::vector<int> virtual_segment = std::vector<int>(); // 分配给该 tag 的虚拟段索引,从 0 开始
 };
-
+extern int stride_length_read;
+extern int stride_length_write;
+extern int stride_num;
 extern int global_turn;
 
 extern int quit_num1;
@@ -200,11 +210,12 @@ extern std::vector<std::vector<int>> del_record;//记录每帧删除对象
 
 extern double efficient_disk_rate;
 extern int efficient_disk_end; // 有效磁盘段的结尾
-
+extern int Derivatives;//0 1 2代表求导阶数
 void pre_process();
 void time_step_action();
 void delete_action();
 void exchange_action();
+void pre_process_2();
 
 // 计算磁盘上两点距离
 int calculate_distance(int start, int end);
@@ -234,3 +245,7 @@ struct RandomState {
 };
 static RandomState global_random_state{std::mt19937(42), 42};
 void setGlobalRandomSeed(unsigned int seed);
+
+
+
+double predictNextValue(const std::vector<double>& y) ;

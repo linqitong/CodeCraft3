@@ -78,6 +78,7 @@ pair<int, vector<int>> efficient_allocate_object(int object_id){
 
         actualSegment.tag_occupy_size[current_tag] += size;
         object_array[object_id].segment_id = actualSegment_id;
+        actualSegment.tag_index = current_tag;
         return {disk_id, actualSegment.first_write(object_id)};
     }
 
@@ -294,11 +295,29 @@ void write_action(){
         int id, size, tag;
         scanf("%d%d%d", &id, &size, &tag);
         object_array[id].size = size;
-        if(tag==0) tag=predictObject(possibility);
+        if(tag==0) {
+        //     if(t>=2000)
+        //    { vector<pair<double,int>> p;
+        //     for(int i=1;i<=M_tag_num;i++){
+        //         if(time_step!=tag_array[i].calc_t_write){
+        //             tag_array[i].calc_write_score();
+        //         }
+        //         p.emplace_back(tag_array[i].write_score+1.0,i);
+        //     }
+        //     if(t>50000){
+        //         int a=1;
+        //     }
+        //     possibility=p;}
+            tag=predictObject(possibility);
+        }    
+        else{
+            tag_array[tag].write_size[time_step]+=object_array[id].size;
+        }
         object_array[id].tag = tag;
         write_array[i] = id;
         write_record[time_step].push_back(id);
         auto allocate_result = allocate_object(id);
+        
 
         assert(allocate_result.size() == 3);
         
