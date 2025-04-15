@@ -104,8 +104,8 @@ void allocate_segments() {
 
     // 在 磁盘 内部分配虚拟段
     // 暂定按照第二时间段的消耗时间分配
-    vector<int> tag_rank = {14, 12, 9, 4, 16, 6, 5, 11, 15, 13, 3, 2, 7, 8, 10, 1};
-    //vector<int> tag_rank = {1, 2, 3, 4, 5, 6, 7,8, 9, 10, 11,12, 13, 14, 15, 16};
+    //vector<int> tag_rank = {14, 12, 9, 4, 16, 6, 5, 11, 15, 13, 3, 2, 7, 8, 10, 1};
+    vector<int> tag_rank = {1, 2, 3, 4, 5, 6, 7,8, 9, 10, 11,12, 13, 14, 15, 16};
     for(int n1 = 1; n1 <= N_disk_num; n1++){
         int now_segment=0;
         Disk &target_disk= disk_array[n1];
@@ -177,6 +177,25 @@ void pre_process_2(){
         disk_array[n1].rubbish_stack = stack<int>();
         for(int n2 = V_block_per_disk; n2 > efficient_disk_end; n2--){
             disk_array[n1].rubbish_stack.push(n2);
+        }
+    }
+    // 根据pearson相似计算每个物品的tag
+    for(int i=0;i<=MAX_DISK_SIZE;i++){
+        if(object_array[i].if_loaded){
+            std::random_device rd;
+            std::mt19937 gen(rd()); 
+            std::uniform_int_distribution<> distrib(1, M_tag_num);
+            int tag=distrib(gen);
+            double similarity=0.0;
+            for(int j=1;j<=M_tag_num;j++){
+                double sim = pearsonCorrelation(tag_read[j], obj_read_data[i]);
+                if(sim>similarity){
+                    similarity=sim;
+                    tag=j;
+                }
+            }
+            //assert(similarity>0);
+            object_array[i].tag=tag;
         }
     }
     int n;
@@ -309,7 +328,8 @@ void pre_process(){
     
     tag_write = vector<vector<int>>(M_tag_num + 1, vector<int>(3, 0));
     tag_content = vector<vector<int>>(M_tag_num + 1, vector<int>(3, 0));
-    tag_read = vector<vector<long long>>(M_tag_num + 1, vector<long long>(3, 0));
+    tag_read = vector<vector<long long>>(M_tag_num + 1, vector<long long>((T_time_step_length+EXTRA_TIME)/pearson_sample_interval+1, 0));
+    obj_read_data = std::vector<std::vector<int>> (MAX_OBJECT_NUM, vector<int>((T_time_step_length+EXTRA_TIME)/pearson_sample_interval+1, 0));
     // for (int i = 1; i <= M_tag_num; i++) {
     //     int time_segment = ((T_time_step_length - 1) / FRE_PER_SLICING + 2) / 3;
     //     int content = 0;

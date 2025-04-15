@@ -62,16 +62,15 @@ void read_action(){
             request_array[request_id].request_id = request_id;
             request_array[request_id].recieve_time = time_step;
             read_record[time_step].push_back(request_id);
-            if(request_id==416662){
-                int a=1;
+            if(object_array[object_id].true_tag){
+                tag_read[object_array[object_id].tag][time_step/pearson_sample_interval]+=object_array[object_id].size;
+            }else{
+                obj_read_data[object_id][time_step/pearson_sample_interval]+=object_array[object_id].size;
             }
         }
         else{
             request_id=read_record[time_step][i-1];
             object_id=request_array[request_id].object_id;
-            if(global_turn==2 and request_id==416662){
-                int a=1;
-            }
         }
         
         int tag=object_array[object_id].tag;

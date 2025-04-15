@@ -5,7 +5,7 @@
 #define MAX_REQUEST_NUM (30000000 + 1)
 #define MAX_OBJECT_NUM (100000 + 1)
 #define REP_NUM (3)
-#define FRE_PER_SLICING (1800)
+#define FRE_PER_SLICING (600)
 #define EXTRA_TIME (105)
 #define MAX_TAG_NUM (16 + 1)
 #define MAX_OBJECT_SIZE (5)
@@ -85,11 +85,13 @@ class Disk{
 class Object{
 public:
     int tag; // 标签
+    bool true_tag=true;//标记标签是否为真值
     int size;
     std::set<int> wait_request_set; // 该物品还没有执行完毕的请求的编号
     std::vector<int> storge_data[REP_NUM + 1]; // 该对象三个副本存储的位置
     int virtual_segment_id = -1; // 【已被弃用】该对象对应的虚拟段编号
     int segment_id = -1; // 该对象对应的段编号
+    bool if_loaded=false;//是否装载对象
     int disk_array[REP_NUM + 1]; // 该对象三个副本存储的磁盘 id 
     void check_finish(); // 检查 wait_request_set 是否部分已完成
     void quit_all_request();
@@ -138,7 +140,7 @@ extern Request request_array[MAX_REQUEST_NUM]; // 所有的请求数据
 extern Tag tag_array[MAX_TAG_NUM]; // 所有的标签数据
 extern std::vector<std::pair<double,int>> possibility;
 
-
+extern int pearson_sample_interval;//对象与各tag计算相似度时采样间隔
 extern int time_step; // 当前时间阶段序号
 
 extern int total_fre_net_demand; // 该时间段净需求综合
@@ -207,6 +209,7 @@ extern std::vector<std::vector<int>> object_record;//记录所有写入对象 �
 extern std::vector<std::vector<int>> read_record;//记录每帧读取请求
 extern std::vector<std::vector<int>> write_record;//记录每帧写入对象
 extern std::vector<std::vector<int>> del_record;//记录每帧删除对象
+extern std::vector<std::vector<int>> obj_read_data;//记录每个对象的读取数据
 
 extern double efficient_disk_rate;
 extern int efficient_disk_end; // 有效磁盘段的结尾
@@ -249,3 +252,5 @@ void setGlobalRandomSeed(unsigned int seed);
 
 
 double predictNextValue(const std::vector<double>& y) ;
+
+double pearsonCorrelation(const std::vector<long long>& x, const std::vector<int>& y);

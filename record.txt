@@ -121,3 +121,12 @@ empty_write_size: 0
 all_finish_select_size: 0
 all_finish_request_efficiency: 0.000000
 all_mark: 21256862.417385
+
+
+  select_but_not_finish: 284669         300
+  drop_req_num: 6474475
+  all_mark: 18881854.797379
+
+   select_but_not_finish: 247791         600
+  drop_req_num: 6255879
+  all_mark: 19098576.189877

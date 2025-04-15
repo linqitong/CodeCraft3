@@ -46,6 +46,7 @@ long long empty_first_write_size = 0;
 long long empty_write_size = 0;
 int selected_r = 0;
 int un_selected_r = 0;
+int pearson_sample_interval=600;
 set<int> select_VirtualSegment = set<int>();
 double all_finish_request_efficiency = 0;
 int all_finish_select_size = 0;
@@ -64,6 +65,7 @@ std::vector<std::vector<int>> object_record;
 std::vector<std::vector<int>> read_record;
 std::vector<std::vector<int>> write_record;
 std::vector<std::vector<int>> del_record;
+std::vector<std::vector<int>> obj_read_data;
 std::vector<std::pair<double,int>> possibility;
 double efficient_disk_rate = 0.33;
 int efficient_disk_end; // 不预先设置
@@ -224,4 +226,43 @@ double predictNextValue(const vector<double>& y) {
     if(Derivatives==0) return zeroDeriv;
     if(Derivatives==1) return zeroDeriv + firstDeriv;
     if(Derivatives==2) return zeroDeriv + firstDeriv + secondDeriv / 2;
+}
+
+double pearsonCorrelation(const vector<long long>& x, const vector<int>& y) {
+    // 检查输入是否有效
+    if (x.empty() || y.empty()) {
+        throw invalid_argument("Input vectors cannot be empty");
+    }
+    
+    if (x.size() != y.size()) {
+        throw invalid_argument("Input vectors must have the same size");
+    }
+    
+    size_t n = x.size();
+    
+    // 计算均值
+    double mean_x = accumulate(x.begin(), x.end(), 0.0) / n;
+    double mean_y = accumulate(y.begin(), y.end(), 0.0) / n;
+    
+    // 计算协方差和方差
+    double covariance = 0.0;
+    double variance_x = 0.0;
+    double variance_y = 0.0;
+    
+    for (size_t i = 0; i < n; ++i) {
+        double diff_x = x[i] - mean_x;
+        double diff_y = y[i] - mean_y;
+        
+        covariance += diff_x * diff_y;
+        variance_x += diff_x * diff_x;
+        variance_y += diff_y * diff_y;
+    }
+    
+    // 检查分母是否为0
+    if (variance_x == 0 || variance_y == 0) {
+        return 0.0; // 如果任一方差为0，返回0表示无相关性
+    }
+    
+    // 计算皮尔森相关系数
+    return covariance / (sqrt(variance_x) * sqrt(variance_y));
 }

@@ -1,6 +1,6 @@
 #include "common.h"
 
-bool debug_mode = false;
+bool debug_mode = true;
 bool debug_mode_mark_disk_imfromation = false;
 
 int main()
@@ -42,7 +42,9 @@ int main()
 
     // 第二轮
     global_turn = 2; 
-
+    all_mark=0;
+    select_but_not_finish=0;
+    drop_req_num=0;
     pre_process_2();
    
     // 根据上一轮的全局信息进行统计

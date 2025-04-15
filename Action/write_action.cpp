@@ -307,6 +307,8 @@ void write_action(){
         }
         
         object_array[id].size = size;
+        object_array[id].if_loaded=true;
+        if(global_turn==2) assert(tag!=0);
         if(tag==0) {
             /*
             if(t>=7000){
@@ -323,6 +325,7 @@ void write_action(){
                 possibility=p;
             }  
             */
+            object_array[id].true_tag=false;
             tag=predictObject(possibility);
         }    
         else{
