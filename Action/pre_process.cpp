@@ -215,7 +215,7 @@ void pre_process_2(){
              tag_content[i][j / time_segment] = max(tag_content[i][j / time_segment], content);
          }
      }
-     vector<int> b = vector<int>(5);
+     b = vector<int>(5);
      // 初始化 Disk 信息 和 disk_assignable_actual_num
      for(int n1 = 1; n1 <= N_disk_num; n1++){
          Disk& target_disk = disk_array[n1];
