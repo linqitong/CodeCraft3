@@ -27,8 +27,8 @@ int all_request_read_size = 0;
 int drop_req_num=0;
 int max_think_num_for_empty_read = 3;
 int segment_size; // 端长度在初始化时动态生成，不预先设置
-int min_read_shold = 10; 
-int max_segment_select_size = 3;
+int min_read_shold = 6000; 
+int max_segment_select_size = 10;
 vector<vector<int>> request_per_time=vector<vector<int>>(86400+1);
 vector<int> disk_assignable_actual_num = vector<int>(MAX_DISK_NUM);
 vector<vector<int>> tag_write;
@@ -56,11 +56,11 @@ int effective_read = 0;
 int select_zero_request = 0;
 int all_finish_select = 0;
 double all_mark = 0;
-int segment_num = 36;
+int segment_num = 48;
 int select_but_not_finish = 0;
 set<int> select_ActualSegment;
 
-double efficient_disk_rate = 0.34;
+double efficient_disk_rate = 0.33;
 int efficient_disk_end; // 不预先设置
 
 int calculate_distance(int start, int end){

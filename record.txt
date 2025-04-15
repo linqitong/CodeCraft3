@@ -1,0 +1,91 @@
+success! Analyze the total run time is : 62915ms
+zero_request: 0
+quit_request: 3291
+head_idle_time: 0
+all_request_read_size: 31669303
+tag_first_write_size: 40868
+tag_write_size: 10363
+first_write_size: 0
+write_size: 0
+empty_first_write_size: 0
+empty_write_size: 0
+all_finish_select_size: 0
+all_finish_request_efficiency: 0.000000
+all_mark: 18586162.529896
+choose rate: 0.649673
+choosed mark rate: nan
+
+
+current time step 86401   0   19978643
+  empty_object_read: 0
+  empty_request_read: 0
+  effective_read: 16434970
+  all_finish_select_size: 0
+  all_finish_request_efficiency: 0.000000
+  select_zero_request: 0
+  all_finish_select: 0
+  select_but_not_finish: 1953379
+  drop_req_num: 2319699
+  all_mark: 17389340.422429
+success! Analyze the total run time is : 73730ms
+zero_request: 0
+quit_request: 8822
+head_idle_time: 0
+all_request_read_size: 40781036
+tag_first_write_size: 40917
+tag_write_size: 9559
+first_write_size: 0
+write_size: 0
+empty_first_write_size: 0
+empty_write_size: 0
+all_finish_select_size: 0
+all_finish_request_efficiency: 0.000000
+all_mark: 17389381.582429
+choose rate: 0.895970
+choosed mark rate: nan
+
+all_mark: 17939353.542411
+choose rate: 0.888510
+
+all_mark: 17526260.629926
+choose rate: 0.885865
+
+select_but_not_finish: 114509
+  drop_req_num: 5254325
+  all_mark: 19466047.532414
+success! Analyze the total run time is : 71532ms
+zero_request: 0
+quit_request: 5215
+head_idle_time: 0
+all_request_read_size: 36480182
+tag_first_write_size: 39075
+tag_write_size: 9529
+first_write_size: 0
+write_size: 0
+empty_first_write_size: 0
+empty_write_size: 0
+all_finish_select_size: 0
+all_finish_request_efficiency: 0.000000
+all_mark: 19466053.092414
+choose rate: 0.764363
+choosed mark rate: nan
+
+select_but_not_finish: 244263
+  drop_req_num: 4331524
+  all_mark: 19473763.414915
+success! Analyze the total run time is : 73236ms
+zero_request: 0
+quit_request: 6089
+head_idle_time: 0
+all_request_read_size: 38122528
+tag_first_write_size: 39075
+tag_write_size: 9529
+first_write_size: 0
+write_size: 0
+empty_first_write_size: 0
+empty_write_size: 0
+all_finish_select_size: 0
+all_finish_request_efficiency: 0.000000
+all_mark: 19473771.844915
+choose rate: 0.805747
+choosed mark rate: nan
