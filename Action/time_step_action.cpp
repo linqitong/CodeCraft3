@@ -3,7 +3,9 @@ using namespace std;
 
 void time_step_action()
 {
-    scanf("%*s%d", &time_step);
+    int this_time_step;
+    scanf("%*s%d", &this_time_step);
+    assert(this_time_step == time_step);
     printf("TIMESTAMP %d\n", time_step);
 
     time_segment_index = ((time_step) / FRE_PER_SLICING) + 1;

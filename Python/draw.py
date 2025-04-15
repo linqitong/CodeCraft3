@@ -6,29 +6,45 @@ import numpy as np
 
 
 # 单组折线图
-def save_line_plot(data, save_path, file_name):
+def save_line_plot(data, save_path, file_name, step=1):
     """
-    生成折线图并保存到指定地址。
+    生成折线图并保存到指定地址，支持按步长聚合数据。
 
     参数:
     data (list): 要绘制的数据数组。
     save_path (str): 保存图像的路径。
     file_name (str): 保存图像的文件名（不包括扩展名）。
+    step (int): 数据聚合的步长（正整数，默认为1）。
 
     返回:
     None
     """
+    # 参数校验
+    if not isinstance(step, int) or step < 1:
+        raise ValueError("Step must be a positive integer.")
+
+    # 根据步长聚合数据
+    if step > 1:
+        aggregated_data = []
+        for i in range(0, len(data), step):
+            group = data[i:i + step]
+            avg = sum(group)  # 计算平均值
+            aggregated_data.append(avg)
+        data_to_plot = aggregated_data
+    else:
+        data_to_plot = data
+
     # 确保保存路径存在
     if not os.path.exists(save_path):
         os.makedirs(save_path)
 
     # 创建折线图
-    plt.plot(data)
+    plt.plot(data_to_plot)
 
     # 添加标题和标签
-    plt.title('Line Plot')
-    plt.xlabel('Index')
-    plt.ylabel('Value')
+    plt.title('Line Plot' + (f' (Step={step})' if step > 1 else ''))
+    plt.xlabel('Group Index' if step > 1 else 'Index')
+    plt.ylabel('Average Value' if step > 1 else 'Value')
 
     # 保存图像
     full_path = os.path.join(save_path, f'{file_name}.png')
