@@ -10,7 +10,7 @@ import get_tag_rank
 def main():
     original_stdin = sys.stdin
     # f = open('../Data/初赛数据/practice.in', 'r')
-    f = open('../Data/sample_practice_3.in', 'r')
+    f = open('../Data/sample_practice_1.in', 'r')
     sys.stdin = f
 
     user_input = input().split()
@@ -23,7 +23,7 @@ def main():
     common.K_garbage_recycle_size = int(user_input[5])
 
     common.tag_array = [common.Tag() for _ in range(common.M_tag_num + 1)]
-
+    common.untag_write_data = [[] for _ in range(common.T_time_step_length + EXTRA_TIME + 1)]
 
     """
     all_size_all = []
@@ -124,6 +124,42 @@ def main():
             garbage_action()
 
     print("输入数据已经处理完毕")
+
+    f = open('../Data/sample_practice_map_1.txt', 'r')
+    sys.stdin = f
+    for n1 in tqdm(range(0, common.max_object_id)):
+        input_data = input().split()
+        object_id = int(input_data[0])
+        tag_id = int(input_data[1])
+        common.objects[object_id].tag_id = tag_id
+        if object_id not in common.tag_array[tag_id].object_dict:
+            common.tag_array[tag_id].untag_object[object_id] = 1
+    data = {}
+    for tag_id in range(1, common.M_tag_num + 1):
+        data[tag_id] = (len(common.tag_array[tag_id].object_dict), len(common.tag_array[tag_id].untag_object))
+
+    p_data = {}
+
+    for index, value in data.items():
+        p_data[index] = (value, value[0] / value[1])
+
+    # exit()
+    for time in tqdm(range(1, common.T_time_step_length + common.EXTRA_TIME + 1)):
+        for index in range(len(common.untag_write_data[time])):
+            tag_id = common.objects[common.untag_write_data[time][index]].tag_id
+            common.tag_array[tag_id].untag_write_data[time] += common.objects[common.untag_write_data[time][index]].size
+
+    step_length = 400
+    for n1 in range(1, common.M_tag_num + 1):
+        data = common.tag_array[n1].untag_write_data[1:]
+        save_line_plot(data, os.path.join(picture_addr, "untag_write"), n1, step_length)
+    exit()
+    # 绘制每个标签的 read 数据
+    step_length = 400
+    for n1 in range(1, common.M_tag_num + 1):
+        data = common.tag_array[n1].write_data[1:]
+        save_line_plot(data, os.path.join(picture_addr, "tag_write"), n1, step_length)
+    exit()
 
     # 绘制每个标签的 read 数据
     step_length = 50

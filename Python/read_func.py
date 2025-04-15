@@ -47,19 +47,25 @@ def write_action():
         size = int(write_input[1])
         tag_id = int(write_input[2])
         common.objects[write_id].lastRequestPoint = 0
+        common.tag_array[tag_id].write_data[common.t] += size
+        common.max_object_id = max(common.max_object_id, write_id)
         for j in range(1, common.REP_NUM + 1):
             common.objects[write_id].replica[j] = (write_id + j) % common.N_disk_num + 1
             common.objects[write_id].unit[j] = [0 for _ in range(size + 1)]
-            common.objects[write_id].size = size
-            common.objects[write_id].isDelete = False
-            common.objects[write_id].tag_id = tag_id
-            common.objects[write_id].begin_time = common.t
-            common.all_write_size += size
-            if tag_id != 0:
-                common.objects[write_id].size_index = common.tag_array[tag_id].all_size
-                common.tag_array[tag_id].all_size += size
-            else:
-                common.all_empty_tag_write_size += size
+        common.objects[write_id].size = size
+        common.objects[write_id].isDelete = False
+        common.objects[write_id].tag_id = tag_id
+        common.objects[write_id].begin_time = common.t
+        common.all_write_size += size
+        common.all_write_num += 1
+        if tag_id != 0:
+            common.objects[write_id].size_index = common.tag_array[tag_id].all_size
+            common.tag_array[tag_id].all_size += size
+            common.tag_array[tag_id].object_dict[write_id] = 1
+        else:
+            common.untag_write_data[common.t].append(write_id)
+            common.all_empty_tag_write_size += size
+            common.all_empty_tag_write_num += 1
             # do_object_write(common.objects[write_id].unit[j], common.disk[common.objects[write_id].replica[j]], size, write_id)
         # 忽略输出
         """
@@ -85,6 +91,7 @@ def read_action():
         common.objects[objectId].lastRequestPoint = request_id
         common.req_is_dones[request_id] = False
         common.all_read_size += common.objects[objectId].size
+        # common.objects[objectId].read_array.append(common.t)
         tag_id = common.objects[objectId].tag_id
         if tag_id != 0:
             common.tag_array[tag_id].read_data[common.t] += common.objects[objectId].size

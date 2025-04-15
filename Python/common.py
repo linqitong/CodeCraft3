@@ -28,6 +28,7 @@ class Object:
         self.begin_time = 0
         self.end_time = 89999
         self.size_index = 0
+        self.read_array = []
 
 
 class Tag:
@@ -38,11 +39,15 @@ class Tag:
         self.fre_net_demand = []
         self.fre_all_size = []
         self.read_data = [0 for _ in range(T_time_step_length + EXTRA_TIME + 1)]
+        self.write_data = [0 for _ in range(T_time_step_length + EXTRA_TIME + 1)]
+        self.untag_write_data = [0 for _ in range(T_time_step_length + EXTRA_TIME + 1)]
         self.object_request_dict = {}
         self.all_size = 0
+        self.object_dict = {}
+        self.untag_object = {}
 
 
-
+untag_write_data = [[] for _ in range(T_time_step_length + EXTRA_TIME + 1)]
 
 disk = [[0 for _ in range(MAX_DISK_SIZE)] for _ in range(MAX_DISK_NUM)]
 disk_point = [0 for _ in range(MAX_DISK_NUM)]
@@ -60,8 +65,12 @@ all_write_size = 0
 all_empty_tag_write_size = 0
 all_read_size = 0
 all_empty_tag_read_size = 0
+all_write_num = 0
+all_empty_tag_write_num = 0
 
-picture_addr = r"./Picture/决赛_训练数据3"
+picture_addr = r"./Picture/决赛_训练数据1"
+
+max_object_id = 0
 
 
 
