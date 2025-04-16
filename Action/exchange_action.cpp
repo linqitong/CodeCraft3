@@ -120,6 +120,11 @@ void exchange_action()
                 select_actual.push_back(actual_segment_id);
             }
         }
+        for(int i = 1; i < segment_num; i++){
+            if(find(select_actual.begin(), select_actual.end(), i) == select_actual.end()){
+                select_actual.push_back(i);
+            }
+        }
         for(int i = 0; i < select_actual.size(); i++){
             int actual_segment_id = select_actual[i];
             ActualSegment& actual_segment = target_disk.segment_array[actual_segment_id];
