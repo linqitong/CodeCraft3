@@ -198,6 +198,7 @@ extern double all_mark; // 估计分数
 extern int time_segment_index; // 当前所在的时间片编号
 extern int select_but_not_finish; // 被选中但是没有被完成的请求
 extern std::set<int> select_ActualSegment;
+extern int predict_num;
 
 extern std::vector<std::vector<int>> tag_write; // 简化成时间段的 tag 写入
 extern std::vector<std::vector<int>> tag_content; // 简化成时间段的 tag 净含量

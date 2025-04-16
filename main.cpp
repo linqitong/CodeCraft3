@@ -1,6 +1,6 @@
 #include "common.h"
 
-bool debug_mode = true;
+bool debug_mode = false;
 bool debug_mode_mark_disk_imfromation = false;
 
 int main()
@@ -45,6 +45,8 @@ int main()
     all_mark=0;
     select_but_not_finish=0;
     drop_req_num=0;
+    max_segment_select_size=4;
+    //segment_num=15;
     pre_process_2();
    
     // 根据上一轮的全局信息进行统计
@@ -65,6 +67,7 @@ int main()
                 std::cout << "  select_but_not_finish: " << select_but_not_finish << std::endl;
                 std::cout << "  drop_req_num: " << drop_req_num << std::endl;
                 std::cout << "  all_mark: " << all_mark << std::endl;
+                std::cout << "  predict_num: " << predict_num << std::endl;
                 freopen(".\\output.txt", "a+", stdout);
             }
         }

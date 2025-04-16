@@ -38,6 +38,8 @@ vector<vector<long long>> tag_read;
 std::vector<int> g;
 int G;
 
+int predict_num=0;
+
 long long tag_first_write_size = 0;
 long long tag_write_size = 0;
 long long first_write_size = 0;
@@ -46,7 +48,7 @@ long long empty_first_write_size = 0;
 long long empty_write_size = 0;
 int selected_r = 0;
 int un_selected_r = 0;
-int pearson_sample_interval=600;
+int pearson_sample_interval=100;
 set<int> select_VirtualSegment = set<int>();
 double all_finish_request_efficiency = 0;
 int all_finish_select_size = 0;

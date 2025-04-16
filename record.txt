@@ -130,3 +130,18 @@ all_mark: 21256862.417385
    select_but_not_finish: 247791         600
   drop_req_num: 6255879
   all_mark: 19098576.189877
+
+
+
+
+  predict_num: 7190
+
+
+  select_but_not_finish: 863851
+  drop_req_num: 1803768
+  all_mark: 24429542.204795
+
+  select_but_not_finish: 285777
+  drop_req_num: 2456389
+  all_mark: 24586507.317284
+  predict_num: 3499

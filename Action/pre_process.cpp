@@ -179,25 +179,46 @@ void pre_process_2(){
             disk_array[n1].rubbish_stack.push(n2);
         }
     }
-    // 根据pearson相似计算每个物品的tag
-    for(int i=0;i<=MAX_DISK_SIZE;i++){
-        if(object_array[i].if_loaded){
-            std::random_device rd;
-            std::mt19937 gen(rd()); 
-            std::uniform_int_distribution<> distrib(1, M_tag_num);
+    // std::ifstream fin(".\\Data\\sample_practice_map_1.txt"); // 创建文件输入流并打开文件
+    // int a,b;
+    // while(fin>>a>>b){
+    //     object_array[a].tag=b;
+    //     object_array[a].true_tag=true;
+    // }
+    // fin.close(); // 关闭文件(析构函数会自动调用)
+    //根据pearson相似计算每个物品的tag
+    freopen(".\\predict_result.txt", "w", stdout);
+    int num=0;
+    std::random_device rd;
+    std::mt19937 gen(rd()); 
+    std::uniform_int_distribution<> distrib(1, M_tag_num);
+    for(int i=0;i<MAX_OBJECT_NUM;i++){
+        if(object_array[i].if_loaded and !object_array[i].true_tag){
+            num++;
             int tag=distrib(gen);
             double similarity=0.0;
             for(int j=1;j<=M_tag_num;j++){
+                if(obj_read_data[i].empty()){
+                    int a=1;
+                }
+                if(tag_read[j].empty()){
+                    int a=1;
+                }
                 double sim = pearsonCorrelation(tag_read[j], obj_read_data[i]);
                 if(sim>similarity){
                     similarity=sim;
                     tag=j;
                 }
             }
+            if(similarity==0) predict_num++;
+            //cout<<i<<' '<<tag<<' '<<similarity<<endl;
             //assert(similarity>0);
+            object_array[i].true_tag=true;
             object_array[i].tag=tag;
         }
     }
+    //cout<<"total:"<<num<<endl;
+    //freopen(".\\output.txt", "a+", stdout);
     int n;
     scanf("%d",&n);
     for(int i=0;i<n;i++){
