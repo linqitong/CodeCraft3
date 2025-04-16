@@ -71,7 +71,7 @@ std::vector<std::vector<int>> obj_read_data;
 std::vector<std::pair<double,int>> possibility;
 double efficient_disk_rate = 0.35;
 int efficient_disk_end; // 不预先设置
-int stride_length_read=300;
+int stride_length_read=1200;
 int stride_length_write=2000;
 int stride_num=5;
 int global_turn;

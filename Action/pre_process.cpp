@@ -179,6 +179,17 @@ void pre_process_2(){
             disk_array[n1].rubbish_stack.push(n2);
         }
     }
+    int n;
+    scanf("%d",&n);
+    for(int i=0;i<n;i++){
+        int id,tag;
+        scanf("%d%d",&id,&tag);
+        object_array[id].tag=tag;
+        object_array[id].true_tag=true;
+        for(int j=0;j<obj_read_data[id].size();j++){
+            tag_read[tag][j]+=obj_read_data[id][j];
+        }
+    }
     // std::ifstream fin(".\\Data\\sample_practice_map_1.txt"); // 创建文件输入流并打开文件
     // int a,b;
     // while(fin>>a>>b){
@@ -199,15 +210,6 @@ void pre_process_2(){
             tag=1;
             double similarity=0;
             for(int j=1;j<=M_tag_num;j++){
-                if(obj_read_data[i].empty()){
-                    int a=1;
-                }
-                if(tag_read[j].empty()){
-                    int a=1;
-                }
-                if(i==5){
-                    int a=1;
-                }
                 double sim = pearsonCorrelation(tag_read[j], obj_read_data[i]);
                 if(sim>similarity){
                     similarity=sim;
@@ -223,17 +225,16 @@ void pre_process_2(){
             //assert(similarity>0);
             object_array[i].true_tag=true;
             object_array[i].tag=tag;
+            if(similarity > 0){
+                for(int j=0;j<obj_read_data[i].size();j++){
+                    tag_read[tag][j]+=obj_read_data[i][j];
+                }
+            }
         }
     }
     //cout<<"total:"<<num<<endl;
     //freopen(".\\output.txt", "a+", stdout);
-    int n;
-    scanf("%d",&n);
-    for(int i=0;i<n;i++){
-        int id,tag;
-        scanf("%d%d",&id,&tag);
-        object_array[id].tag=tag;
-    }
+    
     for (int i = 1; i <= M_tag_num; i++) {
         tag_array[i].fre_del = vector<int>((T_time_step_length + EXTRA_TIME - 1) / FRE_PER_SLICING + 2);
         tag_array[i].fre_write = vector<int>((T_time_step_length + EXTRA_TIME - 1) / FRE_PER_SLICING + 2);
