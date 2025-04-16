@@ -145,3 +145,29 @@ all_mark: 21256862.417385
   drop_req_num: 2456389
   all_mark: 24586507.317284
   predict_num: 3499
+
+
+  select_but_not_finish: 330982
+  drop_req_num: 2681833
+  all_mark: 23853901.879842
+  predict_num: 3499
+  max_segment_select_size=4;
+  segment_num=12;
+
+  202100141085
+
+  select_but_not_finish: 142485    14 4
+  drop_req_num: 2680980
+  all_mark: 24795551.112273
+  predict_num: 3499
+
+
+  select_but_not_finish: 488385    15  5
+  drop_req_num: 2058508
+  all_mark: 24721958.219771
+  predict_num: 3499
+
+  select_but_not_finish: 87601     15 4
+  drop_req_num: 2984347
+  all_mark: 24776375.242267
+  predict_num: 3499

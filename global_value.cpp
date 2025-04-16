@@ -32,8 +32,8 @@ int min_read_shold = 6000;
 int max_segment_select_size = 4;
 vector<vector<int>> request_per_time=vector<vector<int>>(86400+1);
 vector<int> disk_assignable_actual_num = vector<int>(MAX_DISK_NUM);
-vector<vector<int>> tag_write;
-vector<vector<int>> tag_content;
+vector<vector<long long>> tag_write;
+vector<vector<long long>> tag_del;
 vector<vector<long long>> tag_read;
 std::vector<int> g;
 int G;
@@ -68,10 +68,11 @@ std::vector<std::vector<int>> read_record;
 std::vector<std::vector<int>> write_record;
 std::vector<std::vector<int>> del_record;
 std::vector<std::vector<int>> obj_read_data;
+
 std::vector<std::pair<double,int>> possibility;
 double efficient_disk_rate = 0.33;
 int efficient_disk_end; // 不预先设置
-int stride_length_read=100;
+int stride_length_read=300;
 int stride_length_write=2000;
 int stride_num=5;
 int global_turn;
@@ -223,11 +224,15 @@ int predictObject(const std::vector<std::pair<double, int>>& probabilities) {
 
 // 使用滑动窗口平均导数
 double predictNextValue(const vector<double>& y) {
+   
+   
     double zeroDeriv=y[2],firstDeriv=(y[2]-y[0])/2, secondDeriv=y[2]-y[0]+2*y[1];
     
     if(Derivatives==0) return zeroDeriv;
     if(Derivatives==1) return zeroDeriv + firstDeriv;
     if(Derivatives==2) return zeroDeriv + firstDeriv + secondDeriv / 2;
+
+    
 }
 
 double pearsonCorrelation(const vector<long long>& x, const vector<int>& y) {

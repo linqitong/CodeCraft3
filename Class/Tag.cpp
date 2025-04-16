@@ -8,10 +8,11 @@ void Tag::calc_read_score(){
     vector<double> data(3);
     int this_t=t-1;
     for(int i=0;i<3;i++){
-        for(int j=0;j<stride_length_read;j++,this_t--){
+        for(int j=0;j<stride_length_read and this_t>0;j++,this_t--){
             data[3 - i - 1]+=read_size[this_t];
         }
     }
+   
     read_score=predictNextValue(data);
     calc_t_read=t;
 }

@@ -200,8 +200,8 @@ extern int select_but_not_finish; // 被选中但是没有被完成的请求
 extern std::set<int> select_ActualSegment;
 extern int predict_num;
 
-extern std::vector<std::vector<int>> tag_write; // 简化成时间段的 tag 写入
-extern std::vector<std::vector<int>> tag_content; // 简化成时间段的 tag 净含量
+extern std::vector<std::vector<long long>> tag_write; // 简化成时间段的 tag 写入
+extern std::vector<std::vector<long long>> tag_del; // 简化成时间段的 tag 净含量
 extern std::vector<std::vector<long long>> tag_read; // 简化成时间段的 tag 读取
 extern std::vector<int> disk_assignable_actual_num; // 每个磁盘的可分配实际段数
 extern std::vector<std::vector<int>> request_per_time;//记录每个时间片的读取请求号

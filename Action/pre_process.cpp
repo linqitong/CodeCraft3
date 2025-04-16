@@ -196,12 +196,16 @@ void pre_process_2(){
         if(object_array[i].if_loaded and !object_array[i].true_tag){
             num++;
             int tag=distrib(gen);
-            double similarity=0.0;
+            tag=1;
+            double similarity=0;
             for(int j=1;j<=M_tag_num;j++){
                 if(obj_read_data[i].empty()){
                     int a=1;
                 }
                 if(tag_read[j].empty()){
+                    int a=1;
+                }
+                if(i==5){
                     int a=1;
                 }
                 double sim = pearsonCorrelation(tag_read[j], obj_read_data[i]);
@@ -210,7 +214,11 @@ void pre_process_2(){
                     tag=j;
                 }
             }
-            if(similarity==0) predict_num++;
+            if(similarity<=0){
+                //predict_num++;
+                if(accumulate(obj_read_data[i].begin(),obj_read_data[i].end(),0.0)<100)
+                predict_num++;
+            } 
             //cout<<i<<' '<<tag<<' '<<similarity<<endl;
             //assert(similarity>0);
             object_array[i].true_tag=true;
@@ -247,27 +255,26 @@ void pre_process_2(){
             tag_array[obj.tag].fre_del[(time - 1) / FRE_PER_SLICING + 1]+=obj.size;
         }
     }
-     // 计算 tag_write，tag_content，tag_read
+    
      
-     tag_write = vector<vector<int>>(M_tag_num + 1, vector<int>(3, 0));
-     tag_content = vector<vector<int>>(M_tag_num + 1, vector<int>(3, 0));
-     tag_read = vector<vector<long long>>(M_tag_num + 1, vector<long long>(3, 0));
-     for (int i = 1; i <= M_tag_num; i++) {
-         int time_segment = ((T_time_step_length - 1) / FRE_PER_SLICING + 2) / 3;
-         int content = 0;
-         for (int j = 1; j <= (T_time_step_length - 1) / FRE_PER_SLICING + 1; j++) {
-             content += tag_array[i].fre_write[j];
-             double a = tag_array[i].fre_del[j] * 2.5;
-             content -= a;
-             if(j / time_segment > 2){
-                 continue;
-             }
-             tag_write[i][j / time_segment] += tag_array[i].fre_write[j];
-             tag_write[i][j / time_segment] -= tag_array[i].fre_del[j];
-             tag_read[i][j / time_segment] += tag_array[i].fre_read[j];
-             tag_content[i][j / time_segment] = max(tag_content[i][j / time_segment], content);
-         }
-     }
+    
+    
+    //  for (int i = 1; i <= M_tag_num; i++) {
+    //      int time_segment = ((T_time_step_length - 1) / FRE_PER_SLICING + 2) / 3;
+    //      int content = 0;
+    //      for (int j = 1; j <= (T_time_step_length - 1) / FRE_PER_SLICING + 1; j++) {
+    //          content += tag_array[i].fre_write[j];
+    //          double a = tag_array[i].fre_del[j] * 2.5;
+    //          content -= a;
+    //          if(j / time_segment > 2){
+    //              continue;
+    //          }
+    //          tag_write[i][j / time_segment] += tag_array[i].fre_write[j];
+    //          tag_write[i][j / time_segment] -= tag_array[i].fre_del[j];
+    //          tag_read[i][j / time_segment] += tag_array[i].fre_read[j];
+    //          tag_content[i][j / time_segment] = max(tag_content[i][j / time_segment], content);
+    //      }
+    //  }
  
      // 初始化 Disk 信息 和 disk_assignable_actual_num
      for(int n1 = 1; n1 <= N_disk_num; n1++){
@@ -347,8 +354,6 @@ void pre_process(){
 
     // 计算 tag_write，tag_content，tag_read
     
-    tag_write = vector<vector<int>>(M_tag_num + 1, vector<int>(3, 0));
-    tag_content = vector<vector<int>>(M_tag_num + 1, vector<int>(3, 0));
     tag_read = vector<vector<long long>>(M_tag_num + 1, vector<long long>((T_time_step_length+EXTRA_TIME)/pearson_sample_interval+1, 0));
     obj_read_data = std::vector<std::vector<int>> (MAX_OBJECT_NUM, vector<int>((T_time_step_length+EXTRA_TIME)/pearson_sample_interval+1, 0));
     // for (int i = 1; i <= M_tag_num; i++) {
