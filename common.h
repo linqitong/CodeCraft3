@@ -28,7 +28,7 @@ class ExchangeBlock{
 class ActualSegment{
 public:
     int tag_index = 0; // 分配该段的 tag 索引
-    int tag_occupy_size[18] = {0}; // 不同tag在该段的占用大小
+    int tag_occupy_size[17] = {0}; // 不同tag在该段的占用大小
     int disk_id; // 所在磁盘 id
     int begin_index; // 该段起始位置，该段在磁盘上的索引 = begin_index % segment_size
     int segment_length; // 段大小
@@ -93,7 +93,6 @@ public:
     int segment_id = -1; // 该对象对应的段编号
     bool if_loaded=false;//是否装载对象
     int disk_array[REP_NUM + 1]; // 该对象三个副本存储的磁盘 id 
-    int quit = false;
     void check_finish(); // 检查 wait_request_set 是否部分已完成
     void quit_all_request();
 };
@@ -138,7 +137,7 @@ extern int quit_num1;
 extern Disk disk_array[MAX_DISK_NUM]; // 所有的磁盘数据
 extern Object object_array[MAX_OBJECT_NUM]; // 所有的对象数据
 extern Request request_array[MAX_REQUEST_NUM]; // 所有的请求数据
-extern Tag tag_array[MAX_TAG_NUM+1]; // 所有的标签数据
+extern Tag tag_array[MAX_TAG_NUM]; // 所有的标签数据
 extern std::vector<std::pair<double,int>> possibility;
 
 extern int pearson_sample_interval;//对象与各tag计算相似度时采样间隔
@@ -201,7 +200,6 @@ extern int select_but_not_finish; // 被选中但是没有被完成的请求
 extern std::set<int> select_ActualSegment;
 extern int predict_num;
 
-
 extern std::vector<std::vector<long long>> tag_write; // 简化成时间段的 tag 写入
 extern std::vector<std::vector<long long>> tag_del; // 简化成时间段的 tag 净含量
 extern std::vector<std::vector<long long>> tag_read; // 简化成时间段的 tag 读取
@@ -256,5 +254,3 @@ void setGlobalRandomSeed(unsigned int seed);
 double predictNextValue(const std::vector<double>& y) ;
 
 double pearsonCorrelation(const std::vector<long long>& x, const std::vector<int>& y);
-
-void check();

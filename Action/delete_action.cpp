@@ -40,34 +40,23 @@ void delete_action()
         quit_request += object_array[id].wait_request_set.size();
         object_array[id].wait_request_set = set<int>();
         
-        Object& target_object = object_array[id];
-
         // 清除对象的磁盘块信息并修改 allocate_disk
-        if(target_object.quit == false){
-            int j = 1;
-            int disk_id = object_array[id].disk_array[j];
-            int first_block = object_array[id].storge_data[j][0];
-            ActualSegment& target_actual_segment = disk_array[disk_id].segment_array[(first_block - 1) / segment_size];
-    
-            for(int n1 = object_array[id].size - 1; n1 >= 0; n1--){
-                disk[disk_id] // 清除磁盘块信息
-                    [object_array[id].storge_data[j][n1]] = 0;
-                target_actual_segment.all_size--;
-                while(target_actual_segment.first_write_index - 1>= 0 
-                    && disk[disk_id][target_actual_segment.begin_index + target_actual_segment.first_write_index - 1] == 0){
-                        target_actual_segment.first_write_index--;
-                    }
-            }
-        }else{
-            int disk_0 = target_object.disk_array[1];
-            for(int n1 = 0; n1 < target_object.size; n1++){
-                disk[disk_0][target_object.storge_data[1][n1]] = 0;
-                Disk& target_disk1 = disk_array[disk_0];
-                target_disk1.rubbish_stack.push(target_object.storge_data[1][n1]);
-            }
-        }
+        int j = 1;
+        int disk_id = object_array[id].disk_array[j];
+        int first_block = object_array[id].storge_data[j][0];
+        ActualSegment& target_actual_segment = disk_array[disk_id].segment_array[(first_block - 1) / segment_size];
 
+        for(int n1 = object_array[id].size - 1; n1 >= 0; n1--){
+            disk[disk_id] // 清除磁盘块信息
+                [object_array[id].storge_data[j][n1]] = 0;
+            target_actual_segment.all_size--;
+            while(target_actual_segment.first_write_index - 1>= 0 
+                && disk[disk_id][target_actual_segment.begin_index + target_actual_segment.first_write_index - 1] == 0){
+                    target_actual_segment.first_write_index--;
+                }
+        }
         // 删除垃圾栈的信息
+        Object& target_object = object_array[id];
         int disk_1 = target_object.disk_array[2];
         int disk_2 = target_object.disk_array[3];
         for(int n1 = 0; n1 < target_object.size; n1++){

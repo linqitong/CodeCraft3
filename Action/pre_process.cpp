@@ -7,9 +7,9 @@ void allocate_segments() {
     string read_probability_mode = "tag_content"; // tag_write/tag_content
 
     // Step 1: 计算每个tag的期望虚拟段数目
-    vector<int> expected_as(M_tag_num + 2, 0);
-    vector<vector<int>> content_size(M_tag_num + 2,vector<int>((T_time_step_length - 1) / FRE_PER_SLICING + 2));
-    for (int i = 1; i <= M_tag_num+1; ++i) {
+    vector<int> expected_as(M_tag_num + 1, 0);
+    vector<vector<int>> content_size(M_tag_num + 1,vector<int>((T_time_step_length - 1) / FRE_PER_SLICING + 2));
+    for (int i = 1; i <= M_tag_num; ++i) {
         int max_val = 0;
        
         for (int t = 1; t <= (T_time_step_length - 1) / FRE_PER_SLICING + 1; ++t) {
@@ -22,8 +22,8 @@ void allocate_segments() {
     }
 
     // Step 2: 计算每个tag在每个时间段的读取频率
-    vector<vector<double>> tag_read_freq(M_tag_num + 2, vector<double>(((T_time_step_length - 1) / FRE_PER_SLICING + 2), 0.0));
-    for (int i = 1; i <= M_tag_num+1; ++i) {
+    vector<vector<double>> tag_read_freq(M_tag_num + 1, vector<double>(((T_time_step_length - 1) / FRE_PER_SLICING + 2), 0.0));
+    for (int i = 1; i <= M_tag_num; ++i) {
         for (int t = 1; t <= (T_time_step_length - 1) / FRE_PER_SLICING + 1; ++t) {
             tag_read_freq[i][t]=static_cast<double>(tag_array[i].fre_read[t])/content_size[i][t];
         }
@@ -31,13 +31,13 @@ void allocate_segments() {
 
     // 初始化磁盘的读取概率和虚拟段列表
     vector<vector<double>> disk_read_prob(((T_time_step_length - 1) / FRE_PER_SLICING + 2), vector<double>(N_disk_num + 1, 0.0));
-    vector<int> allocated(M_tag_num + 2, 0);
-    vector<vector<int>> tag_allocated_space(M_tag_num+2,vector<int>(N_disk_num+1,0));//记录每个tag在每个磁盘中分配的空间；
+    vector<int> allocated(M_tag_num + 1, 0);
+    vector<vector<int>> tag_allocated_space(M_tag_num+1,vector<int>(N_disk_num+1,0));//记录每个tag在每个磁盘中分配的空间；
     while (true) {
         // 选择完成率最低的tag
         int selected_tag = -1;
         double min_ratio = 10000000000000000;
-        for (int i = 1; i <= M_tag_num+1; ++i) {
+        for (int i = 1; i <= M_tag_num; ++i) {
             if (expected_as[i] == 0) continue;
             double ratio = static_cast<double>(allocated[i]) / (double)expected_as[i];
             if (ratio < min_ratio) {
@@ -124,8 +124,8 @@ void allocate_segments() {
 
 void calc_pearson()
 {
-    for(int i = 1; i <= M_tag_num+1; i++){
-        for(int j = 0; j <= M_tag_num+1; j++){
+    for(int i = 1; i <= M_tag_num; i++){
+        for(int j = 0; j <= M_tag_num; j++){
             if(j == 0){
                 tag_array[i].pearson_tag.push_back(0.0);
                 continue;
@@ -168,7 +168,7 @@ void pre_process_2(){
     }
    
     
-    for(int n1 = 0; n1 < M_tag_num+1; n1++){
+    for(int n1 = 0; n1 < MAX_TAG_NUM; n1++){
         tag_array[n1] = Tag();
     }
 
@@ -188,19 +188,6 @@ void pre_process_2(){
     // fin.close(); // 关闭文件(析构函数会自动调用)
     //根据pearson相似计算每个物品的tag
     //freopen(".\\predict_result.txt", "w", stdout);
-
-    int n;
-    scanf("%d",&n);
-    for(int i=0;i<n;i++){
-        int id,tag;
-        scanf("%d%d",&id,&tag);
-        object_array[id].tag=tag;
-        object_array[id].true_tag=true;
-        for(int i=0;i<obj_read_data[id].size();i++){
-            tag_read[tag][i]+=obj_read_data[id][i];
-        }
-        
-    }
     int num=0;
     std::random_device rd;
     std::mt19937 gen(rd()); 
@@ -212,35 +199,42 @@ void pre_process_2(){
             tag=1;
             double similarity=0;
             for(int j=1;j<=M_tag_num;j++){
+                if(obj_read_data[i].empty()){
+                    int a=1;
+                }
+                if(tag_read[j].empty()){
+                    int a=1;
+                }
+                if(i==5){
+                    int a=1;
+                }
                 double sim = pearsonCorrelation(tag_read[j], obj_read_data[i]);
                 if(sim>similarity){
                     similarity=sim;
                     tag=j;
                 }
             }
-            if(similarity<=0.5){
+            if(similarity<=0){
+                //predict_num++;
+                if(accumulate(obj_read_data[i].begin(),obj_read_data[i].end(),0.0)<100)
                 predict_num++;
-                // if(accumulate(obj_read_data[i].begin(),obj_read_data[i].end(),0.0)<100)
-                // predict_num++;
             } 
-            
             //cout<<i<<' '<<tag<<' '<<similarity<<endl;
             //assert(similarity>0);
             object_array[i].true_tag=true;
-            
             object_array[i].tag=tag;
-            // if(similarity<=0){
-            //     object_array[i].tag=17;
-            // }
-            if(similarity < 0){
-                object_array[i].quit = true;
-            }
         }
     }
     //cout<<"total:"<<num<<endl;
     //freopen(".\\output.txt", "a+", stdout);
-   
-    for (int i = 1; i <= M_tag_num+1; i++) {
+    int n;
+    scanf("%d",&n);
+    for(int i=0;i<n;i++){
+        int id,tag;
+        scanf("%d%d",&id,&tag);
+        object_array[id].tag=tag;
+    }
+    for (int i = 1; i <= M_tag_num; i++) {
         tag_array[i].fre_del = vector<int>((T_time_step_length + EXTRA_TIME - 1) / FRE_PER_SLICING + 2);
         tag_array[i].fre_write = vector<int>((T_time_step_length + EXTRA_TIME - 1) / FRE_PER_SLICING + 2);
         tag_array[i].fre_read = vector<int>((T_time_step_length + EXTRA_TIME - 1) / FRE_PER_SLICING + 2);
@@ -305,6 +299,7 @@ void pre_process(){
 
     // 读取全局参数
     scanf("%d%d%d%d%d%d", &T_time_step_length, &M_tag_num, &N_disk_num, &V_block_per_disk, &G,&K_max_exchange_block);
+
     int efficient_size = ceil((double)V_block_per_disk * efficient_disk_rate);
     segment_size = ceil((double)efficient_size / (double)segment_num);
     efficient_disk_end = segment_size * segment_num;

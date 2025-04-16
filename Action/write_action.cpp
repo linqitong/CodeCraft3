@@ -239,17 +239,14 @@ vector<pair<int, vector<int>>> allocate_object(int object_id) {
     int current_tag = obj.tag;
     int size = obj.size;
 
-    pair<int, vector<int>> efficient_allocate;
     // 分配有效区的空间
-    if(obj.quit == false){
-        efficient_allocate = efficient_allocate_object(object_id);
-    }
+    pair<int, vector<int>> efficient_allocate = efficient_allocate_object(object_id);
 
     vector<pair<int, vector<int>>> rubbish_allocate;
     // 分配垃圾区的空间
     vector<pair<int, int>> disk_array_for_rubbish;
     for(int n1 = 1; n1 <= N_disk_num; n1++){
-        if(n1 == efficient_allocate.first && obj.quit == false){
+        if(n1 == efficient_allocate.first){
             continue;
         }
         Disk& target_disk = disk_array[n1];
@@ -274,25 +271,16 @@ vector<pair<int, vector<int>>> allocate_object(int object_id) {
             target_disk.rubbish_stack.pop();
         }
         rubbish_allocate.push_back(allocate_item);
-        if(rubbish_allocate.size() >= 2 && obj.quit == false){
-            break;
-        }else if(rubbish_allocate.size() >= 3 && obj.quit == true){
+        if(rubbish_allocate.size() >= 2){
             break;
         }
     }
 
-
-    if(rubbish_allocate.size() < 2 && obj.quit == false){
-        throw runtime_error("rubbish allocation failed for object " + to_string(object_id));
-    }else if(rubbish_allocate.size() < 3 && obj.quit == true){
+    if(rubbish_allocate.size() < 2){
         throw runtime_error("rubbish allocation failed for object " + to_string(object_id));
     }
     
-    if(obj.quit == false){
-        return {efficient_allocate, rubbish_allocate[0], rubbish_allocate[1]};
-    }else{
-        return {rubbish_allocate[0], rubbish_allocate[1], rubbish_allocate[2]};
-    }
+    return {efficient_allocate, rubbish_allocate[0], rubbish_allocate[1]};
 }
 
 void write_action(){

@@ -33,15 +33,10 @@ int main()
                 freopen(".\\output.txt", "a+", stdout);
             }
         }
-        
         time_step_action();
-        
         delete_action();
-       
         write_action();
-        
         read_action();
-        
         exchange_action();
     }
 
@@ -55,8 +50,6 @@ int main()
     int efficient_size = ceil((double)V_block_per_disk * efficient_disk_rate);
     segment_size = ceil((double)efficient_size / (double)segment_num);
     efficient_disk_end = segment_size * segment_num;
-    selected_r = 0;
-    un_selected_r = 0;
     pre_process_2();
 
     // 根据上一轮的全局信息进行统计
@@ -80,15 +73,10 @@ int main()
                 freopen(".\\output.txt", "a+", stdout);
             }
         }
-        
         time_step_action();
-        
         delete_action();
-       
         write_action();
-        
         read_action();
-        
         exchange_action();
     }
 
