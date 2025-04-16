@@ -93,6 +93,7 @@ public:
     int segment_id = -1; // 该对象对应的段编号
     bool if_loaded=false;//是否装载对象
     int disk_array[REP_NUM + 1]; // 该对象三个副本存储的磁盘 id 
+    int quit = false;
     void check_finish(); // 检查 wait_request_set 是否部分已完成
     void quit_all_request();
 };
@@ -199,6 +200,7 @@ extern int time_segment_index; // 当前所在的时间片编号
 extern int select_but_not_finish; // 被选中但是没有被完成的请求
 extern std::set<int> select_ActualSegment;
 extern int predict_num;
+
 
 extern std::vector<std::vector<long long>> tag_write; // 简化成时间段的 tag 写入
 extern std::vector<std::vector<long long>> tag_del; // 简化成时间段的 tag 净含量

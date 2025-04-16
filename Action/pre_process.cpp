@@ -223,6 +223,7 @@ void pre_process_2(){
                 // if(accumulate(obj_read_data[i].begin(),obj_read_data[i].end(),0.0)<100)
                 // predict_num++;
             } 
+            
             //cout<<i<<' '<<tag<<' '<<similarity<<endl;
             //assert(similarity>0);
             object_array[i].true_tag=true;
@@ -231,6 +232,9 @@ void pre_process_2(){
             // if(similarity<=0){
             //     object_array[i].tag=17;
             // }
+            if(similarity < 0){
+                object_array[i].quit = true;
+            }
         }
     }
     //cout<<"total:"<<num<<endl;
