@@ -328,17 +328,6 @@ void pre_process_2(){
             disk_array[n1].rubbish_stack.push(n2);
         }
     }
-    int n;
-    scanf("%d",&n);
-    for(int i=0;i<n;i++){
-        int id,tag;
-        scanf("%d%d",&id,&tag);
-        object_array[id].tag=tag;
-        object_array[id].true_tag=true;
-        for(int j=0;j<obj_read_data[id].size();j++){
-            tag_read[tag][j]+=obj_read_data[id][j];
-        }
-    }
     // std::ifstream fin(".\\Data\\sample_practice_map_1.txt"); // 创建文件输入流并打开文件
     // int a,b;
     // while(fin>>a>>b){
