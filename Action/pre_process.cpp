@@ -187,7 +187,7 @@ void pre_process_2(){
     // }
     // fin.close(); // 关闭文件(析构函数会自动调用)
     //根据pearson相似计算每个物品的tag
-    freopen(".\\predict_result.txt", "w", stdout);
+    //freopen(".\\predict_result.txt", "w", stdout);
     int num=0;
     std::random_device rd;
     std::mt19937 gen(rd()); 
