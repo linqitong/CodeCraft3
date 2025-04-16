@@ -28,7 +28,7 @@ class ExchangeBlock{
 class ActualSegment{
 public:
     int tag_index = 0; // 分配该段的 tag 索引
-    int tag_occupy_size[17] = {0}; // 不同tag在该段的占用大小
+    int tag_occupy_size[18] = {0}; // 不同tag在该段的占用大小
     int disk_id; // 所在磁盘 id
     int begin_index; // 该段起始位置，该段在磁盘上的索引 = begin_index % segment_size
     int segment_length; // 段大小
@@ -137,7 +137,7 @@ extern int quit_num1;
 extern Disk disk_array[MAX_DISK_NUM]; // 所有的磁盘数据
 extern Object object_array[MAX_OBJECT_NUM]; // 所有的对象数据
 extern Request request_array[MAX_REQUEST_NUM]; // 所有的请求数据
-extern Tag tag_array[MAX_TAG_NUM]; // 所有的标签数据
+extern Tag tag_array[MAX_TAG_NUM+1]; // 所有的标签数据
 extern std::vector<std::pair<double,int>> possibility;
 
 extern int pearson_sample_interval;//对象与各tag计算相似度时采样间隔
@@ -254,3 +254,5 @@ void setGlobalRandomSeed(unsigned int seed);
 double predictNextValue(const std::vector<double>& y) ;
 
 double pearsonCorrelation(const std::vector<long long>& x, const std::vector<int>& y);
+
+void check();

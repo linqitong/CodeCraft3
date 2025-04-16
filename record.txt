@@ -171,3 +171,39 @@ all_mark: 21256862.417385
   drop_req_num: 2984347
   all_mark: 24776375.242267
   predict_num: 3499
+
+ 
+  select_but_not_finish: 83464   11 3
+  drop_req_num: 7212192
+  all_mark: 18562295.467422
+
+  select_but_not_finish: 800385   11 4
+  drop_req_num: 3621167
+  all_mark: 18731499.652415
+
+  select_but_not_finish: 145408   10 3
+  drop_req_num: 6464247
+  all_mark: 18652313.584905
+
+  select_but_not_finish: 210836  9  3
+  drop_req_num: 4821534
+  all_mark: 18870665.884935
+
+
+  select_but_not_finish: 74415  12 3
+  drop_req_num: 8387500
+  all_mark: 18070026.472448
+
+  select_but_not_finish: 423122
+  drop_req_num: 1403873
+  all_mark: 24950876.827325
+
+   select_but_not_finish: 240154
+  drop_req_num: 2308441
+  all_mark: 24824856.349768
+  predict_num: 3423
+
+  select_but_not_finish: 163064
+  drop_req_num: 1958156
+  all_mark: 25390601.824780
+  predict_num: 7950
