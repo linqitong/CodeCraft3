@@ -11,3 +11,4 @@ CMakeCache.txt
 mark.txt
 disk.txt
 disk/
+*.txt

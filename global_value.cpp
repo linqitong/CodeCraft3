@@ -8,7 +8,7 @@ int T_time_step_length, M_tag_num, N_disk_num, V_block_per_disk, G_token_per_tim
 Disk disk_array[MAX_DISK_NUM];
 Object object_array[MAX_OBJECT_NUM];
 Request request_array[MAX_REQUEST_NUM];
-Tag tag_array[MAX_TAG_NUM];
+Tag tag_array[MAX_TAG_NUM+1];
 int disk[MAX_DISK_NUM][MAX_DISK_SIZE];
 int disk_block_index[MAX_DISK_NUM][MAX_DISK_SIZE];
 int disk_block_request[MAX_DISK_NUM][MAX_DISK_SIZE];
@@ -271,4 +271,10 @@ double pearsonCorrelation(const vector<long long>& x, const vector<int>& y) {
     
     // 计算皮尔森相关系数
     return covariance / (sqrt(variance_x) * sqrt(variance_y));
+}
+
+void check(){
+    if(disk_array[10].segment_array[13].disk_id == 33){
+        int a = 1;
+    }
 }
