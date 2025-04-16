@@ -346,7 +346,6 @@ void pre_process_2(){
         if(!object_array[i].true_tag){
             num++;
             int tag=distrib(gen);
-            tag=1;
             double similarity=0;
             for(int j=1;j<=M_tag_num;j++){
                 double sim = pearsonCorrelation(tag_read[j], obj_read_data[i]);
@@ -369,9 +368,12 @@ void pre_process_2(){
             // if(similarity<=0){
             //     object_array[i].tag=17;
             // }
+            for(int j=0;j<obj_read_data[i].size();j++){
+                tag_read[tag][j] += obj_read_data[i][j];
+            }
             if(similarity < 0){
                 int a = 1;
-                // object_array[i].quit = true;
+                object_array[i].quit = true;
             }
         }
     }

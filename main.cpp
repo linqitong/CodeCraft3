@@ -3,7 +3,7 @@
 bool debug_mode = true;
 bool debug_mode_mark_disk_imfromation = false;
 
-bool jump_1_round = true;
+bool jump_1_round = false;
 std::string history_name = ".\\history\\1.txt"; // 跳过 1 时加载的历史文件名，如果没有跳过，这也是保存名
 bool save_round_1 = false;
 
@@ -58,8 +58,8 @@ int main()
             scanf("%d%d", &id, &tag);
             object_array[id].tag = tag;
             object_array[id].true_tag = true;
-            for(int i=0;i<obj_read_data[id].size();i++){
-                tag_read[tag][i] += obj_read_data[id][i];
+            for(int j=0;j<obj_read_data[id].size();j++){
+                tag_read[tag][j] += obj_read_data[id][j];
             }
         }
         if(!save_round_1 || !debug_mode){
