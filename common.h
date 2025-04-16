@@ -19,6 +19,8 @@ extern int N_disk_num; // 3 ~ 10
 extern int V_block_per_disk; // 1 ~ 16384，存储单元编号 1 ~ V
 extern int G_token_per_time_step; // 64 ~ 1000
 extern int K_max_exchange_block; //代表每次垃圾回收事件每个硬盘最多的交换存储单元的操作次数。0~100
+extern int max_object_id;
+extern int max_request_id;
 
 class ExchangeBlock{
     public:
@@ -91,7 +93,6 @@ public:
     std::vector<int> storge_data[REP_NUM + 1]; // 该对象三个副本存储的位置
     int virtual_segment_id = -1; // 【已被弃用】该对象对应的虚拟段编号
     int segment_id = -1; // 该对象对应的段编号
-    bool if_loaded=false;//是否装载对象
     int disk_array[REP_NUM + 1]; // 该对象三个副本存储的磁盘 id 
     void check_finish(); // 检查 wait_request_set 是否部分已完成
     void quit_all_request();
@@ -214,6 +215,13 @@ extern std::vector<std::vector<int>> obj_read_data;//记录每个对象的读取
 extern double efficient_disk_rate;
 extern int efficient_disk_end; // 有效磁盘段的结尾
 extern int Derivatives;//0 1 2代表求导阶数
+
+extern std::string history_name;
+extern bool jump_1_round;
+extern bool save_round_1;
+void save_history();
+void load_history();
+
 void pre_process();
 void time_step_action();
 void delete_action();

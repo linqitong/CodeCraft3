@@ -58,6 +58,7 @@ void read_action(){
     for (int i = 1; i <= n_read; i++) { // 总用时12s+
         if(global_turn==1){
             scanf("%d%d", &request_id, &object_id);
+            max_request_id = max(max_request_id, request_id);
             request_array[request_id].object_id = object_id;
             request_array[request_id].request_id = request_id;
             request_array[request_id].recieve_time = time_step;
@@ -70,6 +71,7 @@ void read_action(){
         }
         else{
             request_id=read_record[time_step][i-1];
+            request_array[request_id].recieve_time = time_step;
             object_id=request_array[request_id].object_id;
         }
         
