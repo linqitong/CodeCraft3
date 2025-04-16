@@ -317,9 +317,8 @@ void write_action(){
             size=object_array[id].size;
             tag=object_array[id].tag;
         }
-        
+        max_object_id = max(max_object_id, id);
         object_array[id].size = size;
-        object_array[id].if_loaded=true;
         if(global_turn==2) assert(tag!=0);
         if(tag==0) {
             /*

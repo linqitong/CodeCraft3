@@ -3,6 +3,11 @@
 bool debug_mode = true;
 bool debug_mode_mark_disk_imfromation = false;
 
+bool jump_1_round = true;
+std::string history_name = ".\\history\\1.txt"; // 跳过 1 时加载的历史文件名，如果没有跳过，这也是保存名
+bool save_round_1 = false;
+
+
 int main()
 {
     setGlobalRandomSeed(42);
@@ -12,37 +17,58 @@ int main()
     }
     
     auto start_time = std::chrono::high_resolution_clock::now();
-    pre_process();
-    global_turn = 1; // 第一轮
-    for (t = 1, time_step = 1; t <= T_time_step_length + EXTRA_TIME; t++,time_step++) {
-        
-        if(t % FRE_PER_SLICING == 1){
-            if(debug_mode){
-                freopen("CON", "w", stdout);
-                printf("current time step %d   %d   %d\n", t, zero_request, selected_r);
-                std::cout << "  empty_object_read: " << empty_object_read << std::endl;
-                std::cout << "  empty_request_read: " << empty_request_read << std::endl;
-                std::cout << "  effective_read: " << effective_read << std::endl;
-                std::cout << "  all_finish_select_size: " << all_finish_select_size << std::endl;
-                std::cout << "  all_finish_request_efficiency: " << std::fixed << all_finish_request_efficiency << std::endl;
-                std::cout << "  select_zero_request: " << select_zero_request << std::endl;
-                std::cout << "  all_finish_select: " << all_finish_select << std::endl;
-                std::cout << "  select_but_not_finish: " << select_but_not_finish << std::endl;
-                std::cout << "  drop_req_num: " << drop_req_num << std::endl;
-                std::cout << "  all_mark: " << all_mark << std::endl;
-                freopen(".\\output.txt", "a+", stdout);
+
+    if(!jump_1_round || !debug_mode){ // 跳过第一轮或者非 debug 模式
+        pre_process();
+        global_turn = 1; // 第一轮
+        for (t = 1, time_step = 1; t <= T_time_step_length + EXTRA_TIME; t++,time_step++) {
+            
+            if(t % FRE_PER_SLICING == 1){
+                if(debug_mode){
+                    freopen("CON", "w", stdout);
+                    printf("current time step %d   %d   %d\n", t, zero_request, selected_r);
+                    std::cout << "  empty_object_read: " << empty_object_read << std::endl;
+                    std::cout << "  empty_request_read: " << empty_request_read << std::endl;
+                    std::cout << "  effective_read: " << effective_read << std::endl;
+                    std::cout << "  all_finish_select_size: " << all_finish_select_size << std::endl;
+                    std::cout << "  all_finish_request_efficiency: " << std::fixed << all_finish_request_efficiency << std::endl;
+                    std::cout << "  select_zero_request: " << select_zero_request << std::endl;
+                    std::cout << "  all_finish_select: " << all_finish_select << std::endl;
+                    std::cout << "  select_but_not_finish: " << select_but_not_finish << std::endl;
+                    std::cout << "  drop_req_num: " << drop_req_num << std::endl;
+                    std::cout << "  all_mark: " << all_mark << std::endl;
+                    freopen(".\\output.txt", "a+", stdout);
+                }
+            }
+            
+            time_step_action();
+            
+            delete_action();
+           
+            write_action();
+            
+            read_action();
+            
+            exchange_action();
+        }
+        int n;
+        scanf("%d",&n);
+        for(int i=0;i<n;i++){
+            int id,tag;
+            scanf("%d%d", &id, &tag);
+            object_array[id].tag = tag;
+            object_array[id].true_tag = true;
+            for(int i=0;i<obj_read_data[id].size();i++){
+                tag_read[tag][i] += obj_read_data[id][i];
             }
         }
-        
-        time_step_action();
-        
-        delete_action();
-       
-        write_action();
-        
-        read_action();
-        
-        exchange_action();
+        if(!save_round_1 || !debug_mode){
+
+        }else{ // 保存第一轮 且 debug 模式
+            save_history();
+        }
+    }else{
+        load_history();
     }
 
     // 第二轮
