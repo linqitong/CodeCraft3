@@ -63,13 +63,12 @@ double all_mark = 0;
 int segment_num = 13;
 int select_but_not_finish = 0;
 set<int> select_ActualSegment;
-std::vector<std::vector<int>> object_record;
 std::vector<std::vector<int>> read_record;
 std::vector<std::vector<int>> write_record;
 std::vector<std::vector<int>> del_record;
 std::vector<std::vector<int>> obj_read_data;
 std::vector<std::pair<double,int>> possibility;
-double efficient_disk_rate = 0.33;
+double efficient_disk_rate = 0.35;
 int efficient_disk_end; // 不预先设置
 int stride_length_read=100;
 int stride_length_write=2000;
