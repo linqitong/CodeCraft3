@@ -1,6 +1,6 @@
 #include "common.h"
 
-bool debug_mode = true;
+bool debug_mode = false;
 bool debug_mode_mark_disk_imfromation = false;
 
 bool jump_1_round = false;
@@ -76,6 +76,7 @@ int main()
     all_mark=0;
     select_but_not_finish=0;
     drop_req_num=0;
+    efficient_disk_rate=0.33333333;
     max_segment_select_size=4;
     segment_num=15;
     int efficient_size = ceil((double)V_block_per_disk * efficient_disk_rate);

@@ -81,11 +81,20 @@ int ActualSegment::get_score() {
     double all_mark = 0;
     for(int n1 = 1; n1 <= M_tag_num; n1++){
         double this_mark = (double)tag_occupy_size[n1] / (double)segment_size;
-        if(global_turn == 1 || true){
+        if(global_turn == 1 ){
             if(tag_array[n1].calc_t_read!=time_step) tag_array[n1].calc_read_score();
             this_mark *= tag_array[n1].read_score;
         }else{
-            this_mark *= tag_read[n1][time_step/pearson_sample_interval];
+            int begin=this->begin_index;
+            set<int> obj_set;
+            for(int idx=begin_index;idx<begin_index+segment_length;idx++){
+                obj_set.insert(disk[this->disk_id][idx]);
+            }
+            for(int i:obj_set){
+                all_mark+=obj_read_data[i][time_step/pearson_sample_interval];
+            }
+            return all_mark;
+            //this_mark *= tag_array[n1].fre_read[time_segment_index];
         }
         
         all_mark += this_mark;

@@ -193,7 +193,8 @@ void read_action(){
                             for(int n2 = 0; n2 < target_disk.target_actual_array[magnetic_head_id].size(); n2++){
                                 int actualSegment_id = target_disk.target_actual_array[magnetic_head_id][n2];
                                 ActualSegment& actualSegment = target_disk.segment_array[actualSegment_id];
-                                double mark=exp(((double)actualSegment.all_request_wait_time/actualSegment.get_request_num()/31.0))*actualSegment.get_request_num();
+                                double mark=actualSegment.get_request_num()*exp(((double)actualSegment.all_request_wait_time/actualSegment.get_request_num()/30.0));
+                                //mark=actualSegment.get_request_num();
                                 //mark=actualSegment.all_request_wait_time;
                                 //mark=actualSegment.get_request_num();
                                 array.push_back({mark, actualSegment_id});

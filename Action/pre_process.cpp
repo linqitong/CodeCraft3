@@ -355,7 +355,7 @@ void pre_process_2(){
                 }
             }
             if(similarity<=0.5){
-                predict_num++;
+                
                 // if(accumulate(obj_read_data[i].begin(),obj_read_data[i].end(),0.0)<100)
                 // predict_num++;
             } 
@@ -371,8 +371,8 @@ void pre_process_2(){
             for(int j=0;j<obj_read_data[i].size();j++){
                 tag_read[tag][j] += obj_read_data[i][j];
             }
-            if(similarity < 0){
-                int a = 1;
+            if( accumulate(obj_read_data[i].begin(),obj_read_data[i].end(),0.0)<100){
+                predict_num++;
                 object_array[i].quit = true;
             }
         }

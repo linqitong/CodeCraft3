@@ -15,6 +15,7 @@ void delete_action()
             scanf("%d", &_id[i]);
             del_record[time_step].push_back(_id[i]);
             abort_num += object_array[_id[i]].wait_request_set.size();
+            object_array[_id[i]].life_time+=time_step -object_array[_id[i]].load_time;
         }
     }else{
         n_delete=del_record[time_step].size();

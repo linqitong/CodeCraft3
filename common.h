@@ -89,6 +89,8 @@ public:
     int tag; // 标签
     bool true_tag=true;//标记标签是否为真值
     int size;
+    int load_time;
+    int life_time=0;
     std::set<int> wait_request_set; // 该物品还没有执行完毕的请求的编号
     std::vector<int> storge_data[REP_NUM + 1]; // 该对象三个副本存储的位置
     int virtual_segment_id = -1; // 【已被弃用】该对象对应的虚拟段编号

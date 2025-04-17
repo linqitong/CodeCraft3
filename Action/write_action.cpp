@@ -47,41 +47,43 @@ pair<int, vector<int>> efficient_allocate_object(int object_id){
         }
     }
 
-    // 优先级3：尝试分配一个空段给当前标签,然后连续写入
-    vector<pair<int, pair<int, int>>> disk_array_for_allocate;
-    for(int n1 = 1; n1 <= N_disk_num; n1++){
-        int empty_segment = 0;
-        int act_id;
-        Disk& target_disk = disk_array[n1];
-        for(int n2 = 0 ; n2 < target_disk.segment_array.size(); n2++){
-            ActualSegment& actualSegment = target_disk.segment_array[n2];
-            if(actualSegment.tag_index != 0){
-                continue; // 排除非空段
+    if(global_turn == 1){
+        // 优先级3：尝试分配一个空段给当前标签,然后连续写入
+        vector<pair<int, pair<int, int>>> disk_array_for_allocate;
+        for(int n1 = 1; n1 <= N_disk_num; n1++){
+            int empty_segment = 0;
+            int act_id;
+            Disk& target_disk = disk_array[n1];
+            for(int n2 = 0 ; n2 < target_disk.segment_array.size(); n2++){
+                ActualSegment& actualSegment = target_disk.segment_array[n2];
+                if(actualSegment.tag_index != 0){
+                    continue; // 排除非空段
+                }
+                empty_segment++;
+                if(empty_segment == 1){
+                    act_id = n2;
+                }
             }
-            empty_segment++;
-            if(empty_segment == 1){
-                act_id = n2;
+            if(empty_segment > 0){
+                disk_array_for_allocate.push_back({empty_segment, {n1, act_id}});
             }
         }
-        if(empty_segment > 0){
-            disk_array_for_allocate.push_back({empty_segment, {n1, act_id}});
+
+        sort(disk_array_for_allocate.begin(), disk_array_for_allocate.end(), greater<pair<int, pair<int, int>>>());
+
+        for(int n1 = 0; n1 < disk_array_for_allocate.size(); n1++){
+            int disk_id = disk_array_for_allocate[n1].second.first;
+            int actualSegment_id = disk_array_for_allocate[n1].second.second;
+            Disk& target_disk = disk_array[disk_id];
+            ActualSegment& actualSegment = target_disk.segment_array[actualSegment_id];
+
+            actualSegment.tag_occupy_size[current_tag] += size;
+            object_array[object_id].segment_id = actualSegment_id;
+            actualSegment.tag_index = current_tag;
+            return {disk_id, actualSegment.first_write(object_id)};
         }
     }
-
-    sort(disk_array_for_allocate.begin(), disk_array_for_allocate.end(), greater<pair<int, pair<int, int>>>());
-
-    for(int n1 = 0; n1 < disk_array_for_allocate.size(); n1++){
-        int disk_id = disk_array_for_allocate[n1].second.first;
-        int actualSegment_id = disk_array_for_allocate[n1].second.second;
-        Disk& target_disk = disk_array[disk_id];
-        ActualSegment& actualSegment = target_disk.segment_array[actualSegment_id];
-
-        actualSegment.tag_occupy_size[current_tag] += size;
-        object_array[object_id].segment_id = actualSegment_id;
-        actualSegment.tag_index = current_tag;
-        return {disk_id, actualSegment.first_write(object_id)};
-    }
-
+    
     // 优先级4：对于其他 tag 的段且有当前 tag 的占用，按照当前 tag 占用大小顺序连续分配
     vector<pair<int, pair<int, int>>> actSet_array_for_occupy;
     for(int n1 = 1; n1 <= N_disk_num; n1++){
@@ -96,9 +98,8 @@ pair<int, vector<int>> efficient_allocate_object(int object_id){
             }
             if(actualSegment.get_first_empty() >= size){
                 int this_tag_size = actualSegment.tag_occupy_size[current_tag];
-                if(this_tag_size == 0){
-                    // 跳过没有当前 tag 占用的段，如果取消相关系数分配就注释掉
-                    // continue; 
+                if(this_tag_size == 0 && global_turn == 2){
+                    continue; // 跳过没有当前 tag 占用的段
                 }
                 actSet_array_for_occupy.push_back({this_tag_size, {n1, n2}});
             }
@@ -117,45 +118,46 @@ pair<int, vector<int>> efficient_allocate_object(int object_id){
         object_array[object_id].segment_id = actualSegment_id;
         return {disk_id, actualSegment.first_write(object_id)};
     }
-
-    // 优先级5：对于其他 tag 的段且没有当前 tag 的占用，按与当前 tag 的相关系数顺序连续分配
-    /*
     vector<pair<double, pair<int, int>>> actSet_array_for_pearson;
-    for(int n1 = 1; n1 <= N_disk_num; n1++){
-        Disk& target_disk = disk_array[n1];
-        for(int n2 = 0; n2 < target_disk.segment_array.size(); n2++){
-            ActualSegment& actualSegment = target_disk.segment_array[n2];
-            if(actualSegment.tag_index == current_tag){
-                continue; // 跳过该 tag 的段
-            }
-            if(actualSegment.get_first_empty() >= size){
-                int this_tag_size = actualSegment.tag_occupy_size[current_tag];
-                if(actualSegment.tag_index == 0){
-                    continue;
+
+    if(global_turn == 2){
+        // 优先级5：对于其他 tag 的段且没有当前 tag 的占用，按与当前 tag 的相关系数顺序连续分配
+        for(int n1 = 1; n1 <= N_disk_num; n1++){
+            Disk& target_disk = disk_array[n1];
+            for(int n2 = 0; n2 < target_disk.segment_array.size(); n2++){
+                ActualSegment& actualSegment = target_disk.segment_array[n2];
+                if(actualSegment.tag_index == current_tag){
+                    continue; // 跳过该 tag 的段
                 }
-                if(this_tag_size != 0){
-                    continue; // 跳过有当前 tag 占用的段
+                if(actualSegment.get_first_empty() >= size){
+                    int this_tag_size = actualSegment.tag_occupy_size[current_tag];
+                    if(actualSegment.tag_index == 0){
+                        continue;
+                    }
+                    if(this_tag_size != 0){
+                        continue; // 跳过有当前 tag 占用的段
+                    }
+                    actSet_array_for_pearson.push_back(
+                        {tag_array[current_tag].pearson_tag[actualSegment.tag_index], {n1, n2}}
+                    );
                 }
-                actSet_array_for_pearson.push_back(
-                    {tag_array[current_tag].pearson_tag[actualSegment.tag_index], {n1, n2}}
-                );
             }
         }
-    }
 
-    sort(actSet_array_for_pearson.begin(), actSet_array_for_pearson.end(), greater<pair<double, pair<int, int>>>());
+        sort(actSet_array_for_pearson.begin(), actSet_array_for_pearson.end(), greater<pair<double, pair<int, int>>>());
 
-    for(int n1 = 0; n1 < actSet_array_for_pearson.size(); n1++){
-        int disk_id = actSet_array_for_pearson[n1].second.first;
-        int actualSegment_id = actSet_array_for_pearson[n1].second.second;
-        Disk& target_disk = disk_array[disk_id];
-        ActualSegment& actualSegment = target_disk.segment_array[actualSegment_id];
-        
-        actualSegment.tag_occupy_size[current_tag] += size;
-        object_array[object_id].segment_id = actualSegment_id;
-        return {disk_id, actualSegment.first_write(object_id)};
+        for(int n1 = 0; n1 < actSet_array_for_pearson.size(); n1++){
+            int disk_id = actSet_array_for_pearson[n1].second.first;
+            int actualSegment_id = actSet_array_for_pearson[n1].second.second;
+            Disk& target_disk = disk_array[disk_id];
+            ActualSegment& actualSegment = target_disk.segment_array[actualSegment_id];
+            
+            actualSegment.tag_occupy_size[current_tag] += size;
+            object_array[object_id].segment_id = actualSegment_id;
+            return {disk_id, actualSegment.first_write(object_id)};
+        }
     }
-    */
+    
 
 
     // 优先级6：对于其他 tag 的段且有当前 tag 的占用，按照当前 tag 占用大小顺序非连续分配
@@ -172,9 +174,8 @@ pair<int, vector<int>> efficient_allocate_object(int object_id){
             }
             if(actualSegment.get_empty() >= size){
                 int this_tag_size = actualSegment.tag_occupy_size[current_tag];
-                if(this_tag_size == 0){
-                    // 跳过没有当前 tag 占用的段，如果取消相关系数分配就注释掉
-                    // continue; 
+                if(this_tag_size == 0 && global_turn == 2){
+                    continue; // 跳过没有当前 tag 占用的段
                 }
                 actSet_array_for_occupy.push_back({this_tag_size, {n1, n2}});
             }
@@ -194,45 +195,45 @@ pair<int, vector<int>> efficient_allocate_object(int object_id){
         return {disk_id, actualSegment.write(object_id)};
     }
 
-
-    // 优先级7：对于其他 tag 的段且没有当前 tag 的占用，按与当前 tag 的相关系数顺序非连续分配
-    /*
-    actSet_array_for_pearson = vector<pair<double, pair<int, int>>>();
-    for(int n1 = 1; n1 <= N_disk_num; n1++){
-        Disk& target_disk = disk_array[n1];
-        for(int n2 = 0; n2 < target_disk.segment_array.size(); n2++){
-            ActualSegment& actualSegment = target_disk.segment_array[n2];
-            if(actualSegment.tag_index == 0){
-                continue;
-            }
-            if(actualSegment.tag_index == current_tag){
-                continue; // 跳过该 tag 的段
-            }
-            if(actualSegment.get_empty() >= size){
-                int this_tag_size = actualSegment.tag_occupy_size[current_tag];
-                if(this_tag_size != 0){
-                    continue; // 跳过有当前 tag 占用的段
+    if(global_turn == 2){
+        // 优先级7：对于其他 tag 的段且没有当前 tag 的占用，按与当前 tag 的相关系数顺序非连续分配
+        actSet_array_for_pearson = vector<pair<double, pair<int, int>>>();
+        for(int n1 = 1; n1 <= N_disk_num; n1++){
+            Disk& target_disk = disk_array[n1];
+            for(int n2 = 0; n2 < target_disk.segment_array.size(); n2++){
+                ActualSegment& actualSegment = target_disk.segment_array[n2];
+                if(actualSegment.tag_index == 0){
+                    continue;
                 }
-                actSet_array_for_pearson.push_back(
-                    {tag_array[current_tag].pearson_tag[actualSegment.tag_index], {n1, n2}}
-                );
+                if(actualSegment.tag_index == current_tag){
+                    continue; // 跳过该 tag 的段
+                }
+                if(actualSegment.get_empty() >= size){
+                    int this_tag_size = actualSegment.tag_occupy_size[current_tag];
+                    if(this_tag_size != 0){
+                        continue; // 跳过有当前 tag 占用的段
+                    }
+                    actSet_array_for_pearson.push_back(
+                        {tag_array[current_tag].pearson_tag[actualSegment.tag_index], {n1, n2}}
+                    );
+                }
             }
         }
-    }
 
-    sort(actSet_array_for_pearson.begin(), actSet_array_for_pearson.end(), greater<pair<double, pair<int, int>>>());
+        sort(actSet_array_for_pearson.begin(), actSet_array_for_pearson.end(), greater<pair<double, pair<int, int>>>());
 
-    for(int n1 = 0; n1 < actSet_array_for_pearson.size(); n1++){
-        int disk_id = actSet_array_for_pearson[n1].second.first;
-        int actualSegment_id = actSet_array_for_pearson[n1].second.second;
-        Disk& target_disk = disk_array[disk_id];
-        ActualSegment& actualSegment = target_disk.segment_array[actualSegment_id];
-        
-        actualSegment.tag_occupy_size[current_tag] += size;
-        object_array[object_id].segment_id = actualSegment_id;
-        return {disk_id, actualSegment.write(object_id)};
+        for(int n1 = 0; n1 < actSet_array_for_pearson.size(); n1++){
+            int disk_id = actSet_array_for_pearson[n1].second.first;
+            int actualSegment_id = actSet_array_for_pearson[n1].second.second;
+            Disk& target_disk = disk_array[disk_id];
+            ActualSegment& actualSegment = target_disk.segment_array[actualSegment_id];
+            
+            actualSegment.tag_occupy_size[current_tag] += size;
+            object_array[object_id].segment_id = actualSegment_id;
+            return {disk_id, actualSegment.write(object_id)};
+        }
     }
-    */
+    
 
 
     throw runtime_error("efficient allocation failed for object " + to_string(object_id));
@@ -319,25 +320,25 @@ void write_action(){
         }
         max_object_id = max(max_object_id, id);
         object_array[id].size = size;
+        object_array[id].load_time=time_step;
         if(global_turn==2) assert(tag!=0);
         if(tag==0) {
-            /*
-            if(t>=7000){
-                vector<pair<double,int>> p;
-                for(int i=1;i<=M_tag_num;i++){
-                    if(time_step!=tag_array[i].calc_t_write){
-                        tag_array[i].calc_write_score();
-                    }
-                    p.emplace_back(tag_array[i].write_score+1.0, i);
-                }
-                if(t>50000){
-                    int a=1;
-                }
-                possibility=p;
-            }  
-            */
+            // if(t>=7000){
+            //     vector<pair<double,int>> p;
+            //     for(int i=1;i<=M_tag_num;i++){
+            //         if(time_step!=tag_array[i].calc_t_write){
+            //             tag_array[i].calc_write_score();
+            //         }
+            //         p.emplace_back(tag_array[i].write_score+1.0, i);
+            //     }
+            //     if(t>50000){
+            //         int a=1;
+            //     }
+            //     possibility=p;
+            // }  
             object_array[id].true_tag=false;
             tag=predictObject(possibility);
+            tag_array[tag].write_size[time_step]+=object_array[id].size;
         }    
         else{
             tag_array[tag].write_size[time_step]+=object_array[id].size;
