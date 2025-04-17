@@ -305,6 +305,9 @@ void pre_process_2(){
     round2_finish_track = std::vector<std::string>(T_time_step_length + EXTRA_TIME + 1);
     round2_delete_track = std::vector<std::string>(T_time_step_length + EXTRA_TIME + 1);
 
+    for (int i = 1; i <= M_tag_num; i++){
+        possibility.emplace_back(1.0,i);
+    }
     // 第二轮初始化相关的代码
     for(int n1 = 0; n1 < MAX_DISK_NUM; n1++){
         disk_array[n1] = Disk();

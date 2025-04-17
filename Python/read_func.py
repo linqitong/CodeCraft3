@@ -60,7 +60,7 @@ def write_action():
         common.all_write_num += 1
         if tag_id != 0:
             common.objects[write_id].size_index = common.tag_array[tag_id].all_size
-            if common.t > 1800:
+            if common.t >= 1 and common.t <= 1800 :
                 common.tag_array[tag_id].all_size += size
                 common.tag_array[tag_id].all_num += 1
             common.tag_array[tag_id].object_dict[write_id] = 1
