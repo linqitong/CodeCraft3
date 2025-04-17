@@ -118,10 +118,10 @@ pair<int, vector<int>> efficient_allocate_object(int object_id){
         object_array[object_id].segment_id = actualSegment_id;
         return {disk_id, actualSegment.first_write(object_id)};
     }
-
-    // 优先级5：对于其他 tag 的段且没有当前 tag 的占用，按与当前 tag 的相关系数顺序连续分配
     vector<pair<double, pair<int, int>>> actSet_array_for_pearson;
+
     if(global_turn == 2){
+        // 优先级5：对于其他 tag 的段且没有当前 tag 的占用，按与当前 tag 的相关系数顺序连续分配
         for(int n1 = 1; n1 <= N_disk_num; n1++){
             Disk& target_disk = disk_array[n1];
             for(int n2 = 0; n2 < target_disk.segment_array.size(); n2++){
@@ -158,6 +158,8 @@ pair<int, vector<int>> efficient_allocate_object(int object_id){
         }
     }
     
+
+
     // 优先级6：对于其他 tag 的段且有当前 tag 的占用，按照当前 tag 占用大小顺序非连续分配
     actSet_array_for_occupy = vector<pair<int, pair<int, int>>>();
     for(int n1 = 1; n1 <= N_disk_num; n1++){
@@ -193,9 +195,9 @@ pair<int, vector<int>> efficient_allocate_object(int object_id){
         return {disk_id, actualSegment.write(object_id)};
     }
 
-    // 优先级7：对于其他 tag 的段且没有当前 tag 的占用，按与当前 tag 的相关系数顺序非连续分配
-    actSet_array_for_pearson = vector<pair<double, pair<int, int>>>();
     if(global_turn == 2){
+        // 优先级7：对于其他 tag 的段且没有当前 tag 的占用，按与当前 tag 的相关系数顺序非连续分配
+        actSet_array_for_pearson = vector<pair<double, pair<int, int>>>();
         for(int n1 = 1; n1 <= N_disk_num; n1++){
             Disk& target_disk = disk_array[n1];
             for(int n2 = 0; n2 < target_disk.segment_array.size(); n2++){
@@ -217,9 +219,9 @@ pair<int, vector<int>> efficient_allocate_object(int object_id){
                 }
             }
         }
-    
+
         sort(actSet_array_for_pearson.begin(), actSet_array_for_pearson.end(), greater<pair<double, pair<int, int>>>());
-    
+
         for(int n1 = 0; n1 < actSet_array_for_pearson.size(); n1++){
             int disk_id = actSet_array_for_pearson[n1].second.first;
             int actualSegment_id = actSet_array_for_pearson[n1].second.second;
@@ -231,6 +233,7 @@ pair<int, vector<int>> efficient_allocate_object(int object_id){
             return {disk_id, actualSegment.write(object_id)};
         }
     }
+    
 
 
     throw runtime_error("efficient allocation failed for object " + to_string(object_id));
@@ -298,8 +301,6 @@ vector<pair<int, vector<int>>> allocate_object(int object_id) {
 }
 
 void write_action(){
-    std::ostringstream oss;
-
     int n_write;
     if(global_turn==1){
         scanf("%d", &n_write);
@@ -319,32 +320,28 @@ void write_action(){
         }
         max_object_id = max(max_object_id, id);
         object_array[id].size = size;
+        object_array[id].load_time=time_step;
         if(global_turn==2) assert(tag!=0);
         if(tag==0) {
-            /*
-            if(t>=7000){
-                vector<pair<double,int>> p;
-                for(int i=1;i<=M_tag_num;i++){
-                    if(time_step != tag_array[i].calc_t_write){
-                        tag_array[i].calc_write_score();
-                    }
-                    p.emplace_back(tag_array[i].write_score, i);
-                }
-                possibility = p;
-            }else{
-                vector<pair<double,int>> p;
-                for(int i=1;i<=M_tag_num;i++){
-                    p.emplace_back(tag_array[i].all_wirte_size, i);
-                }
-                possibility = p;
-            }
-            */
+            // if(t>=7000){
+            //     vector<pair<double,int>> p;
+            //     for(int i=1;i<=M_tag_num;i++){
+            //         if(time_step!=tag_array[i].calc_t_write){
+            //             tag_array[i].calc_write_score();
+            //         }
+            //         p.emplace_back(tag_array[i].write_score+1.0, i);
+            //     }
+            //     if(t>50000){
+            //         int a=1;
+            //     }
+            //     possibility=p;
+            // }  
             object_array[id].true_tag=false;
             tag=predictObject(possibility);
+            //tag_array[tag].write_size[time_step]+=object_array[id].size;
         }    
         else{
             tag_array[tag].write_size[time_step]+=object_array[id].size;
-            tag_array[tag].all_wirte_size += object_array[id].size;
         }
         object_array[id].tag = tag;
         write_record[time_step].push_back(id);

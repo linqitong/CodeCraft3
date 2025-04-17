@@ -3,8 +3,6 @@ using namespace std;
 
 void delete_action()
 {
-    std::ostringstream oss;
-
     // 记录要删除的对象
     int n_delete;
     int abort_num = 0; // 还没有完成的请求总数
@@ -17,6 +15,7 @@ void delete_action()
             scanf("%d", &_id[i]);
             del_record[time_step].push_back(_id[i]);
             abort_num += object_array[_id[i]].wait_request_set.size();
+            object_array[_id[i]].life_time+=time_step -object_array[_id[i]].load_time;
         }
     }else{
         n_delete=del_record[time_step].size();

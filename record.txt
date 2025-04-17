@@ -207,3 +207,133 @@ all_mark: 21256862.417385
   drop_req_num: 1958156
   all_mark: 25390601.824780
   predict_num: 7950
+
+  all_mark: 25403653.947269
+
+
+  select_but_not_finish: 259445   14  4
+  drop_req_num: 1507856
+  all_mark: 25396374.124767
+  predict_num: 4754
+
+  select_but_not_finish: 111507   7 2
+  drop_req_num: 2138010
+  all_mark: 24476896.734790
+
+
+  select_but_not_finish: 735598  8 3
+  drop_req_num: 740914
+  all_mark: 24583678.622337
+  predict_num: 4754
+
+  select_but_not_finish: 416474  9  3
+  drop_req_num: 1063963
+  all_mark: 24849193.412305
+  predict_num: 4754
+
+  select_but_not_finish: 255425 10  3
+  drop_req_num: 1437910
+  all_mark: 24997231.264772
+  predict_num: 4754
+
+  select_but_not_finish: 137963 11 3
+  drop_req_num: 1958789
+  all_mark: 25218721.509803
+  predict_num: 4754
+
+  select_but_not_finish: 78210  12  3
+  drop_req_num: 2417659
+  all_mark: 25186938.294824
+  predict_num: 4754
+
+   select_but_not_finish: 623788  15  5
+  drop_req_num: 867289
+  all_mark: 25252926.137281
+  predict_num: 4754
+
+  select_but_not_finish: 357527  17  5
+  drop_req_num: 1328833
+  all_mark: 25309651.384775
+
+  select_but_not_finish: 269248  18  5
+  drop_req_num: 1612756
+  all_mark: 25320628.399784
+  predict_num: 4754
+
+  select_but_not_finish: 174852  19  5
+  drop_req_num: 1769111
+  all_mark: 25501483.622280
+  predict_num: 4754
+
+  select_but_not_finish: 145287 20 5
+  drop_req_num: 2174650
+  all_mark: 25335698.132291
+  predict_num: 4754
+
+  select_but_not_finish: 302513   22  6
+  drop_req_num: 1694296
+  all_mark: 25267630.104797
+
+   select_but_not_finish: 206659 23  6
+  drop_req_num: 1855424
+  all_mark: 25250619.104789
+  predict_num: 4754
+
+  all_mark: 25695381.507262
+
+
+  all_mark: 25699528.364777
+
+  all_mark: 26236394.097255  0.32
+
+  all_mark: 26185903.297231  0.35
+
+  all_mark: 24522786.277270  0.27
+
+   all_mark: 25988142.822262  0.29
+  predict_num: 7619
+
+  all_mark: 26002549.827279 0.30
+  predict_num: 4167
+
+  all_mark: 26146323.224771 0.31
+  predict_num: 4112
+
+  all_mark: 26282759.207251
+
+
+  all_mark: 19064891.847400
+
+  select_but_not_finish: 166161
+  drop_req_num: 5605739
+  all_mark: 18721484.407405
+
+  select_but_not_finish: 508788
+  drop_req_num: 3425954
+  all_mark: 19412524.042407
+
+   select_but_not_finish: 802667
+  drop_req_num: 3281297
+  all_mark: 19108420.497415
+
+  select_but_not_finish: 591094
+  drop_req_num: 4083086
+  all_mark: 19470170.114909
+
+  select_but_not_finish: 508788
+  drop_req_num: 3425954
+  all_mark: 19412524.042407
+
+  select_but_not_finish: 174894
+  drop_req_num: 3617469
+  all_mark: 19578319.364935
+
+  select_but_not_finish: 479584  3  8
+  drop_req_num: 1923732
+  all_mark: 20141716.809868
+
+初始段分配
+
+磁头选择按未来真实请求
+
+写入时负载均衡

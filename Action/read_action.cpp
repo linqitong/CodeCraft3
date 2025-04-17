@@ -48,7 +48,7 @@ int pass_length(int have_read_time){
 }
 
 void read_action(){
-    std::ostringstream oss;
+    
     int n_read;
     int request_id, object_id;
     if(global_turn==1)
@@ -56,7 +56,7 @@ void read_action(){
     else
     n_read=read_record[time_step].size();
     for (int i = 1; i <= n_read; i++) { // 总用时12s+
-        if(global_turn == 1){
+        if(global_turn==1){
             scanf("%d%d", &request_id, &object_id);
             max_request_id = max(max_request_id, request_id);
             request_array[request_id].object_id = object_id;
@@ -193,7 +193,8 @@ void read_action(){
                             for(int n2 = 0; n2 < target_disk.target_actual_array[magnetic_head_id].size(); n2++){
                                 int actualSegment_id = target_disk.target_actual_array[magnetic_head_id][n2];
                                 ActualSegment& actualSegment = target_disk.segment_array[actualSegment_id];
-                                double mark=exp(((double)actualSegment.all_request_wait_time/actualSegment.get_request_num()/31.0))*actualSegment.get_request_num();
+                                double mark=actualSegment.get_request_num()*exp(((double)actualSegment.all_request_wait_time/actualSegment.get_request_num()/30.0));
+                                //mark=actualSegment.get_request_num();
                                 //mark=actualSegment.all_request_wait_time;
                                 //mark=actualSegment.get_request_num();
                                 array.push_back({mark, actualSegment_id});
@@ -354,6 +355,8 @@ void read_action(){
                 }else{
                     cout << disk_array[i].order[magnetic_head_id] + "#\n";
                 }
+            }else{
+                cout << disk_array[i].order[magnetic_head_id] + "#\n";
             }
         }
     }

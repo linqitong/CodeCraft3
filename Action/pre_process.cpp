@@ -299,12 +299,6 @@ void save_history(){
 }
 
 void pre_process_2(){
-    round2_head_track = std::vector<std::string>(T_time_step_length + EXTRA_TIME + 1);
-    round2_recycle_track = std::vector<std::string>(T_time_step_length + EXTRA_TIME + 1);
-    round2_write_track = std::vector<std::string>(T_time_step_length + EXTRA_TIME + 1);
-    round2_finish_track = std::vector<std::string>(T_time_step_length + EXTRA_TIME + 1);
-    round2_delete_track = std::vector<std::string>(T_time_step_length + EXTRA_TIME + 1);
-
     // 第二轮初始化相关的代码
     for(int n1 = 0; n1 < MAX_DISK_NUM; n1++){
         disk_array[n1] = Disk();
@@ -361,7 +355,7 @@ void pre_process_2(){
                 }
             }
             if(similarity<=0.5){
-                predict_num++;
+                
                 // if(accumulate(obj_read_data[i].begin(),obj_read_data[i].end(),0.0)<100)
                 // predict_num++;
             } 
@@ -377,7 +371,8 @@ void pre_process_2(){
             for(int j=0;j<obj_read_data[i].size();j++){
                 tag_read[tag][j] += obj_read_data[i][j];
             }
-            if(similarity < 0 && accumulate(obj_read_data[i].begin(),obj_read_data[i].end(),0.0) < 100){
+            if( accumulate(obj_read_data[i].begin(),obj_read_data[i].end(),0.0)<100){
+                predict_num++;
                 object_array[i].quit = true;
             }
         }

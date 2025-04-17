@@ -13,7 +13,7 @@ int main()
 {
     setGlobalRandomSeed(42);
     if(debug_mode){
-        freopen(".\\Data\\sample_practice_1.in", "r", stdin);
+        freopen(".\\Data\\sample_practice_3.in", "r", stdin);
         freopen(".\\output.txt", "w", stdout);
     }
     
@@ -77,8 +77,9 @@ int main()
     all_mark=0;
     select_but_not_finish=0;
     drop_req_num=0;
+    efficient_disk_rate=0.33333333;
     max_segment_select_size=4;
-    segment_num=14;
+    segment_num=15;
     int efficient_size = ceil((double)V_block_per_disk * efficient_disk_rate);
     segment_size = ceil((double)efficient_size / (double)segment_num);
     efficient_disk_end = segment_size * segment_num;
@@ -140,11 +141,8 @@ int main()
         std::cout << "all_mark: " << all_mark << std::endl;
         std::cout << "choose rate: " << (double)selected_r / ((double)un_selected_r + (double)selected_r) << std::endl;
         std::cout << "choosed mark rate: " << all_finish_request_efficiency / (((double)all_finish_select_size) / 2.0) << std::endl;
-        freopen(".\\output.txt", "a+", stdout);
     }
-    if(use_round2_reoutput){
-        round2_interact_action();
-    }
+    round2_interact_action();
 
     return 0;
 }
