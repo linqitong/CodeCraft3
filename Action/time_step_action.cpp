@@ -25,8 +25,9 @@ void time_step_action()
                     data[3 - i - 1]+=tag_array[i].write_size[j];
                 }
             }
-    
-            possibility[i].first=predictNextValue(data);
+
+            int num=predictNextValue(data);
+            possibility[i].first=num>0? num:0;
         }
     }
     

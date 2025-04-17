@@ -336,12 +336,45 @@ void write_action(){
             //     }
             //     possibility=p;
             // }  
+            int tag_size_num=0;
+            for(int i=1;i<=5;i++){
+                tag_size_num+=size_to_tag[i].size();
+            }
+
+           
+            assert(tag_size_num<=M_tag_num);
             object_array[id].true_tag=false;
-            tag=predictObject(possibility);
+            if(tag_size_num==M_tag_num){
+                vector<pair<double,int>> p;
+                for(int i=1;i<=M_tag_num;i++){
+                    p.emplace_back(0.0,i);
+                }
+                for(auto elem:size_to_tag[size]){
+                    p[elem].first=possibility[elem].first;
+                }
+                tag=predictObject(p);
+            }else{
+                tag=predictObject(possibility);
+            }
+            //tag=predictObject(possibility);
+            
+            //vector<double> v(M_tag_num+1);
+            // for(int i=1;i<=M_tag_num;i++){
+            //     v[i]=possibility[i].first;
+            // }
+            // double sum=accumulate(v.begin(),v.end(),0.0);
+            // for(int i=1;i<=M_tag_num;i++){
+            //     tag_array[i].write_size[time_step]+=v[i]/sum*object_array[id].size;
+            // }
+
             //tag_array[tag].write_size[time_step]+=object_array[id].size;
         }    
         else{
-            tag_array[tag].write_size[time_step]+=object_array[id].size;
+            if(time_step>1800){
+                size_to_tag[size].insert(tag);
+            }
+            //tag_array[tag].write_size[time_step]+=object_array[id].size;
+            tag_array[tag].write_size[time_step]+=1;
         }
         object_array[id].tag = tag;
         write_record[time_step].push_back(id);

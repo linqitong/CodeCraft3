@@ -382,7 +382,7 @@ void pre_process_2(){
    
     for (int i = 1; i <= M_tag_num+1; i++) {
         tag_array[i].fre_del = vector<int>((T_time_step_length + EXTRA_TIME - 1) / FRE_PER_SLICING + 2);
-        tag_array[i].fre_write = vector<int>((T_time_step_length + EXTRA_TIME - 1) / FRE_PER_SLICING + 2);
+        tag_array[i].fre_write = vector<double>((T_time_step_length + EXTRA_TIME - 1) / FRE_PER_SLICING + 2);
         tag_array[i].fre_read = vector<int>((T_time_step_length + EXTRA_TIME - 1) / FRE_PER_SLICING + 2);
     }
     for(int time=1;time<=T_time_step_length + EXTRA_TIME;time++){
