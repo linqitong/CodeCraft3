@@ -142,7 +142,9 @@ int main()
         std::cout << "choose rate: " << (double)selected_r / ((double)un_selected_r + (double)selected_r) << std::endl;
         std::cout << "choosed mark rate: " << all_finish_request_efficiency / (((double)all_finish_select_size) / 2.0) << std::endl;
     }
-    round2_interact_action();
+    if(use_round2_reoutput){
+        round2_interact_action();
+    }
 
     return 0;
 }
