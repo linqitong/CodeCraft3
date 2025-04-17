@@ -3,8 +3,8 @@
 bool debug_mode = false;
 bool debug_mode_mark_disk_imfromation = false;
 
-bool jump_1_round = false;
-std::string history_name = ".\\history\\1.txt"; // 跳过 1 时加载的历史文件名，如果没有跳过，这也是保存名
+bool jump_1_round = true;
+std::string history_name = ".\\history\\3.txt"; // 跳过 1 时加载的历史文件名，如果没有跳过，这也是保存名
 bool save_round_1 = false;
 
 
@@ -78,7 +78,7 @@ int main()
     drop_req_num=0;
     efficient_disk_rate=0.33333333;
     max_segment_select_size=4;
-    segment_num=15;
+    segment_num=14;
     int efficient_size = ceil((double)V_block_per_disk * efficient_disk_rate);
     segment_size = ceil((double)efficient_size / (double)segment_num);
     efficient_disk_end = segment_size * segment_num;
@@ -140,9 +140,9 @@ int main()
         std::cout << "all_mark: " << all_mark << std::endl;
         std::cout << "choose rate: " << (double)selected_r / ((double)un_selected_r + (double)selected_r) << std::endl;
         std::cout << "choosed mark rate: " << all_finish_request_efficiency / (((double)all_finish_select_size) / 2.0) << std::endl;
+        freopen(".\\output.txt", "a+", stdout);
     }
-
-
+    round2_interact_action();
 
     return 0;
 }

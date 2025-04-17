@@ -48,7 +48,7 @@ int pass_length(int have_read_time){
 }
 
 void read_action(){
-    
+    std::ostringstream oss;
     int n_read;
     int request_id, object_id;
     if(global_turn==1)
@@ -56,7 +56,7 @@ void read_action(){
     else
     n_read=read_record[time_step].size();
     for (int i = 1; i <= n_read; i++) { // 总用时12s+
-        if(global_turn==1){
+        if(global_turn == 1){
             scanf("%d%d", &request_id, &object_id);
             max_request_id = max(max_request_id, request_id);
             request_array[request_id].object_id = object_id;
@@ -337,18 +337,38 @@ void read_action(){
         for(int magnetic_head_id=0;magnetic_head_id<MAGNERIC_HEAD_NUM;magnetic_head_id++){
             if(disk_array[i].order[magnetic_head_id].size() >= 1){
                 if(disk_array[i].order[magnetic_head_id][0] == 'j'){
-                    cout << disk_array[i].order[magnetic_head_id] + "\n";
+                    if(global_turn == 2){
+                        oss << disk_array[i].order[magnetic_head_id] + "\n";
+                    }else{
+                        cout << disk_array[i].order[magnetic_head_id] + "\n";
+                    }
+                }else{
+                    if(global_turn == 2){
+                        oss << disk_array[i].order[magnetic_head_id] + "#\n";
+                    }else{
+                        cout << disk_array[i].order[magnetic_head_id] + "#\n";
+                    }
+                }
+            }else{
+                if(global_turn == 2){
+                    oss << disk_array[i].order[magnetic_head_id] + "#\n";
                 }else{
                     cout << disk_array[i].order[magnetic_head_id] + "#\n";
                 }
-            }else{
-                cout << disk_array[i].order[magnetic_head_id] + "#\n";
             }
         }
     }
-
+    if(global_turn == 2){
+        round2_head_track[t] = oss.str();
+    }
+    std::ostringstream oss1;
     // 报告请求完成情况
-    printf("%d\n", finish_request.size());
+    if(global_turn == 2){
+        oss1 << finish_request.size() << "\n";
+    }else{
+        printf("%d\n", finish_request.size());
+    }
+    
     for(int n1 = 0; n1 < finish_request.size(); n1++){
         if(finish_request[n1] == 416662 && global_turn == 2){
             int a = 1;
@@ -362,7 +382,13 @@ void read_action(){
             }
         }
 
-        printf("%d\n", finish_request[n1]);
+        if(global_turn == 2){
+            round2_finish_set.insert(finish_request[n1]);
+            oss1 << finish_request[n1] << "\n";
+        }else{
+            printf("%d\n", finish_request[n1]);
+        }
+
         if(request_array[finish_request[n1]].select){
             // all_finish_select_size 和 all_finish_request_efficiency 只记录当前时间段的
             if(time == this_time){
@@ -375,6 +401,10 @@ void read_action(){
         }
         all_mark += get_mark_efficiency(time_step - request_array[finish_request[n1]].recieve_time) 
         * (request_array[finish_request[n1]].read_num + 1) * 0.5; 
+    }
+
+    if(global_turn == 2){
+        round2_finish_track[t] = oss1.str();
     }
 
     // 删除当前回合的信息
@@ -433,9 +463,13 @@ void read_action(){
         }
     }
         
-    printf("%d\n",busy_req.size());
-    for(int req_id:busy_req){
-        printf("%d\n",req_id);
+    if(global_turn == 2){
+
+    }else{
+        printf("%d\n",busy_req.size());
+        for(int req_id:busy_req){
+            printf("%d\n",req_id);
+        }
     }
     busy_req = std::vector<int>();
 

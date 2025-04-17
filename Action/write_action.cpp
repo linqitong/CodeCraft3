@@ -145,6 +145,7 @@ pair<int, vector<int>> efficient_allocate_object(int object_id){
         }
 
         sort(actSet_array_for_pearson.begin(), actSet_array_for_pearson.end(), greater<pair<double, pair<int, int>>>());
+        sort(actSet_array_for_pearson.begin(), actSet_array_for_pearson.end(), greater<pair<double, pair<int, int>>>());
 
         for(int n1 = 0; n1 < actSet_array_for_pearson.size(); n1++){
             int disk_id = actSet_array_for_pearson[n1].second.first;
@@ -174,6 +175,8 @@ pair<int, vector<int>> efficient_allocate_object(int object_id){
             }
             if(actualSegment.get_empty() >= size){
                 int this_tag_size = actualSegment.tag_occupy_size[current_tag];
+                if(this_tag_size == 0 && global_turn == 2){
+                    continue; // 跳过没有当前 tag 占用的段
                 if(this_tag_size == 0 && global_turn == 2){
                     continue; // 跳过没有当前 tag 占用的段
                 }
@@ -301,6 +304,8 @@ vector<pair<int, vector<int>>> allocate_object(int object_id) {
 }
 
 void write_action(){
+    std::ostringstream oss;
+
     int n_write;
     if(global_turn==1){
         scanf("%d", &n_write);
@@ -342,6 +347,7 @@ void write_action(){
         }    
         else{
             tag_array[tag].write_size[time_step]+=object_array[id].size;
+            tag_array[tag].all_wirte_size += object_array[id].size;
         }
         object_array[id].tag = tag;
         write_record[time_step].push_back(id);
@@ -362,17 +368,33 @@ void write_action(){
         }
     }
     for (int i = 1; i <= n_write; i++){
-        cout << write_array[i] << endl;
-        for (int j = 1; j <= REP_NUM; j++){
-            cout << object_array[write_array[i]].disk_array[j];
-            for(int k = 0; k < object_array[write_array[i]].size; k++){
-                cout << " " << object_array[write_array[i]].storge_data[j][k]; 
-
+        if(global_turn == 1){
+            cout << write_array[i] << endl;
+            for (int j = 1; j <= REP_NUM; j++){
+                cout << object_array[write_array[i]].disk_array[j];
+                for(int k = 0; k < object_array[write_array[i]].size; k++){
+                    cout << " " << object_array[write_array[i]].storge_data[j][k]; 
+    
+                }
+                cout << "\n";
             }
-            printf("\n");
+        }else{
+            oss << write_array[i] << endl;
+            for (int j = 1; j <= REP_NUM; j++){
+                oss << object_array[write_array[i]].disk_array[j];
+                for(int k = 0; k < object_array[write_array[i]].size; k++){
+                    oss << " " << object_array[write_array[i]].storge_data[j][k]; 
+    
+                }
+                oss << "\n";
+            }
         }
+
     }
 
+    if(global_turn == 2){
+        round2_write_track[t] = oss.str();
+    }
     fflush(stdout);
     return;
 }
