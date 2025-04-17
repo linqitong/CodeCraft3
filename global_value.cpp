@@ -32,7 +32,7 @@ int drop_req_num=0;
 int max_think_num_for_empty_read = 3;
 int segment_size; // 端长度在初始化时动态生成，不预先设置
 int min_read_shold = 0; 
-int max_segment_select_size = 4;
+int max_segment_select_size = 3;
 vector<vector<int>> request_per_time=vector<vector<int>>(86400+1);
 vector<int> disk_assignable_actual_num = vector<int>(MAX_DISK_NUM);
 vector<vector<long long>> tag_write;
@@ -63,7 +63,7 @@ int effective_read = 0;
 int select_zero_request = 0;
 int all_finish_select = 0;
 double all_mark = 0;
-int segment_num = 11;
+int segment_num = 8;
 int select_but_not_finish = 0;
 set<int> select_ActualSegment;
 std::vector<std::vector<int>> read_record;
@@ -75,7 +75,7 @@ std::vector<std::pair<double,int>> possibility;
 double efficient_disk_rate = 0.35;
 int efficient_disk_end; // 不预先设置
 int stride_length_read=1200;
-int stride_length_write=2000;
+int stride_length_write=50;
 int stride_num=5;
 int global_turn;
 

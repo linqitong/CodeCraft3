@@ -338,7 +338,7 @@ void write_action(){
             // }  
             object_array[id].true_tag=false;
             tag=predictObject(possibility);
-            tag_array[tag].write_size[time_step]+=object_array[id].size;
+            //tag_array[tag].write_size[time_step]+=object_array[id].size;
         }    
         else{
             tag_array[tag].write_size[time_step]+=object_array[id].size;

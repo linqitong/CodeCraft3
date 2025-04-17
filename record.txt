@@ -316,6 +316,22 @@ all_mark: 21256862.417385
   drop_req_num: 3281297
   all_mark: 19108420.497415
 
+  select_but_not_finish: 591094
+  drop_req_num: 4083086
+  all_mark: 19470170.114909
+
+  select_but_not_finish: 508788
+  drop_req_num: 3425954
+  all_mark: 19412524.042407
+
+  select_but_not_finish: 174894
+  drop_req_num: 3617469
+  all_mark: 19578319.364935
+
+  select_but_not_finish: 479584  3  8
+  drop_req_num: 1923732
+  all_mark: 20141716.809868
+
 初始段分配
 
 磁头选择按未来真实请求

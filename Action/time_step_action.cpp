@@ -14,6 +14,22 @@ void time_step_action()
     
     printf("TIMESTAMP %d\n", time_step);
 
+    if((time_step) % 1 == 0 ){
+        
+        for (int i = 1; i <= M_tag_num; i++){
+            possibility[i].first=0;
+            vector<double> data(3);
+            int this_t=t-1;
+            for(int i=0;i<3;i++){
+                for(int j=0;j<stride_length_write and this_t>0;j++,this_t--){
+                    data[3 - i - 1]+=tag_array[i].write_size[j];
+                }
+            }
+    
+            possibility[i].first=predictNextValue(data);
+        }
+    }
+    
     time_segment_index = ((time_step) / FRE_PER_SLICING) + 1;
     //G_token_per_time_step = G + g[((time_step - 1) / FRE_PER_SLICING) + 1];
     G_token_per_time_step = G;
@@ -23,21 +39,7 @@ void time_step_action()
 
     if((time_step) % FRE_PER_SLICING == 0 ){
 
-        for (int i = 1; i <= M_tag_num; i++){
-            possibility[i].first=0;
-            vector<double> data(3);
-            int this_t=t-1;
-            for(int i=0;i<3;i++){
-                for(int j=0;j<FRE_PER_SLICING and this_t>0;j++,this_t--){
-                    data[3 - i - 1]+=tag_array[i].write_size[j];
-                }
-            }
-   
-            possibility[i].first=predictNextValue(data);
-            // for(int j=time_step-FRE_PER_SLICING;j<time_step;j++){
-            //     possibility[i].first+=tag_array[i].write_size[j];
-            // }
-        }
+      
         // 清空所有磁盘上一次分配的段
         for(int n1 = 1; n1 <= N_disk_num; n1++){
             disk_array[n1].target_actual_array = vector<vector<int>>(MAGNERIC_HEAD_NUM);
