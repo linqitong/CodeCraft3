@@ -301,6 +301,7 @@ vector<pair<int, vector<int>>> allocate_object(int object_id) {
 }
 
 void write_action(){
+    std::ostringstream oss;
     int n_write;
     if(global_turn==1){
         scanf("%d", &n_write);
@@ -395,17 +396,33 @@ void write_action(){
         }
     }
     for (int i = 1; i <= n_write; i++){
-        cout << write_array[i] << endl;
-        for (int j = 1; j <= REP_NUM; j++){
-            cout << object_array[write_array[i]].disk_array[j];
-            for(int k = 0; k < object_array[write_array[i]].size; k++){
-                cout << " " << object_array[write_array[i]].storge_data[j][k]; 
-
+        if(global_turn == 1 || !use_round2_reoutput){
+            cout << write_array[i] << endl;
+            for (int j = 1; j <= REP_NUM; j++){
+                cout << object_array[write_array[i]].disk_array[j];
+                for(int k = 0; k < object_array[write_array[i]].size; k++){
+                    cout << " " << object_array[write_array[i]].storge_data[j][k]; 
+    
+                }
+                cout << "\n";
             }
-            printf("\n");
+        }else{
+            oss << write_array[i] << endl;
+            for (int j = 1; j <= REP_NUM; j++){
+                oss << object_array[write_array[i]].disk_array[j];
+                for(int k = 0; k < object_array[write_array[i]].size; k++){
+                    oss << " " << object_array[write_array[i]].storge_data[j][k]; 
+    
+                }
+                oss << "\n";
+            }
         }
+
     }
 
+    if(global_turn == 2 && use_round2_reoutput){
+        round2_write_track[t] = oss.str();
+    }
     fflush(stdout);
     return;
 }

@@ -10,7 +10,7 @@ import get_tag_rank
 def main():
     original_stdin = sys.stdin
     # f = open('../Data/初赛数据/practice.in', 'r')
-    f = open('../Data/sample_practice_1.in', 'r')
+    f = open('../Data/sample_official.in', 'r')
     sys.stdin = f
 
     user_input = input().split()
@@ -25,7 +25,7 @@ def main():
     common.tag_array = [common.Tag() for _ in range(common.M_tag_num + 1)]
     common.untag_write_data = [[] for _ in range(common.T_time_step_length + EXTRA_TIME + 1)]
 
-    """
+
     all_size_all = []
     fre_del_all = []
     fre_write_all = []
@@ -86,9 +86,9 @@ def main():
                 threshold_read_all += int(user_input[n2])
                 size_array[n2] += common.tag_array[n1].fre_all_size[n2]
     get_tag_rank.get_tag_rank()
-    """
+
     
-    # extra_token = input()
+    extra_token = input()
 
     draw_pic = False
     if draw_pic:
@@ -124,7 +124,9 @@ def main():
             garbage_action()
 
     print("输入数据已经处理完毕")
-
+    data33 = [0 for _ in range(17)]
+    for i in range(1, 17):
+        data33[i] = common.tag_array[i].all_size / common.tag_array[i].all_num
     f = open('../Data/sample_practice_map_1.txt', 'r')
     sys.stdin = f
     for n1 in tqdm(range(0, common.max_object_id)):

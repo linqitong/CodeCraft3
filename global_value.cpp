@@ -74,6 +74,13 @@ std::vector<std::vector<int>> write_record;
 std::vector<std::vector<int>> del_record;
 std::vector<std::vector<int>> obj_read_data;
 
+std::vector<std::string> round2_head_track;
+std::vector<std::string> round2_recycle_track;
+std::vector<std::string> round2_write_track;
+std::vector<std::string> round2_finish_track;
+std::vector<std::string> round2_delete_track;
+std::set<int> round2_finish_set;
+
 std::vector<std::pair<double,int>> possibility;
 double efficient_disk_rate = 0.35;
 int efficient_disk_end; // 不预先设置

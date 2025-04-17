@@ -6,13 +6,18 @@ void time_step_action()
     int this_time_step;
     if(debug_mode && global_turn == 2){
 
+    }else if(use_round2_reoutput && global_turn == 2){
+
     }else{
         scanf("%*s%d", &this_time_step);
         if(this_time_step != time_step)
         assert(this_time_step == time_step);
     }
-    
-    printf("TIMESTAMP %d\n", time_step);
+    if(global_turn == 2 && use_round2_reoutput){
+
+    }else{
+        printf("TIMESTAMP %d\n", time_step);
+    }
 
     if((time_step) % 1 == 0 ){
         

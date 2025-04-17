@@ -225,6 +225,16 @@ extern std::vector<std::set<int>> size_to_tag;//size可能对应的tag
 extern std::string history_name;
 extern bool jump_1_round;
 extern bool save_round_1;
+
+extern std::vector<std::string> round2_head_track;
+extern std::vector<std::string> round2_recycle_track;
+extern std::vector<std::string> round2_write_track;
+extern std::vector<std::string> round2_finish_track;
+extern std::vector<std::string> round2_delete_track;
+extern std::set<int> round2_finish_set;
+
+extern bool use_round2_reoutput;
+
 void save_history();
 void load_history();
 
@@ -270,3 +280,5 @@ double predictNextValue(const std::vector<double>& y) ;
 double pearsonCorrelation(const std::vector<long long>& x, const std::vector<int>& y);
 
 void check();
+
+void round2_interact_action();
