@@ -7,9 +7,9 @@ void allocate_segments() {
     string read_probability_mode = "tag_content"; // tag_write/tag_content
 
     // Step 1: 计算每个tag的期望虚拟段数目
-    vector<int> expected_as(M_tag_num + 1, 0);
-    vector<vector<int>> content_size(M_tag_num + 1,vector<int>((T_time_step_length - 1) / FRE_PER_SLICING + 2));
-    for (int i = 1; i <= M_tag_num; ++i) {
+    vector<int> expected_as(M_tag_num + 2, 0);
+    vector<vector<int>> content_size(M_tag_num + 2,vector<int>((T_time_step_length - 1) / FRE_PER_SLICING + 2));
+    for (int i = 1; i <= M_tag_num+1; ++i) {
         int max_val = 0;
        
         for (int t = 1; t <= (T_time_step_length - 1) / FRE_PER_SLICING + 1; ++t) {
@@ -22,8 +22,8 @@ void allocate_segments() {
     }
 
     // Step 2: 计算每个tag在每个时间段的读取频率
-    vector<vector<double>> tag_read_freq(M_tag_num + 1, vector<double>(((T_time_step_length - 1) / FRE_PER_SLICING + 2), 0.0));
-    for (int i = 1; i <= M_tag_num; ++i) {
+    vector<vector<double>> tag_read_freq(M_tag_num + 2, vector<double>(((T_time_step_length - 1) / FRE_PER_SLICING + 2), 0.0));
+    for (int i = 1; i <= M_tag_num+1; ++i) {
         for (int t = 1; t <= (T_time_step_length - 1) / FRE_PER_SLICING + 1; ++t) {
             tag_read_freq[i][t]=static_cast<double>(tag_array[i].fre_read[t])/content_size[i][t];
         }
@@ -31,13 +31,13 @@ void allocate_segments() {
 
     // 初始化磁盘的读取概率和虚拟段列表
     vector<vector<double>> disk_read_prob(((T_time_step_length - 1) / FRE_PER_SLICING + 2), vector<double>(N_disk_num + 1, 0.0));
-    vector<int> allocated(M_tag_num + 1, 0);
-    vector<vector<int>> tag_allocated_space(M_tag_num+1,vector<int>(N_disk_num+1,0));//记录每个tag在每个磁盘中分配的空间；
+    vector<int> allocated(M_tag_num + 2, 0);
+    vector<vector<int>> tag_allocated_space(M_tag_num+2,vector<int>(N_disk_num+1,0));//记录每个tag在每个磁盘中分配的空间；
     while (true) {
         // 选择完成率最低的tag
         int selected_tag = -1;
         double min_ratio = 10000000000000000;
-        for (int i = 1; i <= M_tag_num; ++i) {
+        for (int i = 1; i <= M_tag_num+1; ++i) {
             if (expected_as[i] == 0) continue;
             double ratio = static_cast<double>(allocated[i]) / (double)expected_as[i];
             if (ratio < min_ratio) {
@@ -124,8 +124,8 @@ void allocate_segments() {
 
 void calc_pearson()
 {
-    for(int i = 1; i <= M_tag_num; i++){
-        for(int j = 0; j <= M_tag_num; j++){
+    for(int i = 1; i <= M_tag_num+1; i++){
+        for(int j = 0; j <= M_tag_num+1; j++){
             if(j == 0){
                 tag_array[i].pearson_tag.push_back(0.0);
                 continue;
@@ -149,6 +149,155 @@ void calc_pearson()
     }
 }
 
+void load_history(){
+    ifstream fin(history_name);
+    if(!fin){
+        cerr << "Error: cannot open history file: " << history_name << endl;
+        exit(EXIT_FAILURE);
+    }
+    
+    // 读取基本参数
+    fin >> G >> T_time_step_length >> M_tag_num >> N_disk_num 
+        >> V_block_per_disk >> K_max_exchange_block >> max_object_id >> max_request_id;
+    
+    // 读取 object_array 数据（假设下标从1开始）
+    for(int n1 = 1; n1 <= max_object_id; n1++){
+        Object& target_object = object_array[n1];
+        fin >> target_object.tag >> target_object.true_tag >> target_object.size;
+    }
+    
+    // 读取 request_array 数据（假设下标从1开始）
+    for(int n1 = 1; n1 <= max_request_id; n1++){
+        Request& target_request = request_array[n1];
+        fin >> target_request.request_id >> target_request.object_id;
+    }
+    
+    // 读取 tag_read 数据（vector<vector<int>>），需要先清空并重新初始化
+    int vecSize;
+    fin >> vecSize;
+    tag_read.clear();
+    tag_read.resize(vecSize);
+    for(int i = 0; i < vecSize; i++){
+        int innerSize;
+        fin >> innerSize;
+        tag_read[i].resize(innerSize);
+        for (int j = 0; j < innerSize; j++){
+            fin >> tag_read[i][j];
+        }
+    }
+    
+    // 读取 read_record 数据
+    fin >> vecSize;
+    read_record.clear();
+    read_record.resize(vecSize);
+    for(int i = 0; i < vecSize; i++){
+        int innerSize;
+        fin >> innerSize;
+        read_record[i].resize(innerSize);
+        for (int j = 0; j < innerSize; j++){
+            fin >> read_record[i][j];
+        }
+    }
+    
+    // 读取 write_record 数据
+    fin >> vecSize;
+    write_record.clear();
+    write_record.resize(vecSize);
+    for(int i = 0; i < vecSize; i++){
+        int innerSize;
+        fin >> innerSize;
+        write_record[i].resize(innerSize);
+        for (int j = 0; j < innerSize; j++){
+            fin >> write_record[i][j];
+        }
+    }
+    
+    // 读取 del_record 数据
+    fin >> vecSize;
+    del_record.clear();
+    del_record.resize(vecSize);
+    for(int i = 0; i < vecSize; i++){
+        int innerSize;
+        fin >> innerSize;
+        del_record[i].resize(innerSize);
+        for (int j = 0; j < innerSize; j++){
+            fin >> del_record[i][j];
+        }
+    }
+    
+    // 读取 obj_read_data 数据
+    fin >> vecSize;
+    obj_read_data.clear();
+    obj_read_data.resize(vecSize);
+    for(int i = 0; i < vecSize; i++){
+        int innerSize;
+        fin >> innerSize;
+        obj_read_data[i].resize(innerSize);
+        for (int j = 0; j < innerSize; j++){
+            fin >> obj_read_data[i][j];
+        }
+    }
+    
+    fin.close();
+}
+
+
+void save_history(){
+    freopen(history_name.c_str(), "w", stdout);
+    cout << G << " " << T_time_step_length << " " << M_tag_num << " " << N_disk_num;
+    cout << " " << V_block_per_disk << " " << K_max_exchange_block << " " << max_object_id;
+    cout << " " << max_request_id << endl;
+    for(int n1 = 1; n1 <= max_object_id; n1++){
+        Object& target_object = object_array[n1];
+        cout << target_object.tag << " " << target_object.true_tag << " " << target_object.size << endl;
+    }
+    for(int n1 = 1; n1 <= max_request_id; n1++){
+        Request& target_request = request_array[n1];
+        cout << target_request.request_id << " " << target_request.object_id << endl;
+    }
+    cout << tag_read.size() << endl;
+    for(int n1 = 0; n1 < tag_read.size(); n1++){
+        cout << tag_read[n1].size() << endl;
+        for(int n2 = 0; n2 < tag_read[n1].size(); n2++){
+            cout << tag_read[n1][n2] << " ";
+        }
+        cout << endl;
+    }
+    cout << read_record.size() << endl;
+    for(int n1 = 0; n1 < read_record.size(); n1++){
+        cout << read_record[n1].size() << endl;
+        for(int n2 = 0; n2 < read_record[n1].size(); n2++){
+            cout << read_record[n1][n2] << " ";
+        }
+        cout << endl;
+    }
+    cout << write_record.size() << endl;
+    for(int n1 = 0; n1 < write_record.size(); n1++){
+        cout << write_record[n1].size() << endl;
+        for(int n2 = 0; n2 < write_record[n1].size(); n2++){
+            cout << write_record[n1][n2] << " ";
+        }
+        cout << endl;
+    }
+    cout << del_record.size() << endl;
+    for(int n1 = 0; n1 < del_record.size(); n1++){
+        cout << del_record[n1].size() << endl;
+        for(int n2 = 0; n2 < del_record[n1].size(); n2++){
+            cout << del_record[n1][n2] << " ";
+        }
+        cout << endl;
+    }
+    cout << obj_read_data.size() << endl;
+    for(int n1 = 0; n1 < obj_read_data.size(); n1++){
+        cout << obj_read_data[n1].size() << endl;
+        for(int n2 = 0; n2 < obj_read_data[n1].size(); n2++){
+            cout << obj_read_data[n1][n2] << " ";
+        }
+        cout << endl;
+    }
+    freopen(".\\output.txt", "a+", stdout);
+}
+
 void pre_process_2(){
     // 第二轮初始化相关的代码
     for(int n1 = 0; n1 < MAX_DISK_NUM; n1++){
@@ -168,7 +317,7 @@ void pre_process_2(){
     }
    
     
-    for(int n1 = 0; n1 < MAX_TAG_NUM; n1++){
+    for(int n1 = 0; n1 < M_tag_num+1; n1++){
         tag_array[n1] = Tag();
     }
 
@@ -177,17 +326,6 @@ void pre_process_2(){
         disk_array[n1].rubbish_stack = stack<int>();
         for(int n2 = V_block_per_disk; n2 > efficient_disk_end; n2--){
             disk_array[n1].rubbish_stack.push(n2);
-        }
-    }
-    int n;
-    scanf("%d",&n);
-    for(int i=0;i<n;i++){
-        int id,tag;
-        scanf("%d%d",&id,&tag);
-        object_array[id].tag=tag;
-        object_array[id].true_tag=true;
-        for(int j=0;j<obj_read_data[id].size();j++){
-            tag_read[tag][j]+=obj_read_data[id][j];
         }
     }
     // std::ifstream fin(".\\Data\\sample_practice_map_1.txt"); // 创建文件输入流并打开文件
@@ -199,15 +337,15 @@ void pre_process_2(){
     // fin.close(); // 关闭文件(析构函数会自动调用)
     //根据pearson相似计算每个物品的tag
     //freopen(".\\predict_result.txt", "w", stdout);
+
     int num=0;
     std::random_device rd;
     std::mt19937 gen(rd()); 
     std::uniform_int_distribution<> distrib(1, M_tag_num);
-    for(int i=0;i<MAX_OBJECT_NUM;i++){
-        if(object_array[i].if_loaded and !object_array[i].true_tag){
+    for(int i=1;i <= max_object_id;i++){
+        if(!object_array[i].true_tag){
             num++;
             int tag=distrib(gen);
-            tag=1;
             double similarity=0;
             for(int j=1;j<=M_tag_num;j++){
                 double sim = pearsonCorrelation(tag_read[j], obj_read_data[i]);
@@ -216,26 +354,32 @@ void pre_process_2(){
                     tag=j;
                 }
             }
-            if(similarity<=0){
-                //predict_num++;
-                if(accumulate(obj_read_data[i].begin(),obj_read_data[i].end(),0.0)<100)
+            if(similarity<=0.5){
                 predict_num++;
+                // if(accumulate(obj_read_data[i].begin(),obj_read_data[i].end(),0.0)<100)
+                // predict_num++;
             } 
+            
             //cout<<i<<' '<<tag<<' '<<similarity<<endl;
             //assert(similarity>0);
             object_array[i].true_tag=true;
+            
             object_array[i].tag=tag;
-            if(similarity > 0){
-                for(int j=0;j<obj_read_data[i].size();j++){
-                    tag_read[tag][j]+=obj_read_data[i][j];
-                }
+            // if(similarity<=0){
+            //     object_array[i].tag=17;
+            // }
+            for(int j=0;j<obj_read_data[i].size();j++){
+                tag_read[tag][j] += obj_read_data[i][j];
+            }
+            if(similarity < 0 && accumulate(obj_read_data[i].begin(),obj_read_data[i].end(),0.0) < 100){
+                object_array[i].quit = true;
             }
         }
     }
     //cout<<"total:"<<num<<endl;
     //freopen(".\\output.txt", "a+", stdout);
-    
-    for (int i = 1; i <= M_tag_num; i++) {
+   
+    for (int i = 1; i <= M_tag_num+1; i++) {
         tag_array[i].fre_del = vector<int>((T_time_step_length + EXTRA_TIME - 1) / FRE_PER_SLICING + 2);
         tag_array[i].fre_write = vector<int>((T_time_step_length + EXTRA_TIME - 1) / FRE_PER_SLICING + 2);
         tag_array[i].fre_read = vector<int>((T_time_step_length + EXTRA_TIME - 1) / FRE_PER_SLICING + 2);
@@ -300,7 +444,6 @@ void pre_process(){
 
     // 读取全局参数
     scanf("%d%d%d%d%d%d", &T_time_step_length, &M_tag_num, &N_disk_num, &V_block_per_disk, &G,&K_max_exchange_block);
-
     int efficient_size = ceil((double)V_block_per_disk * efficient_disk_rate);
     segment_size = ceil((double)efficient_size / (double)segment_num);
     efficient_disk_end = segment_size * segment_num;

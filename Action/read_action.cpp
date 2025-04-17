@@ -58,6 +58,7 @@ void read_action(){
     for (int i = 1; i <= n_read; i++) { // 总用时12s+
         if(global_turn==1){
             scanf("%d%d", &request_id, &object_id);
+            max_request_id = max(max_request_id, request_id);
             request_array[request_id].object_id = object_id;
             request_array[request_id].request_id = request_id;
             request_array[request_id].recieve_time = time_step;
@@ -70,6 +71,7 @@ void read_action(){
         }
         else{
             request_id=read_record[time_step][i-1];
+            request_array[request_id].recieve_time = time_step;
             object_id=request_array[request_id].object_id;
         }
         
@@ -78,12 +80,11 @@ void read_action(){
         //查找是否在磁盘读取区域中
         bool if_need_read=false;
 
-        for(int n1 = 1; n1 <= 1; n1++){
-            
-            int disk_id = object_array[object_id].disk_array[n1];
+        if(object_array[object_id].quit == false){
+            int disk_id = object_array[object_id].disk_array[1];
             set<int> obj_segment_id;
-            for(int i=0;i<object_array[object_id].storge_data[n1].size();i++){
-                int actualSegment_id = (object_array[object_id].storge_data[n1][i] - 1) / segment_size;
+            for(int i=0;i<object_array[object_id].storge_data[1].size();i++){
+                int actualSegment_id = (object_array[object_id].storge_data[1][i] - 1) / segment_size;
                 obj_segment_id.insert(actualSegment_id);
                 assert(actualSegment_id<segment_num);
             } 
@@ -100,8 +101,9 @@ void read_action(){
             
                 if_need_read = if_need_read | in_need_read;
             }
-            
         }
+
+            
         if(!if_need_read ) {
             un_selected_r++;
             drop_req_num++;

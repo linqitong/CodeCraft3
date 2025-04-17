@@ -5,10 +5,13 @@ using namespace std;
 
 int T_time_step_length, M_tag_num, N_disk_num, V_block_per_disk, G_token_per_time_step,K_max_exchange_block;
 
+int max_object_id = 0;
+int max_request_id = 0;
+
 Disk disk_array[MAX_DISK_NUM];
 Object object_array[MAX_OBJECT_NUM];
 Request request_array[MAX_REQUEST_NUM];
-Tag tag_array[MAX_TAG_NUM];
+Tag tag_array[MAX_TAG_NUM+1];
 int disk[MAX_DISK_NUM][MAX_DISK_SIZE];
 int disk_block_index[MAX_DISK_NUM][MAX_DISK_SIZE];
 int disk_block_request[MAX_DISK_NUM][MAX_DISK_SIZE];
@@ -48,7 +51,7 @@ long long empty_first_write_size = 0;
 long long empty_write_size = 0;
 int selected_r = 0;
 int un_selected_r = 0;
-int pearson_sample_interval=100;
+int pearson_sample_interval=FRE_PER_SLICING;
 set<int> select_VirtualSegment = set<int>();
 double all_finish_request_efficiency = 0;
 int all_finish_select_size = 0;
@@ -271,4 +274,10 @@ double pearsonCorrelation(const vector<long long>& x, const vector<int>& y) {
     
     // 计算皮尔森相关系数
     return covariance / (sqrt(variance_x) * sqrt(variance_y));
+}
+
+void check(){
+    if(disk_array[10].segment_array[13].disk_id == 33){
+        int a = 1;
+    }
 }

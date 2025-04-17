@@ -4,9 +4,14 @@ using namespace std;
 void time_step_action()
 {
     int this_time_step;
-    scanf("%*s%d", &this_time_step);
-    if(this_time_step != time_step)
-    assert(this_time_step == time_step);
+    if(debug_mode && global_turn == 2){
+
+    }else{
+        scanf("%*s%d", &this_time_step);
+        if(this_time_step != time_step)
+        assert(this_time_step == time_step);
+    }
+    
     printf("TIMESTAMP %d\n", time_step);
 
     time_segment_index = ((time_step) / FRE_PER_SLICING) + 1;
