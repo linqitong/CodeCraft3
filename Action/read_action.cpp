@@ -336,20 +336,20 @@ void read_action(){
         for(int magnetic_head_id=0;magnetic_head_id<MAGNERIC_HEAD_NUM;magnetic_head_id++){
             if(disk_array[i].order[magnetic_head_id].size() >= 1){
                 if(disk_array[i].order[magnetic_head_id][0] == 'j'){
-                    if(global_turn == 2){
+                    if(global_turn == 2 && use_round2_reoutput){
                         oss << disk_array[i].order[magnetic_head_id] + "\n";
                     }else{
                         cout << disk_array[i].order[magnetic_head_id] + "\n";
                     }
                 }else{
-                    if(global_turn == 2){
+                    if(global_turn == 2 && use_round2_reoutput){
                         oss << disk_array[i].order[magnetic_head_id] + "#\n";
                     }else{
                         cout << disk_array[i].order[magnetic_head_id] + "#\n";
                     }
                 }
             }else{
-                if(global_turn == 2){
+                if(global_turn == 2 && use_round2_reoutput){
                     oss << disk_array[i].order[magnetic_head_id] + "#\n";
                 }else{
                     cout << disk_array[i].order[magnetic_head_id] + "#\n";
@@ -357,12 +357,12 @@ void read_action(){
             }
         }
     }
-    if(global_turn == 2){
+    if(global_turn == 2 && use_round2_reoutput){
         round2_head_track[t] = oss.str();
     }
     std::ostringstream oss1;
     // 报告请求完成情况
-    if(global_turn == 2){
+    if(global_turn == 2 && use_round2_reoutput){
         oss1 << finish_request.size() << "\n";
     }else{
         printf("%d\n", finish_request.size());
@@ -381,7 +381,7 @@ void read_action(){
             }
         }
 
-        if(global_turn == 2){
+        if(global_turn == 2 && use_round2_reoutput){
             round2_finish_set.insert(finish_request[n1]);
             oss1 << finish_request[n1] << "\n";
         }else{
@@ -402,7 +402,7 @@ void read_action(){
         * (request_array[finish_request[n1]].read_num + 1) * 0.5; 
     }
 
-    if(global_turn == 2){
+    if(global_turn == 2 && use_round2_reoutput){
         round2_finish_track[t] = oss1.str();
     }
 
@@ -462,7 +462,7 @@ void read_action(){
         }
     }
         
-    if(global_turn == 2){
+    if(global_turn == 2 && use_round2_reoutput){
 
     }else{
         printf("%d\n",busy_req.size());

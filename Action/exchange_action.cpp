@@ -102,8 +102,11 @@ void exchange_action()
         cin >> s1 >> s2;
         cout << s1 << " " << s2 << endl;
     }
-    else if(global_turn == 2)
+    else if(global_turn == 2 && use_round2_reoutput){
         oss << "GARBAGE COLLECTION" << endl;
+    }else{
+        cout << "GARBAGE COLLECTION" << endl;
+    }
 
     vector<int> exchange_disk_array; 
     ExchangeBlock temp = {};
@@ -229,14 +232,14 @@ void exchange_action()
         // cout << "0" << endl;
 
         int size = exchange_block_array[n].exchange_block.size();
-        if(global_turn == 2){
+        if(global_turn == 2 && use_round2_reoutput){
             oss << size << endl;
         }else{
             cout << size << endl;
         }
         
         for(int i = 0; i < size; i++){
-            if(global_turn == 2){
+            if(global_turn == 2 && use_round2_reoutput){
                 oss << exchange_block_array[n].exchange_block[i].first << " " << exchange_block_array[n].exchange_block[i].second << endl;
             }else{
                 cout << exchange_block_array[n].exchange_block[i].first << " " << exchange_block_array[n].exchange_block[i].second << endl;
@@ -244,7 +247,7 @@ void exchange_action()
         }
     }
     
-    if(global_turn == 2){
+    if(global_turn == 2 && use_round2_reoutput){
         round2_recycle_track[t] = oss.str();
     }
     cout.flush();

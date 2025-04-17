@@ -365,7 +365,7 @@ void write_action(){
         }
     }
     for (int i = 1; i <= n_write; i++){
-        if(global_turn == 1){
+        if(global_turn == 1 || !use_round2_reoutput){
             cout << write_array[i] << endl;
             for (int j = 1; j <= REP_NUM; j++){
                 cout << object_array[write_array[i]].disk_array[j];
@@ -389,7 +389,7 @@ void write_action(){
 
     }
 
-    if(global_turn == 2){
+    if(global_turn == 2 && use_round2_reoutput){
         round2_write_track[t] = oss.str();
     }
     fflush(stdout);

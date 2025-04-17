@@ -28,7 +28,7 @@ void delete_action()
         }
     }
 
-    if(global_turn == 2){
+    if(global_turn == 2 && use_round2_reoutput){
         oss << abort_num << "\n";
     }else{
         printf("%d\n", abort_num);
@@ -37,7 +37,7 @@ void delete_action()
     for (int i = 1; i <= n_delete; i++) {
         int id = _id[i];
         for (const auto& elem : object_array[_id[i]].wait_request_set) {
-            if(global_turn == 2){
+            if(global_turn == 2 && use_round2_reoutput){
                 oss << elem << "\n";
             }else{
                 printf("%d\n", elem);
@@ -91,7 +91,7 @@ void delete_action()
         }
     }
 
-    if(global_turn == 2){
+    if(global_turn == 2 && use_round2_reoutput){
         round2_delete_track[t] = "0\n";
     }
     fflush(stdout);

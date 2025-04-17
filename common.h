@@ -231,6 +231,8 @@ extern std::vector<std::string> round2_finish_track;
 extern std::vector<std::string> round2_delete_track;
 extern std::set<int> round2_finish_set;
 
+extern bool use_round2_reoutput;
+
 void save_history();
 void load_history();
 
