@@ -8,6 +8,9 @@ int T_time_step_length, M_tag_num, N_disk_num, V_block_per_disk, G_token_per_tim
 int max_object_id = 0;
 int max_request_id = 0;
 
+int max_object_id = 0;
+int max_request_id = 0;
+
 Disk disk_array[MAX_DISK_NUM];
 Object object_array[MAX_OBJECT_NUM];
 Request request_array[MAX_REQUEST_NUM];
