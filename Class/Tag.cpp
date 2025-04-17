@@ -50,28 +50,15 @@ double predictNextValue_2(const std::vector<double>& y) {
     return std::exp(predicted_log);
 }
 
-double predictNextValue_3(const vector<double>& y) {
-   
-   
-    double zeroDeriv=y[2],firstDeriv=(y[2]-y[0])/2, secondDeriv=y[2]-y[0]+2*y[1];
-    return zeroDeriv;
-    if(Derivatives==0) return zeroDeriv;
-    if(Derivatives==1) return zeroDeriv + firstDeriv;
-    if(Derivatives==2) return zeroDeriv + firstDeriv + secondDeriv / 2;
-
-    
-}
-
 void Tag::calc_write_score(){
     vector<double> data(3);
     int this_t=t-1;
-    int write_stride_length_write = 200;;
-    for(int i = 0;i < 3; i++){
-        for(int j = 0; j < write_stride_length_write; j++, this_t--){
+    for(int i=0;i<3;i++){
+        for(int j=0; j<stride_length_write; j++,this_t--){
             data[3 - i - 1]+=write_size[this_t];
         }
     }
-    write_score = predictNextValue_3(data);
+    write_score=predictNextValue_2(data);
     if(write_score < 0){
         int a = 1;
     }

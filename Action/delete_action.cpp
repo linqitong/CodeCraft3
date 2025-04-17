@@ -3,8 +3,6 @@ using namespace std;
 
 void delete_action()
 {
-    std::ostringstream oss;
-
     // 记录要删除的对象
     int n_delete;
     int abort_num = 0; // 还没有完成的请求总数
@@ -29,21 +27,12 @@ void delete_action()
         }
     }
 
-    if(global_turn == 2){
-        oss << abort_num << "\n";
-    }else{
-        printf("%d\n", abort_num);
-    }
+    printf("%d\n", abort_num);
 
     for (int i = 1; i <= n_delete; i++) {
         int id = _id[i];
         for (const auto& elem : object_array[_id[i]].wait_request_set) {
-            if(global_turn == 2){
-                oss << elem << "\n";
-            }else{
-                printf("%d\n", elem);
-            }
-            
+            printf("%d\n", elem);
             // wait_request_set.erase(elem);
             request_array[elem].clear_read_information();
         }
@@ -92,9 +81,6 @@ void delete_action()
         }
     }
 
-    if(global_turn == 2){
-        round2_delete_track[t] = "0\n";
-    }
     fflush(stdout);
 }
 

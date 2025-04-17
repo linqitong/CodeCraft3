@@ -129,10 +129,8 @@ public:
     double read_score=0,write_score=0;
     void calc_read_score();
     void calc_write_score();
-    int all_wirte_size = 0;
     // std::vector<int> virtual_segment = std::vector<int>(); // 分配给该 tag 的虚拟段索引,从 0 开始
 };
-
 extern int stride_length_read;
 extern int stride_length_write;
 extern int stride_num;
@@ -225,14 +223,6 @@ extern int Derivatives;//0 1 2代表求导阶数
 extern std::string history_name;
 extern bool jump_1_round;
 extern bool save_round_1;
-
-extern std::vector<std::string> round2_head_track;
-extern std::vector<std::string> round2_recycle_track;
-extern std::vector<std::string> round2_write_track;
-extern std::vector<std::string> round2_finish_track;
-extern std::vector<std::string> round2_delete_track;
-extern std::set<int> round2_finish_set;
-
 void save_history();
 void load_history();
 
@@ -278,5 +268,3 @@ double predictNextValue(const std::vector<double>& y) ;
 double pearsonCorrelation(const std::vector<long long>& x, const std::vector<int>& y);
 
 void check();
-
-void round2_interact_action();

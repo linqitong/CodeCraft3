@@ -92,7 +92,6 @@ int find_first_wirte(ActualSegment& target_actual_segment){
 
 void exchange_action()
 {
-    std::ostringstream oss;
     if(time_step % 1800 != 0)
         return;
     
@@ -103,7 +102,7 @@ void exchange_action()
         cout << s1 << " " << s2 << endl;
     }
     else if(global_turn == 2)
-        oss << "GARBAGE COLLECTION" << endl;
+        cout << "GARBAGE COLLECTION" << endl;
 
     vector<int> exchange_disk_array; 
     ExchangeBlock temp = {};
@@ -229,24 +228,12 @@ void exchange_action()
         // cout << "0" << endl;
 
         int size = exchange_block_array[n].exchange_block.size();
-        if(global_turn == 2){
-            oss << size << endl;
-        }else{
-            cout << size << endl;
-        }
-        
+        cout << size << endl;
         for(int i = 0; i < size; i++){
-            if(global_turn == 2){
-                oss << exchange_block_array[n].exchange_block[i].first << " " << exchange_block_array[n].exchange_block[i].second << endl;
-            }else{
-                cout << exchange_block_array[n].exchange_block[i].first << " " << exchange_block_array[n].exchange_block[i].second << endl;
-            }
+            cout << exchange_block_array[n].exchange_block[i].first << " " << exchange_block_array[n].exchange_block[i].second << endl;
         }
     }
     
-    if(global_turn == 2){
-        round2_recycle_track[t] = oss.str();
-    }
     cout.flush();
     return;
 }

@@ -11,11 +11,8 @@ void time_step_action()
         if(this_time_step != time_step)
         assert(this_time_step == time_step);
     }
-    if(global_turn == 2){
-
-    }else{
-        printf("TIMESTAMP %d\n", time_step);
-    }
+    
+    printf("TIMESTAMP %d\n", time_step);
 
     time_segment_index = ((time_step) / FRE_PER_SLICING) + 1;
     //G_token_per_time_step = G + g[((time_step - 1) / FRE_PER_SLICING) + 1];
