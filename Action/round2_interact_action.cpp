@@ -15,6 +15,7 @@ void round2_quit_not_finish(){
 }
 
 void round2_interact_action(){
+    round2_quit_not_finish();
 
     for (t = 1, time_step = 1; t <= T_time_step_length + EXTRA_TIME; t++,time_step++) {
         int this_time_step;

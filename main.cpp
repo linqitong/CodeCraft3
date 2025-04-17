@@ -1,6 +1,6 @@
 #include "common.h"
 
-bool debug_mode = false;
+bool debug_mode = true;
 bool debug_mode_mark_disk_imfromation = false;
 
 bool jump_1_round = true;
@@ -139,9 +139,9 @@ int main()
         std::cout << "all_mark: " << all_mark << std::endl;
         std::cout << "choose rate: " << (double)selected_r / ((double)un_selected_r + (double)selected_r) << std::endl;
         std::cout << "choosed mark rate: " << all_finish_request_efficiency / (((double)all_finish_select_size) / 2.0) << std::endl;
+        freopen(".\\output.txt", "a+", stdout);
     }
-
-
+    round2_interact_action();
 
     return 0;
 }
