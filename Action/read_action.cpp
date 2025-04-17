@@ -48,6 +48,7 @@ int pass_length(int have_read_time){
 }
 
 void read_action(){
+    std::ostringstream oss;
     
     int n_read;
     int request_id, object_id;
@@ -355,8 +356,6 @@ void read_action(){
                 }else{
                     cout << disk_array[i].order[magnetic_head_id] + "#\n";
                 }
-            }else{
-                cout << disk_array[i].order[magnetic_head_id] + "#\n";
             }
         }
     }

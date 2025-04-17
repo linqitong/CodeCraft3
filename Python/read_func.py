@@ -60,12 +60,15 @@ def write_action():
         common.all_write_num += 1
         if tag_id != 0:
             common.objects[write_id].size_index = common.tag_array[tag_id].all_size
-            common.tag_array[tag_id].all_size += size
+            if common.t > 1800:
+                common.tag_array[tag_id].all_size += size
+                common.tag_array[tag_id].all_num += 1
             common.tag_array[tag_id].object_dict[write_id] = 1
         else:
             common.untag_write_data[common.t].append(write_id)
-            common.all_empty_tag_write_size += size
-            common.all_empty_tag_write_num += 1
+            if common.t > 1800:
+                common.all_empty_tag_write_size += size
+                common.all_empty_tag_write_num += 1
             # do_object_write(common.objects[write_id].unit[j], common.disk[common.objects[write_id].replica[j]], size, write_id)
         # 忽略输出
         """

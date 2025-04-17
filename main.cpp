@@ -141,6 +141,7 @@ int main()
         std::cout << "all_mark: " << all_mark << std::endl;
         std::cout << "choose rate: " << (double)selected_r / ((double)un_selected_r + (double)selected_r) << std::endl;
         std::cout << "choosed mark rate: " << all_finish_request_efficiency / (((double)all_finish_select_size) / 2.0) << std::endl;
+        freopen(".\\output.txt", "a+", stdout);
     }
     if(use_round2_reoutput){
         round2_interact_action();

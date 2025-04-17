@@ -45,6 +45,7 @@ class Tag:
         self.all_size = 0
         self.object_dict = {}
         self.untag_object = {}
+        self.all_num = 0
 
 
 untag_write_data = [[] for _ in range(T_time_step_length + EXTRA_TIME + 1)]

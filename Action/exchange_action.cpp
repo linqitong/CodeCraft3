@@ -92,6 +92,7 @@ int find_first_wirte(ActualSegment& target_actual_segment){
 
 void exchange_action()
 {
+    std::ostringstream oss;
     if(time_step % 1800 != 0)
         return;
     

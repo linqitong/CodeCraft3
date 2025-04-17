@@ -124,7 +124,9 @@ def main():
             garbage_action()
 
     print("输入数据已经处理完毕")
-
+    data33 = [0 for _ in range(17)]
+    for i in range(1, 17):
+        data33[i] = common.tag_array[i].all_size / common.tag_array[i].all_num
     f = open('../Data/sample_practice_map_1.txt', 'r')
     sys.stdin = f
     for n1 in tqdm(range(0, common.max_object_id)):

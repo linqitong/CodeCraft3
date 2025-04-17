@@ -278,3 +278,5 @@ double predictNextValue(const std::vector<double>& y) ;
 double pearsonCorrelation(const std::vector<long long>& x, const std::vector<int>& y);
 
 void check();
+
+void round2_interact_action();

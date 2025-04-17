@@ -3,6 +3,7 @@ using namespace std;
 
 void delete_action()
 {
+    std::ostringstream oss;
     // 记录要删除的对象
     int n_delete;
     int abort_num = 0; // 还没有完成的请求总数

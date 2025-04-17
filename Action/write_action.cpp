@@ -301,6 +301,7 @@ vector<pair<int, vector<int>>> allocate_object(int object_id) {
 }
 
 void write_action(){
+    std::ostringstream oss;
     int n_write;
     if(global_turn==1){
         scanf("%d", &n_write);
