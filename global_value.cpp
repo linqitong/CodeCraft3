@@ -8,9 +8,6 @@ int T_time_step_length, M_tag_num, N_disk_num, V_block_per_disk, G_token_per_tim
 int max_object_id = 0;
 int max_request_id = 0;
 
-int max_object_id = 0;
-int max_request_id = 0;
-
 Disk disk_array[MAX_DISK_NUM];
 Object object_array[MAX_OBJECT_NUM];
 Request request_array[MAX_REQUEST_NUM];
@@ -69,10 +66,18 @@ double all_mark = 0;
 int segment_num = 13;
 int select_but_not_finish = 0;
 set<int> select_ActualSegment;
+
 std::vector<std::vector<int>> read_record;
 std::vector<std::vector<int>> write_record;
 std::vector<std::vector<int>> del_record;
 std::vector<std::vector<int>> obj_read_data;
+
+std::vector<std::string> round2_head_track;
+std::vector<std::string> round2_recycle_track;
+std::vector<std::string> round2_write_track;
+std::vector<std::string> round2_finish_track;
+std::vector<std::string> round2_delete_track;
+std::set<int> round2_finish_set;
 
 std::vector<std::pair<double,int>> possibility;
 double efficient_disk_rate = 0.35;

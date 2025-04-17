@@ -221,6 +221,14 @@ extern int Derivatives;//0 1 2代表求导阶数
 extern std::string history_name;
 extern bool jump_1_round;
 extern bool save_round_1;
+
+extern std::vector<std::string> round2_head_track;
+extern std::vector<std::string> round2_recycle_track;
+extern std::vector<std::string> round2_write_track;
+extern std::vector<std::string> round2_finish_track;
+extern std::vector<std::string> round2_delete_track;
+extern std::set<int> round2_finish_set;
+
 void save_history();
 void load_history();
 
