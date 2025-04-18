@@ -3,7 +3,7 @@
 bool debug_mode = true;
 bool debug_mode_mark_disk_imfromation = false;
 
-bool jump_1_round = false;
+bool jump_1_round = true;
 std::string history_name = ".\\history\\1.txt"; // 跳过 1 时加载的历史文件名，如果没有跳过，这也是保存名
 bool save_round_1 = false;
 

@@ -10,7 +10,7 @@ import get_tag_rank
 def main():
     original_stdin = sys.stdin
     # f = open('../Data/初赛数据/practice.in', 'r')
-    f = open('../Data/sample_official.in', 'r')
+    f = open('../Data/sample_practice_1.in', 'r')
     sys.stdin = f
 
     user_input = input().split()
@@ -34,6 +34,7 @@ def main():
 
 
     # 删除情况
+    """
     init = True
     for n1 in range(1, common.M_tag_num + 1):
         user_input = input().split()
@@ -86,9 +87,10 @@ def main():
                 threshold_read_all += int(user_input[n2])
                 size_array[n2] += common.tag_array[n1].fre_all_size[n2]
     get_tag_rank.get_tag_rank()
+    """
 
     
-    extra_token = input()
+    # extra_token = input()
 
     draw_pic = False
     if draw_pic:
@@ -124,18 +126,70 @@ def main():
             garbage_action()
 
     print("输入数据已经处理完毕")
+    tag_object_read_data = [[] for _ in range(17)]
+    for n1 in range(1, 17):
+        for o_id, value in common.tag_array[n1].object_request_dict.items():
+            tag_object_read_data[n1].append(len(value))
+        tag_object_read_data[n1].sort(reverse=True)
+        save_line_plot(tag_object_read_data[n1], os.path.join(picture_addr, "tag_object_read"),
+                       "tag" + str(n1))
+    exit()
     data33 = [0 for _ in range(17)]
-    for i in range(1, 17):
-        data33[i] = common.tag_array[i].all_size / common.tag_array[i].all_num
+    # for i in range(1, 17):
+        # data33[i] = common.tag_array[i].all_size / common.tag_array[i].all_num
     f = open('../Data/sample_practice_map_1.txt', 'r')
     sys.stdin = f
+    have_tag_data = [[] for _ in range(17)]
+    no_tag_data = [[] for _ in range(17)]
+    all_no_tag_data = [0 for _ in range(common.T_time_step_length + common.EXTRA_TIME + 1)]
+    objs = []
+    csv_data = {"timestamp_id": [], "request_id": [], "label": [], "read_label": []}
+    for n1 in range(1, 17):
+        have_tag_data[n1] = [0 for _ in range(common.T_time_step_length + common.EXTRA_TIME + 1)]
+        no_tag_data[n1] = [0 for _ in range(common.T_time_step_length + common.EXTRA_TIME + 1)]
     for n1 in tqdm(range(0, common.max_object_id)):
         input_data = input().split()
         object_id = int(input_data[0])
         tag_id = int(input_data[1])
         common.objects[object_id].tag_id = tag_id
+        for n2 in range(len(common.objects[object_id].read_array)):
+            all_no_tag_data[common.objects[object_id].read_array[n2]] += common.objects[object_id].size
+        # common.tag_array[tag_id].append((common.objects[object_id].begin_time, object_id, 0))
         if object_id not in common.tag_array[tag_id].object_dict:
-            common.tag_array[tag_id].untag_object[object_id] = 1
+            common.tag_array[tag_id].objs.append((common.objects[object_id].begin_time, object_id, 0))
+            no_tag_data[tag_id][common.objects[object_id].begin_time] += common.objects[object_id].size
+            objs.append((common.objects[object_id].begin_time, tag_id, 0, object_id))
+            csv_data["timestamp_id"].append(common.objects[object_id].begin_time)
+            csv_data["request_id"].append(object_id)
+            csv_data["label"].append(0)
+            csv_data["read_label"].append(tag_id)
+        else:
+            have_tag_data[tag_id][common.objects[object_id].begin_time] += common.objects[object_id].size
+            common.tag_array[tag_id].objs.append((common.objects[object_id].begin_time, object_id, 1))
+            objs.append((common.objects[object_id].begin_time, tag_id, 1, object_id))
+            # common.tag_array[tag_id].untag_object[object_id] = 1
+            csv_data["timestamp_id"].append(common.objects[object_id].begin_time)
+            csv_data["request_id"].append(object_id)
+            csv_data["label"].append(tag_id)
+            csv_data["read_label"].append(tag_id)
+    import pandas as pd
+    df = pd.DataFrame(csv_data)
+
+    # 保存为 CSV
+    df.to_csv("data.csv", index=False)  # index=False 表示不保存行索引
+    exit()
+    """save_line_plot(all_no_tag_data, picture_addr,
+                   "all_no_tag_write", 50)"""
+    """
+    for n2 in range(1, 17):
+        save_line_plot(no_tag_data[n2], os.path.join(picture_addr, "no_tag_write"),
+                       "tag" + str(n2), 50)
+        save_line_plot(have_tag_data[n2], os.path.join(picture_addr, "have_tag_write"),
+                       "tag" + str(n2), 50)
+    """
+    objs.sort()
+    for n1 in range(1, 17):
+        common.tag_array[n1].objs.sort()
     data = {}
     for tag_id in range(1, common.M_tag_num + 1):
         data[tag_id] = (len(common.tag_array[tag_id].object_dict), len(common.tag_array[tag_id].untag_object))
