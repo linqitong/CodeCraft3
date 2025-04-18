@@ -65,6 +65,15 @@ int main()
             
             exchange_action();
         }
+         std::ifstream fin(".\\Data\\sample_practice_map_1.txt"); // 创建文件输入流并打开文件
+    int a,b;
+    while(fin>>a>>b){
+        if( object_array[a].tag!=b)
+        predict_num++;
+    }
+    fin.close(); // 关闭文件(析构函数会自动调用)
+    std::cout << "  predict_num: " << predict_num << std::endl;
+    return 0;
         int n;
         scanf("%d",&n);
         for(int i=0;i<n;i++){

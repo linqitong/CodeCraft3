@@ -123,7 +123,7 @@ public:
 class Tag{
 public:
     std::vector<int> fre_del; // 多个时间段内删除的对象大小之和 每个数据的范围 0 ~ 2^32 - 1
-    std::vector<int> fre_write; // 多个时间段内写入的对象大小之和
+    std::vector<double> fre_write; // 多个时间段内写入的对象大小之和
     std::vector<int> fre_read; // 多个时间段内读取的对象大小之和
     std::vector<double> pearson_tag;
     std::vector<int> read_size=std::vector<int>(MAX_TIME+106);//记录每帧读取数量
@@ -227,6 +227,8 @@ extern std::vector<std::vector<int>> obj_read_data;//记录每个对象的读取
 extern double efficient_disk_rate;
 extern int efficient_disk_end; // 有效磁盘段的结尾
 extern int Derivatives;//0 1 2代表求导阶数
+
+extern std::vector<std::set<int>> size_to_tag;//size可能对应的tag
 
 extern std::string history_name;
 extern bool jump_1_round;

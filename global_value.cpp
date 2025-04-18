@@ -42,6 +42,9 @@ vector<vector<long long>> tag_write;
 vector<vector<long long>> tag_del;
 vector<vector<long long>> tag_read;
 std::vector<int> g;
+
+std::vector<std::set<int>> size_to_tag=vector<set<int>>(6);//size可能对应的tag
+
 int G;
 
 int predict_num=0;
@@ -66,7 +69,7 @@ int effective_read = 0;
 int select_zero_request = 0;
 int all_finish_select = 0;
 double all_mark = 0;
-int segment_num = 8;
+int segment_num = 9;
 int select_but_not_finish = 0;
 set<int> select_ActualSegment;
 std::vector<std::vector<int>> read_record;
@@ -85,7 +88,7 @@ std::vector<std::pair<double,int>> possibility;
 double efficient_disk_rate = 0.35;
 int efficient_disk_end; // 不预先设置
 int stride_length_read=1200;
-int stride_length_write=2000;
+int stride_length_write=100;
 int stride_num=5;
 int global_turn;
 

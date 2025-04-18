@@ -332,6 +332,20 @@ all_mark: 21256862.417385
   drop_req_num: 1923732
   all_mark: 20141716.809868
 
+  select_but_not_finish: 427616
+  drop_req_num: 2207672
+  all_mark: 19954347.499873
+
+  select_but_not_finish: 448022
+  drop_req_num: 1956140
+  all_mark: 20196005.507385
+
+  select_but_not_finish: 161028
+  drop_req_num: 3787326
+  all_mark: 19830953.452434
+
+  predict_num: 25439
+
 初始段分配
 
 磁头选择按未来真实请求
