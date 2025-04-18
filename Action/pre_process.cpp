@@ -163,7 +163,7 @@ void load_history(){
     // 读取 object_array 数据（假设下标从1开始）
     for(int n1 = 1; n1 <= max_object_id; n1++){
         Object& target_object = object_array[n1];
-        fin >> target_object.tag >> target_object.true_tag >> target_object.size;
+        fin >> target_object.tag >> target_object.true_tag >> target_object.size >> target_object.read_times;
     }
     
     // 读取 request_array 数据（假设下标从1开始）
@@ -249,7 +249,7 @@ void save_history(){
     cout << " " << max_request_id << endl;
     for(int n1 = 1; n1 <= max_object_id; n1++){
         Object& target_object = object_array[n1];
-        cout << target_object.tag << " " << target_object.true_tag << " " << target_object.size << endl;
+        cout << target_object.tag << " " << target_object.true_tag << " " << target_object.size << " " << target_object.read_times << endl;
     }
     for(int n1 = 1; n1 <= max_request_id; n1++){
         Request& target_request = request_array[n1];
