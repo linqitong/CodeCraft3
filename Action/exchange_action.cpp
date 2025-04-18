@@ -111,8 +111,10 @@ int change_object_storge1(Object& obj, int empty_id, int request_id, int disk_id
     ActualSegment& seg_request = disk_array[disk_id].segment_array[seg_request_id];
     ActualSegment& seg_empty = disk_array[disk_id].segment_array[seg_empty_id];
 
-    seg_request.request_size -= obj.wait_request_set.size();
-    seg_empty.request_size += obj.wait_request_set.size();
+    int wait_request_size = obj.wait_request_set.size();
+
+    seg_request.request_size -= wait_request_size;
+    seg_empty.request_size += wait_request_size;
 
     int wait_time = 0;
     for(auto i = obj.wait_request_set.begin(); i != obj.wait_request_set.end(); i++){
@@ -189,11 +191,11 @@ void exchange_action()
             }
         }
         select_size = select_actual.size();
-        // for(int i = 0; i < segment_num; i++){
-        //     if(find(select_actual.begin(), select_actual.end(), i) == select_actual.end()){
-        //         select_actual.push_back(i);
-        //     }
-        // }
+        for(int i = 0; i < segment_num; i++){
+            if(find(select_actual.begin(), select_actual.end(), i) == select_actual.end()){
+                select_actual.push_back(i);
+            }
+        }
 
         for(int i = select_size; i < select_actual.size(); i++){
             need_change_actual.push_back(select_actual[i]);
@@ -218,7 +220,7 @@ void exchange_action()
 
         for(int i = 0; i < need_change_object.size(); i++){
             Object& target_object = object_array[need_change_object[i]];
-            for(int j = 0; j < select_size; i++){
+            for(int j = 0; j < select_size; j++){
                 ActualSegment& actual_segment = target_disk.segment_array[select_actual[j]];
                 int empty_size = actual_segment.get_empty();
                 if(empty_size < target_object.size || actual_segment.tag_index != target_object.tag)

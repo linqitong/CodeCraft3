@@ -42,6 +42,7 @@ vector<vector<long long>> tag_write;
 vector<vector<long long>> tag_del;
 vector<vector<long long>> tag_read;
 std::vector<int> g;
+std::set<int> has_been_predicted;
 int G;
 
 double round2_high_threshold = 0.80;
@@ -252,7 +253,7 @@ double predictNextValue(const vector<double>& y) {
     
 }
 
-double pearsonCorrelation(const vector<long long>& x, const vector<int>& y ,int n=0) {
+double pearsonCorrelation(const vector<long long>& x, const vector<int>& y ,int n) {
     // 检查输入是否有效
     if (x.empty() || y.empty()) {
         throw invalid_argument("Input vectors cannot be empty");
@@ -291,9 +292,10 @@ double pearsonCorrelation(const vector<long long>& x, const vector<int>& y ,int 
     return covariance / (sqrt(variance_x) * sqrt(variance_y));
 }
 
-int predict_tag(int id){
+pair<bool,int> predict_tag(int id){
     int tag=object_array[id].tag;
     double similarity=0;
+    int original_tag=tag;
     for(int j=1;j<=M_tag_num;j++){
         double sim = pearsonCorrelation(tag_read[j], obj_read_data[id],time_step/pearson_sample_interval+1);
         if(sim>similarity){
@@ -302,9 +304,10 @@ int predict_tag(int id){
         }
 
     }
-    if(similarity>0) return tag;
+    assert(similarity<=1.0);
+    if(similarity>0.95) return make_pair(true,tag);
     else{
-        return 0;
+        return make_pair(false,original_tag);
     }
 }
 

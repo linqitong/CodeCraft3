@@ -43,7 +43,32 @@ void time_step_action()
     }
 
     if((time_step) % FRE_PER_SLICING == 0 ){
-
+        if(time_step>6000){
+            for(int i=1;i<=max_object_id;i++){
+                if(object_array[i].true_tag==false and has_been_predicted.find(i)==has_been_predicted.end()){
+                    auto res=predict_tag(i);
+                    object_array[i].tag=res.second;
+                    if(res.first){
+                        has_been_predicted.insert(i);
+                    }
+                    // object_array[i].true_tag=res.first;
+                    // if(object_array[i].true_tag){
+                    //     int n=time_step/pearson_sample_interval+1;
+                    //     for(int j=0;j<n;j++){
+                    //         tag_read[object_array[i].tag][j]+=obj_read_data[i][j];
+                    //     }
+                    // }
+                    if(has_been_predicted.find(i)!=has_been_predicted.end()){
+                        if(object_array[i].tag==object_array[i].right_tag ){
+                            right_predict++;
+                        }else if(object_array[i].tag!=object_array[i].right_tag){
+                            predict_num++;
+                        }
+                    }
+                   
+                }
+              }
+        }
       
         // 清空所有磁盘上一次分配的段
         for(int n1 = 1; n1 <= N_disk_num; n1++){

@@ -346,6 +346,8 @@ all_mark: 21256862.417385
 
   predict_num: 25439
 
+  right_predict: 13250
+
 初始段分配
 
 磁头选择按未来真实请求
