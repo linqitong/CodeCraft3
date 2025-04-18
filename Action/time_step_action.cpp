@@ -30,9 +30,8 @@ void time_step_action()
                     data[3 - i - 1]+=tag_array[i].write_size[j];
                 }
             }
-
-            int num=predictNextValue(data);
-            possibility[i].first=num>0? num:0;
+    
+            possibility[i].first=predictNextValue(data);
         }
     }
     
