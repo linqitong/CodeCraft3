@@ -118,6 +118,9 @@ int change_object_storge1(Object& obj, int empty_id, int request_id, int disk_id
 
     seg_request.all_size -= obj.size;
     seg_empty.all_size += obj.size; // 更新实际段大小
+
+    seg_empty.object_set.insert(obj.object_id);
+    seg_request.object_set.erase(obj.object_id); // 更新对象集合
 }
 
 int find_first_wirte(ActualSegment& target_actual_segment){
@@ -192,7 +195,47 @@ void exchange_action()
             }
         }
 
-        
+        vector<int> need_change_object;
+        vector<int> need_change_seg;
+
+        for(int i = 0; i < need_change_actual.size(); i++){
+            int actual_segment_id = need_change_actual[i];
+            ActualSegment& actual_segment = target_disk.segment_array[actual_segment_id];
+            vector<pair<int, int>> read_rank = actual_segment.get_read_rank();
+            for(int j = 0; j < read_rank.size(); j++){
+                int read_time = read_rank[j].first;
+                int object_id = read_rank[j].second;
+                if(read_time > 500){
+                    need_change_object.push_back(object_id);
+                    need_change_seg.push_back(actual_segment_id);
+                }
+            }
+        }
+
+        for(int i = 0; i < need_change_object.size(); i++){
+            Object& target_object = object_array[need_change_object[i]];
+            for(int j = 0; j < select_size; i++){
+                ActualSegment& actual_segment = target_disk.segment_array[select_actual[j]];
+                int empty_size = actual_segment.get_empty();
+                if(empty_size < target_object.size || actual_segment.tag_index != target_object.tag)
+                    continue; // 该段空间不足或tag不匹配，无法交换
+                int empty_block = actual_segment.begin_index + actual_segment.first_write_index;
+                
+                vector<int> empty, request;
+                for(int k = 0; k < target_object.size; k++){
+                    empty_block = find_empty_block(n, empty_block, actual_segment.begin_index + actual_segment.segment_length);
+                    int request_block = target_object.storge_data[1][k];
+                    empty.push_back(empty_block);
+                    request.push_back(request_block);
+                    empty_block++;
+                }
+                for(int k = 0; k < target_object.size; k++){
+                    change_object_storge1(target_object, empty[k], request[k], n, need_change_seg[i], select_actual[j]);  
+                    exchange_block_array[n].exchange_block.push_back({empty[k], request[k]});
+                    exchange_disk_array[n]--;
+                }
+            }
+        }
     }
 
 
