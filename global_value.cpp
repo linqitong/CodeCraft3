@@ -47,7 +47,7 @@ int G;
 
 double round2_high_threshold = 0.80;
 
-double round2_low_threshold = 0.95;
+double round2_low_threshold = 0.995;
 
 int predict_num=0;
 

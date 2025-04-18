@@ -210,7 +210,8 @@ void allocate_segments() {
     // 在 磁盘 内部分配虚拟段
     // 暂定按照第二时间段的消耗时间分配
     //vector<int> tag_rank = {14, 12, 9, 4, 16, 6, 5, 11, 15, 13, 3, 2, 7, 8, 10, 1};
-    vector<int> tag_rank = get_tag_rank();
+    // vector<int> tag_rank = get_tag_rank();
+    vector<int> tag_rank = get_tag_rank();;
     for(int n1 = 1; n1 <= N_disk_num; n1++){
         int now_segment=0;
         Disk &target_disk= disk_array[n1];
@@ -469,44 +470,8 @@ void pre_process_2(){
     for(int i=1;i <= max_object_id;i++){
         Object& target_object = object_array[i];
         if(!object_array[i].true_tag){
-            num++;
-            int tag=distrib(gen);
-            double similarity=0;
-            for(int j=1;j<=M_tag_num;j++){
-                double sim = pearsonCorrelation(tag_read[j], obj_read_data[i]);
-                if(sim>similarity){
-                    similarity=sim;
-                    tag=j;
-                }
-            }
-            if(similarity<=0.5){
-                
-                // if(accumulate(obj_read_data[i].begin(),obj_read_data[i].end(),0.0)<100)
-                // predict_num++;
-            } 
-            
-            //cout<<i<<' '<<tag<<' '<<similarity<<endl;
-            //assert(similarity>0);
-            object_array[i].true_tag=true;
-            
-            object_array[i].tag=tag;
-            // if(similarity<=0){
-            //     object_array[i].tag=17;
-            // }
-            for(int j=0;j<obj_read_data[i].size();j++){
-                tag_read[tag][j] += obj_read_data[i][j];
-            }
-            if( accumulate(obj_read_data[i].begin(),obj_read_data[i].end(),0.0)<100){
-                predict_num++;
-                object_array[i].quit = true;
-            }
-        }else{
-         if( object_array[i].read_times<100){
-                predict_num++;
-                object_array[i].quit = true;
-            }   
+            continue;
         }
-
         tag_obj_read[target_object.tag].push_back(
             {target_object.read_times * target_object.size, i}
         );
@@ -538,6 +503,50 @@ void pre_process_2(){
         tag_array[n1].round2_high_request_num = tag_obj_read[n1][high_index].first;
         tag_array[n1].round2_low_request_num = tag_obj_read[n1][low_index].first;
     }
+
+
+    for(int i=1;i <= max_object_id;i++){
+        Object& target_object = object_array[i];
+        if(!object_array[i].true_tag){
+            num++;
+            int tag=distrib(gen);
+            double similarity=0;
+            for(int j=1;j<=M_tag_num;j++){
+                double sim = pearsonCorrelation(tag_read[j], obj_read_data[i]);
+                if(sim>similarity){
+                    similarity=sim;
+                    tag=j;
+                }
+            }
+            if(similarity<=0.5){
+                
+                // if(accumulate(obj_read_data[i].begin(),obj_read_data[i].end(),0.0)<100)
+                // predict_num++;
+            } 
+            
+            //cout<<i<<' '<<tag<<' '<<similarity<<endl;
+            //assert(similarity>0);
+            object_array[i].true_tag=true;
+            
+            object_array[i].tag=tag;
+            // if(similarity<=0){
+            //     object_array[i].tag=17;
+            // }
+            for(int j=0;j<obj_read_data[i].size();j++){
+                tag_read[tag][j] += obj_read_data[i][j];
+            }
+            if( accumulate(obj_read_data[i].begin(),obj_read_data[i].end(),0.0)< 100){
+                predict_num++;
+                object_array[i].quit = true;
+            }
+        }else{
+         if( object_array[i].read_times<100){
+                predict_num++;
+                object_array[i].quit = true;
+            }   
+        }
+    }
+    
 
 
 

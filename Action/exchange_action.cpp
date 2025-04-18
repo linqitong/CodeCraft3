@@ -197,9 +197,11 @@ void exchange_action()
             }
         }
 
+        /*
         for(int i = select_size; i < select_actual.size(); i++){
             need_change_actual.push_back(select_actual[i]);
         }
+        */
 
         vector<int> need_change_object;
         vector<int> need_change_seg;
