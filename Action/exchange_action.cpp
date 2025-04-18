@@ -176,17 +176,12 @@ void exchange_action()
             }
         }
         select_size = select_actual.size();
+
         for(int i = 0; i < segment_num; i++){
             if(find(select_actual.begin(), select_actual.end(), i) == select_actual.end()){
-                select_actual.push_back(i);
+                need_change_actual.push_back(i);
             }
         }
-
-        /*
-        for(int i = select_size; i < select_actual.size(); i++){
-            need_change_actual.push_back(select_actual[i]);
-        }
-        */
 
         vector<int> need_change_object;
         vector<int> need_change_seg;
@@ -198,6 +193,9 @@ void exchange_action()
             for(int j = 0; j < read_rank.size(); j++){
                 int read_time = read_rank[j].first;
                 int object_id = read_rank[j].second;
+                Object& target_object = object_array[object_id];
+                if(target_object.tag == actual_segment.tag_index)
+                    continue; // 该对象无需切换
                 if(read_time > 100){
                     need_change_object.push_back(object_id);
                     need_change_seg.push_back(actual_segment_id);
@@ -229,6 +227,9 @@ void exchange_action()
                 }
                 if(judge == false)
                     continue; // 该段空间不足，无法交换
+                    
+                if((target_object.storge_data[1][0] - 1) / segment_size != need_change_seg[i])
+                    int a = 1;
 
                 for(int k = 0; k < target_object.size; k++){
                     change_object_storge(target_object, empty[k], request[k], n);  
@@ -236,6 +237,7 @@ void exchange_action()
                     exchange_disk_array[n]--;
                 }
                 change_segment_storge(target_object, n, need_change_seg[i], select_actual[j]);
+                break;
             }
         }
     }

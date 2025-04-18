@@ -66,7 +66,7 @@ vector<int> get_tag_rank() {
 
     // 模拟退火参数
     const double initial_temp = 1000;
-    const double cooling_rate = 0.995;
+    const double cooling_rate = 0.99;
     const int num_iterations = 5000;
 
     vector<int> current_arrangement(M_tag_num);
@@ -504,7 +504,32 @@ void pre_process_2(){
         tag_array[n1].round2_low_request_num = tag_obj_read[n1][low_index].first;
     }
 
-
+    //cout<<"total:"<<num<<endl;
+    //freopen(".\\output.txt", "a+", stdout);
+   
+    for (int i = 1; i <= M_tag_num+1; i++) {
+        tag_array[i].fre_del = vector<int>((T_time_step_length + EXTRA_TIME - 1) / FRE_PER_SLICING + 2);
+        tag_array[i].fre_write = vector<int>((T_time_step_length + EXTRA_TIME - 1) / FRE_PER_SLICING + 2);
+        tag_array[i].fre_read = vector<int>((T_time_step_length + EXTRA_TIME - 1) / FRE_PER_SLICING + 2);
+    }
+    for(int time=1;time<=T_time_step_length + EXTRA_TIME;time++){
+        for(int i=0;i<read_record[time].size();i++){
+            int req=read_record[time][i];
+            int obj_id=request_array[req].object_id;
+            Object obj=object_array[obj_id];
+            if(obj.quit!=true)
+                tag_array[obj.tag].fre_read[(time - 1) / FRE_PER_SLICING + 1]+=obj.size;
+        }
+        for(int i=0;i<write_record[time].size();i++){
+            Object obj=object_array[write_record[time][i]];
+            tag_array[obj.tag].fre_write[(time - 1) / FRE_PER_SLICING + 1]+=obj.size;
+        }
+        for(int i=0;i<del_record[time].size();i++){
+            Object obj=object_array[del_record[time][i]];
+            tag_array[obj.tag].fre_del[(time - 1) / FRE_PER_SLICING + 1]+=obj.size;
+        }
+    }
+    
     for(int i=1;i <= max_object_id;i++){
         Object& target_object = object_array[i];
         if(!object_array[i].true_tag){
@@ -535,7 +560,12 @@ void pre_process_2(){
             for(int j=0;j<obj_read_data[i].size();j++){
                 tag_read[tag][j] += obj_read_data[i][j];
             }
-            if( accumulate(obj_read_data[i].begin(),obj_read_data[i].end(),0.0)< 100){
+
+            int min_read = tag_array[tag].round2_low_request_num;
+            if(min_read > 100)
+                min_read = 100;
+
+            if( accumulate(obj_read_data[i].begin(),obj_read_data[i].end(),0.0)< min_read){
                 predict_num++;
                 object_array[i].quit = true;
             }
@@ -546,38 +576,6 @@ void pre_process_2(){
             }   
         }
     }
-    
-
-
-
-
-    //cout<<"total:"<<num<<endl;
-    //freopen(".\\output.txt", "a+", stdout);
-   
-    for (int i = 1; i <= M_tag_num+1; i++) {
-        tag_array[i].fre_del = vector<int>((T_time_step_length + EXTRA_TIME - 1) / FRE_PER_SLICING + 2);
-        tag_array[i].fre_write = vector<int>((T_time_step_length + EXTRA_TIME - 1) / FRE_PER_SLICING + 2);
-        tag_array[i].fre_read = vector<int>((T_time_step_length + EXTRA_TIME - 1) / FRE_PER_SLICING + 2);
-    }
-    for(int time=1;time<=T_time_step_length + EXTRA_TIME;time++){
-        for(int i=0;i<read_record[time].size();i++){
-            int req=read_record[time][i];
-            int obj_id=request_array[req].object_id;
-            Object obj=object_array[obj_id];
-            if(obj.quit!=true)
-                tag_array[obj.tag].fre_read[(time - 1) / FRE_PER_SLICING + 1]+=obj.size;
-        }
-        for(int i=0;i<write_record[time].size();i++){
-            Object obj=object_array[write_record[time][i]];
-            tag_array[obj.tag].fre_write[(time - 1) / FRE_PER_SLICING + 1]+=obj.size;
-        }
-        for(int i=0;i<del_record[time].size();i++){
-            Object obj=object_array[del_record[time][i]];
-            tag_array[obj.tag].fre_del[(time - 1) / FRE_PER_SLICING + 1]+=obj.size;
-        }
-    }
-    
-     
     
     
     //  for (int i = 1; i <= M_tag_num; i++) {

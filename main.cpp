@@ -22,13 +22,13 @@ int main()
     if(!jump_1_round || !debug_mode){ // 跳过第一轮或者非 debug 模式
         pre_process();
         global_turn = 1; // 第一轮
-        // std::ifstream fin(".\\Data\\sample_practice_map_1.txt"); // 创建文件输入流并打开文件
-        // int a,b;
-        // while(fin>>a>>b){
-        //     object_array[a].right_tag=b;
-        //     object_array[a].true_tag=true;
-        // }
-        // fin.close(); // 关闭文件(析构函数会自动调用)
+        std::ifstream fin(".\\Data\\sample_practice_map_1.txt"); // 创建文件输入流并打开文件
+        int a,b;
+        while(fin>>a>>b){
+            object_array[a].right_tag=b;
+            object_array[a].true_tag=true;
+        }
+        fin.close(); // 关闭文件(析构函数会自动调用)
         for (t = 1, time_step = 1; t <= T_time_step_length + EXTRA_TIME; t++,time_step++) {
             
             if(t % FRE_PER_SLICING == 1){
