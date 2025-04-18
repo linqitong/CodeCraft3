@@ -47,6 +47,8 @@ public:
     int get_score(); // 计算该段的分数
     int request_size = 0; // 该实际段当前的等待请求数
     long long all_request_wait_time=0;//该段所有请求的总等待时长
+    std::set<int> object_set;
+    std::vector<std::pair<int, int>> get_read_rank();
 };
 
 class Disk{
@@ -88,6 +90,7 @@ class Disk{
 
 class Object{
 public:
+    int object_id;
     int tag; // 标签
     bool true_tag=true;//标记标签是否为真值
     int right_tag = 0;

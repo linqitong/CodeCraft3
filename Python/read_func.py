@@ -94,7 +94,7 @@ def read_action():
         common.objects[objectId].lastRequestPoint = request_id
         common.req_is_dones[request_id] = False
         common.all_read_size += common.objects[objectId].size
-        # common.objects[objectId].read_array.append(common.t)
+        common.objects[objectId].read_array.append(common.t)
         tag_id = common.objects[objectId].tag_id
         if tag_id != 0:
             common.tag_array[tag_id].read_data[common.t] += common.objects[objectId].size
