@@ -97,16 +97,17 @@ void change_segment_storge(Object& obj, int disk_id, int seg_request_id, int seg
 
     int wait_request_size = obj.wait_request_set.size();
 
-    seg_request.request_size -= wait_request_size;
-    seg_empty.request_size += wait_request_size;
+    seg_request.request_size -= wait_request_size * obj.size;
+    seg_empty.request_size += wait_request_size * obj.size; // 更新请求数
 
     int wait_time = 0;
     for(auto i = obj.wait_request_set.begin(); i != obj.wait_request_set.end(); i++){
         int req_id = *i;
         Request& request = request_array[req_id];  
-        wait_time += time_step - request.recieve_time; // 计算等待时间  
+        wait_time += (time_step - request.recieve_time + 1); // 计算等待时间  
     }
 
+    wait_time *= obj.size; // 计算等待时间
     seg_request.all_request_wait_time -= wait_time;
     seg_empty.all_request_wait_time += wait_time; // 更新等待时间
 
@@ -196,7 +197,7 @@ void exchange_action()
                 Object& target_object = object_array[object_id];
                 if(target_object.tag == actual_segment.tag_index)
                     continue; // 该对象无需切换
-                if(read_time > 100){
+                if(read_time > 300){
                     need_change_object.push_back(object_id);
                     need_change_seg.push_back(actual_segment_id);
                 }
