@@ -343,8 +343,8 @@ void write_action(){
             tag = predictObject(possibility);
 
             need_predict++;
-            if(right_tag == tag)
-                right_predict++;
+            //if(right_tag == tag)
+                //right_predict++;
             //tag_array[tag].write_size[time_step]+=object_array[id].size;
         }    
         else{
