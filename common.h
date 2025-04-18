@@ -21,6 +21,8 @@ extern int G_token_per_time_step; // 64 ~ 1000
 extern int K_max_exchange_block; //代表每次垃圾回收事件每个硬盘最多的交换存储单元的操作次数。0~100
 extern int max_object_id;
 extern int max_request_id;
+extern int predict_window; // 预测窗口大小
+extern std::set<int> size_of_tag[6];
 
 class ExchangeBlock{
     public:
@@ -88,9 +90,11 @@ class Object{
 public:
     int tag; // 标签
     bool true_tag=true;//标记标签是否为真值
+    int right_tag = 0;
     int size;
     int load_time;
     int life_time=0;
+    int  read_times=0;// 读取次数 
     std::set<int> wait_request_set; // 该物品还没有执行完毕的请求的编号
     std::vector<int> storge_data[REP_NUM + 1]; // 该对象三个副本存储的位置
     int virtual_segment_id = -1; // 【已被弃用】该对象对应的虚拟段编号
@@ -99,6 +103,7 @@ public:
     int quit = false;
     void check_finish(); // 检查 wait_request_set 是否部分已完成
     void quit_all_request();
+    
 };
 
 class Request{
@@ -123,6 +128,7 @@ public:
     std::vector<double> pearson_tag;
     std::vector<int> read_size=std::vector<int>(MAX_TIME+106);//记录每帧读取数量
     std::vector<int> write_size=std::vector<int>(MAX_TIME+106);//记录每帧写入数量
+    std::pair<int, double> average_size;
     int all_write_size;
     int calc_t_read=0;
     int calc_t_write=0;
@@ -177,6 +183,8 @@ extern bool debug_mode;
 extern bool debug_mode_mark_disk_imfromation; // 判断是否记录磁盘信息，只在 debug 模式下有效
 
 extern int drop_req_num;//被丢弃的请求数量 
+extern int right_predict;
+extern int need_predict;
 
 extern long long tag_first_write_size;
 extern long long tag_write_size;
@@ -253,6 +261,8 @@ int global_get_read_time(int read_num, int have_read_time);
 
 double calculate_variance_double(const std::vector<double>& data); // 计算方差
 
+
+
 void allocate_segments();
 
 void write_action();
@@ -271,11 +281,11 @@ struct RandomState {
 static RandomState global_random_state{std::mt19937(42), 42};
 void setGlobalRandomSeed(unsigned int seed);
 
-
+int predict_tag(int id);
 
 double predictNextValue(const std::vector<double>& y) ;
 
-double pearsonCorrelation(const std::vector<long long>& x, const std::vector<int>& y);
+double pearsonCorrelation(const std::vector<long long>& x, const std::vector<int>& y,int n);
 
 void check();
 

@@ -1,10 +1,10 @@
 #include "common.h"
 
-bool debug_mode = false;
+bool debug_mode = true;
 bool debug_mode_mark_disk_imfromation = false;
 
 bool jump_1_round = false;
-std::string history_name = ".\\history\\3.txt"; // 跳过 1 时加载的历史文件名，如果没有跳过，这也是保存名
+std::string history_name = ".\\history\\1.txt"; // 跳过 1 时加载的历史文件名，如果没有跳过，这也是保存名
 bool save_round_1 = false;
 
 bool use_round2_reoutput = true;
@@ -13,7 +13,7 @@ int main()
 {
     setGlobalRandomSeed(42);
     if(debug_mode){
-        freopen(".\\Data\\sample_practice_3.in", "r", stdin);
+        freopen(".\\Data\\sample_practice_1.in", "r", stdin);
         freopen(".\\output.txt", "w", stdout);
     }
     
@@ -22,6 +22,13 @@ int main()
     if(!jump_1_round || !debug_mode){ // 跳过第一轮或者非 debug 模式
         pre_process();
         global_turn = 1; // 第一轮
+        std::ifstream fin(".\\Data\\sample_practice_map_1.txt"); // 创建文件输入流并打开文件
+        int a,b;
+        while(fin>>a>>b){
+            object_array[a].right_tag=b;
+            object_array[a].true_tag=true;
+        }
+        fin.close(); // 关闭文件(析构函数会自动调用)
         for (t = 1, time_step = 1; t <= T_time_step_length + EXTRA_TIME; t++,time_step++) {
             
             if(t % FRE_PER_SLICING == 1){
@@ -38,6 +45,12 @@ int main()
                     std::cout << "  select_but_not_finish: " << select_but_not_finish << std::endl;
                     std::cout << "  drop_req_num: " << drop_req_num << std::endl;
                     std::cout << "  all_mark: " << all_mark << std::endl;
+                    std::cout << "  need_predict: " << need_predict << std::endl;
+                    std::cout << "  right_predict: " << right_predict << std::endl;
+                    // for(int i = 1; i <= M_tag_num; i++){
+                    //     double average_size = tag_array[i].average_size.second / tag_array[i].average_size.first;
+                    //     std::cout << i << "  average_size: " << average_size << std::endl;
+                    // }
                     freopen(".\\output.txt", "a+", stdout);
                 }
             }
@@ -77,8 +90,9 @@ int main()
     all_mark=0;
     select_but_not_finish=0;
     drop_req_num=0;
-    efficient_disk_rate=0.33333333;
+    efficient_disk_rate=0.3;
     max_segment_select_size=4;
+    min_read_shold=100;
     segment_num=15;
     int efficient_size = ceil((double)V_block_per_disk * efficient_disk_rate);
     segment_size = ceil((double)efficient_size / (double)segment_num);

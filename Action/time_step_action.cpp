@@ -19,7 +19,7 @@ void time_step_action()
         printf("TIMESTAMP %d\n", time_step);
     }
 
-    if((time_step) % 1 == 0 ){
+    if((time_step) % 1 == 0  and global_turn==1){
         
         for (int i = 1; i <= M_tag_num; i++){
             possibility[i].first=0;

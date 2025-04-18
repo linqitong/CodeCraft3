@@ -7,7 +7,7 @@ int T_time_step_length, M_tag_num, N_disk_num, V_block_per_disk, G_token_per_tim
 
 int max_object_id = 0;
 int max_request_id = 0;
-
+std::set<int> size_of_tag[6];
 Disk disk_array[MAX_DISK_NUM];
 Object object_array[MAX_OBJECT_NUM];
 Request request_array[MAX_REQUEST_NUM];
@@ -18,6 +18,7 @@ int disk_block_request[MAX_DISK_NUM][MAX_DISK_SIZE];
 int time_segment = 3;
 int time_step;
 int quit_num1 = 0;
+int predict_window = 10;
 std::vector<int> busy_req;
 std::vector<int> finish_request;
 int Data[7]={64,52,42,34,28,23,19};
@@ -33,6 +34,8 @@ int max_think_num_for_empty_read = 3;
 int segment_size; // 端长度在初始化时动态生成，不预先设置
 int min_read_shold = 0; 
 int max_segment_select_size = 3;
+int right_predict = 0;
+int need_predict = 0;
 vector<vector<int>> request_per_time=vector<vector<int>>(86400+1);
 vector<int> disk_assignable_actual_num = vector<int>(MAX_DISK_NUM);
 vector<vector<long long>> tag_write;
@@ -116,6 +119,8 @@ int advance_position(int current, int distance) {
 
     return newPosition;
 }
+
+
 
 
 double calculate_score(int block_id, int disk_id){
@@ -230,7 +235,6 @@ int predictObject(const std::vector<std::pair<double, int>>& probabilities) {
     return probabilities.back().second;
 }
 
-
 // 使用滑动窗口平均导数
 double predictNextValue(const vector<double>& y) {
    
@@ -244,7 +248,7 @@ double predictNextValue(const vector<double>& y) {
     
 }
 
-double pearsonCorrelation(const vector<long long>& x, const vector<int>& y) {
+double pearsonCorrelation(const vector<long long>& x, const vector<int>& y ,int n=0) {
     // 检查输入是否有效
     if (x.empty() || y.empty()) {
         throw invalid_argument("Input vectors cannot be empty");
@@ -253,8 +257,8 @@ double pearsonCorrelation(const vector<long long>& x, const vector<int>& y) {
     if (x.size() != y.size()) {
         throw invalid_argument("Input vectors must have the same size");
     }
-    
-    size_t n = x.size();
+    if(n==0)
+    n = x.size();
     
     // 计算均值
     double mean_x = accumulate(x.begin(), x.end(), 0.0) / n;
@@ -283,8 +287,26 @@ double pearsonCorrelation(const vector<long long>& x, const vector<int>& y) {
     return covariance / (sqrt(variance_x) * sqrt(variance_y));
 }
 
+int predict_tag(int id){
+    int tag=object_array[id].tag;
+    double similarity=0;
+    for(int j=1;j<=M_tag_num;j++){
+        double sim = pearsonCorrelation(tag_read[j], obj_read_data[id],time_step/pearson_sample_interval+1);
+        if(sim>similarity){
+            similarity=sim;
+            tag=j;
+        }
+
+    }
+    if(similarity>0) return tag;
+    else{
+        return 0;
+    }
+}
+
 void check(){
     if(disk_array[10].segment_array[13].disk_id == 33){
         int a = 1;
     }
 }
+
