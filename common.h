@@ -241,6 +241,7 @@ extern std::vector<std::string> round2_write_track;
 extern std::vector<std::string> round2_finish_track;
 extern std::vector<std::string> round2_delete_track;
 extern std::set<int> round2_finish_set;
+extern std::set<int> has_been_predicted;//已经预测出真值的obj_id 
 
 extern bool use_round2_reoutput;
 
@@ -284,11 +285,11 @@ struct RandomState {
 static RandomState global_random_state{std::mt19937(42), 42};
 void setGlobalRandomSeed(unsigned int seed);
 
-int predict_tag(int id);
+std::pair<bool,int> predict_tag(int id);
 
 double predictNextValue(const std::vector<double>& y) ;
 
-double pearsonCorrelation(const std::vector<long long>& x, const std::vector<int>& y,int n);
+double pearsonCorrelation(const std::vector<long long>& x, const std::vector<int>& y,int n=0);
 
 void check();
 

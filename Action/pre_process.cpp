@@ -470,7 +470,7 @@ void pre_process_2(){
             int tag=distrib(gen);
             double similarity=0;
             for(int j=1;j<=M_tag_num;j++){
-                double sim = pearsonCorrelation(tag_read[j], obj_read_data[i], 0);
+                double sim = pearsonCorrelation(tag_read[j], obj_read_data[i]);
                 if(sim>similarity){
                     similarity=sim;
                     tag=j;
