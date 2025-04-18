@@ -248,8 +248,6 @@ vector<pair<int, vector<int>>> allocate_object(int object_id) {
     // 分配有效区的空间
     if(obj.quit == false){
         efficient_allocate = efficient_allocate_object(object_id);
-        int act_id = (efficient_allocate.second[0] - 1) / segment_size;
-        disk_array[efficient_allocate.first].segment_array[act_id].object_set.insert(object_id);
     }
 
     vector<pair<int, vector<int>>> rubbish_allocate;
@@ -325,7 +323,6 @@ void write_action(){
         max_object_id = max(max_object_id, id);
         object_array[id].size = size;
         object_array[id].load_time=time_step;
-        object_array[id].object_id = id;
         if(global_turn==2) assert(tag!=0);
         if(tag==0) {
             // if(t>=7000){
@@ -346,8 +343,8 @@ void write_action(){
             tag = predictObject(possibility);
 
             need_predict++;
-            //if(right_tag == tag)
-                //right_predict++;
+            if(right_tag == tag)
+                right_predict++;
             //tag_array[tag].write_size[time_step]+=object_array[id].size;
         }    
         else{

@@ -47,8 +47,6 @@ public:
     int get_score(); // 计算该段的分数
     int request_size = 0; // 该实际段当前的等待请求数
     long long all_request_wait_time=0;//该段所有请求的总等待时长
-    std::set<int> object_set;
-    std::vector<std::pair<int, int>> get_read_rank();
 };
 
 class Disk{
@@ -90,7 +88,6 @@ class Disk{
 
 class Object{
 public:
-    int object_id;
     int tag; // 标签
     bool true_tag=true;//标记标签是否为真值
     int right_tag = 0;
@@ -146,12 +143,11 @@ extern int stride_length_read;
 extern int stride_length_write;
 extern int stride_num;
 extern int global_turn;
-
-extern int quit_num1;
-
+extern double round2_low_threshold;
 extern double round2_high_threshold;
 
-extern double round2_low_threshold;
+extern std::set<int> has_been_predicted;//已经预测出真值的obj_id 
+extern int quit_num1;
 
 extern Disk disk_array[MAX_DISK_NUM]; // 所有的磁盘数据
 extern Object object_array[MAX_OBJECT_NUM]; // 所有的对象数据
@@ -247,7 +243,6 @@ extern std::vector<std::string> round2_write_track;
 extern std::vector<std::string> round2_finish_track;
 extern std::vector<std::string> round2_delete_track;
 extern std::set<int> round2_finish_set;
-extern std::set<int> has_been_predicted;//已经预测出真值的obj_id 
 
 extern bool use_round2_reoutput;
 
@@ -260,6 +255,7 @@ void delete_action();
 void exchange_action();
 void pre_process_2();
 
+std::pair<bool,int> predict_tag(int id);
 // 计算磁盘上两点距离
 int calculate_distance(int start, int end);
 // 计算磁盘上一个点前进多少距离后的位置
@@ -291,11 +287,9 @@ struct RandomState {
 static RandomState global_random_state{std::mt19937(42), 42};
 void setGlobalRandomSeed(unsigned int seed);
 
-std::pair<bool,int> predict_tag(int id);
-
 double predictNextValue(const std::vector<double>& y) ;
 
-double pearsonCorrelation(const std::vector<long long>& x, const std::vector<int>& y,int n=0);
+double pearsonCorrelation(const std::vector<long long>& x, const std::vector<int>& y, int n = 0);
 
 void check();
 

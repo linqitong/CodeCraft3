@@ -79,7 +79,7 @@ int ActualSegment::get_request_num(){
 
 int ActualSegment::get_score() {
     double all_mark = 0;
-    for(int n1 = 1; n1 <= M_tag_num+1; n1++){
+    for(int n1 = 1; n1 <= M_tag_num; n1++){
         double this_mark = (double)tag_occupy_size[n1] / (double)segment_size;
         if(global_turn == 1 ){
             if(tag_array[n1].calc_t_read!=time_step) tag_array[n1].calc_read_score();
@@ -100,15 +100,4 @@ int ActualSegment::get_score() {
         all_mark += this_mark;
     }
     return all_mark;
-}
-
-std::vector<std::pair<int, int>> ActualSegment::get_read_rank(){
-    vector<pair<int, int>> data;
-    for (std::set<int>::iterator it = object_set.begin(); it != object_set.end(); ++it) {
-        // std::cout << *it << " ";
-        int obj_id = *it;
-        data.push_back({object_array[obj_id].read_times, obj_id});
-    }
-    sort(data.begin(), data.end(), greater<pair<int, int>>());
-    return data;
 }

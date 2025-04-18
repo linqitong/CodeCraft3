@@ -45,7 +45,7 @@ void time_step_action()
     if((time_step) % FRE_PER_SLICING == 0 ){
         if(time_step>6000){
             for(int i=1;i<=max_object_id;i++){
-                if(object_array[i].true_tag==false and has_been_predicted.find(i)==has_been_predicted.end()){
+                if(object_array[i].true_tag==false and has_been_predicted.find(i)==has_been_predicted.end() and object_array[i].read_times>=100){
                     auto res=predict_tag(i);
                     object_array[i].tag=res.second;
                     if(res.first){

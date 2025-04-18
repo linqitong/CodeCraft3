@@ -42,12 +42,7 @@ vector<vector<long long>> tag_write;
 vector<vector<long long>> tag_del;
 vector<vector<long long>> tag_read;
 std::vector<int> g;
-std::set<int> has_been_predicted;
 int G;
-
-double round2_high_threshold = 0.80;
-
-double round2_low_threshold = 0.98;
 
 int predict_num=0;
 
@@ -73,6 +68,8 @@ int all_finish_select = 0;
 double all_mark = 0;
 int segment_num = 8;
 int select_but_not_finish = 0;
+double round2_high_threshold = 0.80;
+double round2_low_threshold = 0.98;
 set<int> select_ActualSegment;
 std::vector<std::vector<int>> read_record;
 std::vector<std::vector<int>> write_record;
@@ -85,6 +82,7 @@ std::vector<std::string> round2_write_track;
 std::vector<std::string> round2_finish_track;
 std::vector<std::string> round2_delete_track;
 std::set<int> round2_finish_set;
+std::set<int> has_been_predicted;
 
 std::vector<std::pair<double,int>> possibility;
 double efficient_disk_rate = 0.35;
@@ -93,6 +91,25 @@ int stride_length_read=1200;
 int stride_length_write=2000;
 int stride_num=5;
 int global_turn;
+
+pair<bool,int> predict_tag(int id){
+    int tag=object_array[id].tag;
+    double similarity=0;
+    int original_tag=tag;
+    for(int j=1;j<=M_tag_num;j++){
+        double sim = pearsonCorrelation(tag_read[j], obj_read_data[id],time_step/pearson_sample_interval+1);
+        if(sim>similarity){
+            similarity=sim;
+            tag=j;
+        }
+
+    }
+    assert(similarity<=1.0);
+    if(similarity>0.92) return make_pair(true,tag);
+    else{
+        return make_pair(false,original_tag);
+    }
+}
 
 int calculate_distance(int start, int end){
     if (start < 1 || start > V_block_per_disk || end < 1 || end > V_block_per_disk) {
@@ -253,7 +270,7 @@ double predictNextValue(const vector<double>& y) {
     
 }
 
-double pearsonCorrelation(const vector<long long>& x, const vector<int>& y ,int n) {
+double pearsonCorrelation(const vector<long long>& x, const vector<int>& y, int n) {
     // 检查输入是否有效
     if (x.empty() || y.empty()) {
         throw invalid_argument("Input vectors cannot be empty");
@@ -292,24 +309,6 @@ double pearsonCorrelation(const vector<long long>& x, const vector<int>& y ,int 
     return covariance / (sqrt(variance_x) * sqrt(variance_y));
 }
 
-pair<bool,int> predict_tag(int id){
-    int tag=object_array[id].tag;
-    double similarity=0;
-    int original_tag=tag;
-    for(int j=1;j<=M_tag_num;j++){
-        double sim = pearsonCorrelation(tag_read[j], obj_read_data[id],time_step/pearson_sample_interval+1);
-        if(sim>similarity){
-            similarity=sim;
-            tag=j;
-        }
-
-    }
-    assert(similarity<=1.0);
-    if(similarity>0.95) return make_pair(true,tag);
-    else{
-        return make_pair(false,original_tag);
-    }
-}
 
 void check(){
     if(disk_array[10].segment_array[13].disk_id == 33){

@@ -1,6 +1,6 @@
 #include "common.h"
 
-bool debug_mode = true;
+bool debug_mode = false;
 bool debug_mode_mark_disk_imfromation = false;
 
 bool jump_1_round = false;
@@ -47,7 +47,6 @@ int main()
                     std::cout << "  all_mark: " << all_mark << std::endl;
                     std::cout << "  need_predict: " << need_predict << std::endl;
                     std::cout << "  right_predict: " << right_predict << std::endl;
-                    std::cout << "  predict_num: " << predict_num << std::endl;
                     // for(int i = 1; i <= M_tag_num; i++){
                     //     double average_size = tag_array[i].average_size.second / tag_array[i].average_size.first;
                     //     std::cout << i << "  average_size: " << average_size << std::endl;

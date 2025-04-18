@@ -59,7 +59,7 @@ void delete_action()
             int disk_id = object_array[id].disk_array[j];
             int first_block = object_array[id].storge_data[j][0];
             ActualSegment& target_actual_segment = disk_array[disk_id].segment_array[(first_block - 1) / segment_size];
-            target_actual_segment.object_set.erase(id);
+    
             for(int n1 = object_array[id].size - 1; n1 >= 0; n1--){
                 disk[disk_id] // 清除磁盘块信息
                     [object_array[id].storge_data[j][n1]] = 0;

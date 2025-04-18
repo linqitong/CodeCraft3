@@ -1,111 +1,6 @@
 #include "../common.h"
 using namespace std;
 
-vector<vector<double>> compute_corr_matrix() {
-    vector<vector<double>> corr_matrix(M_tag_num, vector<double>(M_tag_num, 0.0));
-    int length = (T_time_step_length - 1) / FRE_PER_SLICING + 1;
-
-    for (int i = 1; i <= M_tag_num; ++i) {
-        for (int j = 1; j <= M_tag_num; ++j) {
-            double sumA = 0, sumB = 0, sumAB = 0, sumA2 = 0, sumB2 = 0;
-
-            for (int k = 1; k < length; ++k) {
-                sumA += tag_array[i].fre_read[k];
-                sumB += tag_array[j].fre_read[k];
-            }
-
-            double avgA = sumA / length;
-            double avgB = sumB / length;
-
-            for (int k = 1; k < length; ++k) {
-                double a = tag_array[i].fre_read[k] - avgA;
-                double b = tag_array[j].fre_read[k] - avgB;
-                sumAB += a * b;
-                sumA2 += a * a;
-                sumB2 += b * b;
-            }
-
-            double denominator = sqrt(sumA2) * sqrt(sumB2);
-            if (denominator == 0) {
-                corr_matrix[i - 1][j - 1] = 0;
-            } else {
-                corr_matrix[i - 1][j - 1] = sumAB / denominator;
-            }
-        }
-    }
-
-    for (int i = 0; i < M_tag_num; ++i) {
-        corr_matrix[i][i] = 1.0;
-    }
-
-    return corr_matrix;
-}
-
-double total_correlation(const vector<int>& arrangement, const vector<vector<double>>& corr_matrix) {
-    double total = 0.0;
-    int n = arrangement.size();
-    for (int i = 0; i < n; ++i) {
-        int j = (i + 1) % n;
-        total += corr_matrix[arrangement[i]][arrangement[j]];
-    }
-    return total;
-}
-
-vector<int> generate_2opt_neighbor(const vector<int>& arr) {
-    int a = rand() % arr.size();
-    int b = rand() % arr.size();
-    if (a > b) swap(a, b);
-
-    vector<int> new_arr = arr;
-    reverse(new_arr.begin() + a, new_arr.begin() + b + 1);
-    return new_arr;
-}
-
-vector<int> get_tag_rank() {
-    vector<vector<double>> corr_matrix = compute_corr_matrix();
-
-    // 模拟退火参数
-    const double initial_temp = 1000;
-    const double cooling_rate = 0.99;
-    const int num_iterations = 5000;
-
-    vector<int> current_arrangement(M_tag_num);
-    for (int i = 0; i < M_tag_num; ++i)
-        current_arrangement[i] = i;
-
-    random_device rd;
-    mt19937 g(rd());
-    shuffle(current_arrangement.begin(), current_arrangement.end(), g);
-
-    double current_score = total_correlation(current_arrangement, corr_matrix);
-    vector<int> best_arrangement = current_arrangement;
-    double best_score = current_score;
-    double temp = initial_temp;
-
-    for (int i = 0; i < num_iterations; ++i) {
-        vector<int> new_arrangement = generate_2opt_neighbor(current_arrangement);
-        double new_score = total_correlation(new_arrangement, corr_matrix);
-        double diff = new_score - current_score;
-
-        if (diff > 0 || exp(diff / temp) > ((double)rand() / RAND_MAX)) {
-            current_arrangement = new_arrangement;
-            current_score = new_score;
-            if (current_score > best_score) {
-                best_arrangement = current_arrangement;
-                best_score = current_score;
-            }
-        }
-        temp *= cooling_rate;
-    }
-
-    // cout << "最佳相关系数和: " << best_score << endl;
-    // cout << "最佳排列顺序: ";
-    vector<int> result;
-    for (int i = 0; i < M_tag_num; ++i) {
-        result.push_back(best_arrangement[i] + 1);
-    }
-    return result;
-}
 
 void allocate_segments() {
     string expect_num_mode = "tag_content"; // tag_write/tag_content
@@ -210,8 +105,7 @@ void allocate_segments() {
     // 在 磁盘 内部分配虚拟段
     // 暂定按照第二时间段的消耗时间分配
     //vector<int> tag_rank = {14, 12, 9, 4, 16, 6, 5, 11, 15, 13, 3, 2, 7, 8, 10, 1};
-    // vector<int> tag_rank = get_tag_rank();
-    vector<int> tag_rank = get_tag_rank();;
+    vector<int> tag_rank = {1, 2, 3, 4, 5, 6, 7,8, 9, 10, 11,12, 13, 14, 15, 16};
     for(int n1 = 1; n1 <= N_disk_num; n1++){
         int now_segment=0;
         Disk &target_disk= disk_array[n1];
@@ -269,7 +163,7 @@ void load_history(){
     // 读取 object_array 数据（假设下标从1开始）
     for(int n1 = 1; n1 <= max_object_id; n1++){
         Object& target_object = object_array[n1];
-        fin >> target_object.tag >> target_object.true_tag >> target_object.size >> target_object.read_times;
+        fin >> target_object.tag >> target_object.true_tag >> target_object.size;
     }
     
     // 读取 request_array 数据（假设下标从1开始）
@@ -355,7 +249,7 @@ void save_history(){
     cout << " " << max_request_id << endl;
     for(int n1 = 1; n1 <= max_object_id; n1++){
         Object& target_object = object_array[n1];
-        cout << target_object.tag << " " << target_object.true_tag << " " << target_object.size << " " << target_object.read_times << endl;
+        cout << target_object.tag << " " << target_object.true_tag << " " << target_object.size << endl;
     }
     for(int n1 = 1; n1 <= max_request_id; n1++){
         Request& target_request = request_array[n1];
@@ -464,46 +358,47 @@ void pre_process_2(){
             }
         }
     }
-
-    vector<vector<pair<int, int>>> tag_obj_read = vector<vector<pair<int, int>>>(M_tag_num + 1);
     
     for(int i=1;i <= max_object_id;i++){
-        Object& target_object = object_array[i];
         if(!object_array[i].true_tag){
-            continue;
-        }
-        tag_obj_read[target_object.tag].push_back(
-            {target_object.read_times * target_object.size, i}
-        );
-    }
-    for(int n1 = 1; n1 <= M_tag_num; n1++){
-        sort(tag_obj_read[n1].begin(), tag_obj_read[n1].end(), greater<pair<int, int>>());
-        double all_size = 0;
-        for(int n2 = 0; n2 < tag_obj_read[n1].size(); n2++){
-            all_size += tag_obj_read[n1][n2].first;
-        }
-        int high_index = 0;
-        int low_index = tag_obj_read[n1].size() - 1;
-        double current_high_size = 0;
-        double current_low_size = all_size;
-        for(int n2 = 0; n2 < tag_obj_read[n1].size(); n2++){
-            current_high_size += tag_obj_read[n1][n2].first;
-            if(current_high_size > all_size * round2_high_threshold){
-                break;
+            num++;
+            int tag=distrib(gen);
+            double similarity=0;
+            for(int j=1;j<=M_tag_num;j++){
+                double sim = pearsonCorrelation(tag_read[j], obj_read_data[i], 0);
+                if(sim>similarity){
+                    similarity=sim;
+                    tag=j;
+                }
             }
-            high_index = n2;
-        }
-        for(int n2 = tag_obj_read[n1].size() - 1; n2 >= 0; n2--){
-            current_low_size -= tag_obj_read[n1][n2].first;
-            if(current_low_size < all_size * round2_low_threshold){
-                break;
+            if(similarity<=0.5){
+                
+                // if(accumulate(obj_read_data[i].begin(),obj_read_data[i].end(),0.0)<100)
+                // predict_num++;
+            } 
+            
+            //cout<<i<<' '<<tag<<' '<<similarity<<endl;
+            //assert(similarity>0);
+            object_array[i].true_tag=true;
+            
+            object_array[i].tag=tag;
+            // if(similarity<=0){
+            //     object_array[i].tag=17;
+            // }
+            for(int j=0;j<obj_read_data[i].size();j++){
+                tag_read[tag][j] += obj_read_data[i][j];
             }
-            low_index = n2;
+            if( accumulate(obj_read_data[i].begin(),obj_read_data[i].end(),0.0)<100){
+                predict_num++;
+                object_array[i].quit = true;
+            }
+        }else{
+         if( object_array[i].read_times<100){
+                predict_num++;
+                object_array[i].quit = true;
+            }   
         }
-        tag_array[n1].round2_high_request_num = tag_obj_read[n1][high_index].first;
-        tag_array[n1].round2_low_request_num = tag_obj_read[n1][low_index].first;
     }
-
     //cout<<"total:"<<num<<endl;
     //freopen(".\\output.txt", "a+", stdout);
    
@@ -530,52 +425,7 @@ void pre_process_2(){
         }
     }
     
-    for(int i=1;i <= max_object_id;i++){
-        Object& target_object = object_array[i];
-        if(!object_array[i].true_tag){
-            num++;
-            int tag=distrib(gen);
-            double similarity=0;
-            for(int j=1;j<=M_tag_num;j++){
-                double sim = pearsonCorrelation(tag_read[j], obj_read_data[i]);
-                if(sim>similarity){
-                    similarity=sim;
-                    tag=j;
-                }
-            }
-            if(similarity<=0.5){
-                
-                // if(accumulate(obj_read_data[i].begin(),obj_read_data[i].end(),0.0)<100)
-                // predict_num++;
-            } 
-            
-            //cout<<i<<' '<<tag<<' '<<similarity<<endl;
-            //assert(similarity>0);
-            object_array[i].true_tag=true;
-            
-            object_array[i].tag=tag;
-            // if(similarity<=0){
-            //     object_array[i].tag=17;
-            // }
-            for(int j=0;j<obj_read_data[i].size();j++){
-                tag_read[tag][j] += obj_read_data[i][j];
-            }
-
-            int min_read = tag_array[tag].round2_low_request_num;
-            if(min_read > 100)
-                min_read = 100;
-
-            if( accumulate(obj_read_data[i].begin(),obj_read_data[i].end(),0.0)< min_read){
-                predict_num++;
-                object_array[i].quit = true;
-            }
-        }else{
-         if( object_array[i].read_times<100){
-                predict_num++;
-                object_array[i].quit = true;
-            }   
-        }
-    }
+     
     
     
     //  for (int i = 1; i <= M_tag_num; i++) {
@@ -608,8 +458,8 @@ void pre_process_2(){
              target_disk.segment_array.push_back(actualSegment);
          }
      }
-     calc_pearson();
      allocate_segments();
+     calc_pearson();
 }
 
 
@@ -709,4 +559,3 @@ void pre_process(){
     printf("OK\n");
     fflush(stdout);
 }
-
