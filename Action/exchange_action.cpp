@@ -60,16 +60,16 @@ int find_request_block1(int disk_id, int block_id, int start_block, int tag_id){
     return -1;
 }
 
-int change_object_storge(Object& obj, int empty_id, int request_id, int rep_id, int disk_id){
+int change_object_storge(Object& obj, int empty_id, int request_id, int disk_id){
     for(int i = 0; i < obj.size; i++){
-        if(obj.storge_data[rep_id][i] == request_id){
+        if(obj.storge_data[1][i] == request_id){
             int temp1 = disk_block_index[disk_id][request_id];
             disk_block_index[disk_id][request_id] = disk_block_index[disk_id][empty_id];
             disk_block_index[disk_id][empty_id] = temp1;
             int temp2 = disk_block_request[disk_id][request_id];
             disk_block_request[disk_id][request_id] = disk_block_request[disk_id][empty_id];
             disk_block_request[disk_id][empty_id] = temp2;
-            obj.storge_data[rep_id][i] = empty_id;
+            obj.storge_data[1][i] = empty_id;
             disk[disk_id][empty_id] = disk[disk_id][request_id];
             disk[disk_id][request_id] = 0;
             break;
@@ -90,23 +90,7 @@ int find_first_wirte(ActualSegment& target_actual_segment){
     return 0;
 }
 
-int change_object_storge1(Object& obj, int empty_id, int request_id, int disk_id, int seg_request_id, int seg_empty_id){
-    // 交换段内数据
-    for(int i = 0; i < obj.size; i++){
-        if(obj.storge_data[1][i] == request_id){
-            int temp1 = disk_block_index[disk_id][request_id];
-            disk_block_index[disk_id][request_id] = disk_block_index[disk_id][empty_id];
-            disk_block_index[disk_id][empty_id] = temp1;
-            int temp2 = disk_block_request[disk_id][request_id];
-            disk_block_request[disk_id][request_id] = disk_block_request[disk_id][empty_id];
-            disk_block_request[disk_id][empty_id] = temp2;
-            obj.storge_data[1][i] = empty_id;
-            disk[disk_id][empty_id] = disk[disk_id][request_id];
-            disk[disk_id][request_id] = 0;
-            break;
-        }
-    }
-
+void change_segment_storge(Object& obj, int disk_id, int seg_request_id, int seg_empty_id){
     // 交换段间数据
     ActualSegment& seg_request = disk_array[disk_id].segment_array[seg_request_id];
     ActualSegment& seg_empty = disk_array[disk_id].segment_array[seg_empty_id];
@@ -125,6 +109,7 @@ int change_object_storge1(Object& obj, int empty_id, int request_id, int disk_id
 
     seg_request.all_request_wait_time -= wait_time;
     seg_empty.all_request_wait_time += wait_time; // 更新等待时间
+
     seg_request.first_write_index = find_first_wirte(seg_request);
     seg_empty.first_write_index = find_first_wirte(seg_empty); // 更新写入位置
 
@@ -225,23 +210,32 @@ void exchange_action()
             for(int j = 0; j < select_size; j++){
                 ActualSegment& actual_segment = target_disk.segment_array[select_actual[j]];
                 int empty_size = actual_segment.get_empty();
-                if(empty_size < target_object.size || actual_segment.tag_index != target_object.tag)
+                if(empty_size < target_object.size || actual_segment.tag_index != target_object.tag || target_object.size == 0)
                     continue; // 该段空间不足或tag不匹配，无法交换
-                int empty_block = actual_segment.begin_index + actual_segment.first_write_index;
+                int empty_block = actual_segment.begin_index;
                 
                 vector<int> empty, request;
+                bool judge = true;
                 for(int k = 0; k < target_object.size; k++){
                     empty_block = find_empty_block(n, empty_block, actual_segment.begin_index + actual_segment.segment_length);
                     int request_block = target_object.storge_data[1][k];
                     empty.push_back(empty_block);
                     request.push_back(request_block);
                     empty_block++;
+                    if(empty_block == -1){
+                        judge = false;
+                        break; // 该块未被分配或者不在实际段中
+                    }
                 }
+                if(judge == false)
+                    continue; // 该段空间不足，无法交换
+
                 for(int k = 0; k < target_object.size; k++){
-                    change_object_storge1(target_object, empty[k], request[k], n, need_change_seg[i], select_actual[j]);  
+                    change_object_storge(target_object, empty[k], request[k], n);  
                     exchange_block_array[n].exchange_block.push_back({empty[k], request[k]});
                     exchange_disk_array[n]--;
                 }
+                change_segment_storge(target_object, n, need_change_seg[i], select_actual[j]);
             }
         }
     }
@@ -295,7 +289,7 @@ void exchange_action()
                     break; // 该段空间不足，无法交换
                 block_request = target_object.storge_data[1][0] - 1;
                 for(int k = 0; k < target_object.size; k++){
-                    change_object_storge(target_object, empty[k], request[k], 1, n);
+                    change_object_storge(target_object, empty[k], request[k], n);
                     exchange_block_array[n].exchange_block.push_back({empty[k], request[k]});
                     exchange_disk_array[n]--;
                 }
