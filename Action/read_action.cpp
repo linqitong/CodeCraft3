@@ -64,6 +64,7 @@ void read_action(){
             request_array[request_id].request_id = request_id;
             request_array[request_id].recieve_time = time_step;
             read_record[time_step].push_back(request_id);
+            object_array[object_id].read_times++;
             if(object_array[object_id].true_tag){
                 tag_read[object_array[object_id].tag][time_step/pearson_sample_interval]+=object_array[object_id].size;
             }else{

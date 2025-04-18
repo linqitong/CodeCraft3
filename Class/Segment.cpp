@@ -94,7 +94,7 @@ int ActualSegment::get_score() {
                 all_mark+=obj_read_data[i][time_step/pearson_sample_interval];
             }
             return all_mark;
-            //this_mark *= tag_array[n1].fre_read[time_segment_index];
+            // this_mark *= tag_array[n1].fre_read[time_segment_index];
         }
         
         all_mark += this_mark;

@@ -22,3 +22,4 @@ void Object::quit_all_request(){
     }
     this->wait_request_set = set<int>();
 }
+

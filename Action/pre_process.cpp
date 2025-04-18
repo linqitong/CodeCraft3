@@ -348,13 +348,24 @@ void pre_process_2(){
     std::random_device rd;
     std::mt19937 gen(rd()); 
     std::uniform_int_distribution<> distrib(1, M_tag_num);
+    tag_read = vector<vector<long long>>(M_tag_num + 1, vector<long long>((T_time_step_length+EXTRA_TIME)/pearson_sample_interval+1, 0));
+    for(int time=1;time<=T_time_step_length + EXTRA_TIME;time++){
+        for(int i=0;i<read_record[time].size();i++){
+            int req=read_record[time][i];
+            int obj_id=request_array[req].object_id;
+            if(object_array[obj_id].read_times>=100 and object_array[obj_id].true_tag){
+                tag_read[object_array[obj_id].tag][time/pearson_sample_interval]+=object_array[obj_id].size;
+            }
+        }
+    }
+    
     for(int i=1;i <= max_object_id;i++){
         if(!object_array[i].true_tag){
             num++;
             int tag=distrib(gen);
             double similarity=0;
             for(int j=1;j<=M_tag_num;j++){
-                double sim = pearsonCorrelation(tag_read[j], obj_read_data[i]);
+                double sim = pearsonCorrelation(tag_read[j], obj_read_data[i], 0);
                 if(sim>similarity){
                     similarity=sim;
                     tag=j;
@@ -381,6 +392,11 @@ void pre_process_2(){
                 predict_num++;
                 object_array[i].quit = true;
             }
+        }else{
+         if( object_array[i].read_times<100){
+                predict_num++;
+                object_array[i].quit = true;
+            }   
         }
     }
     //cout<<"total:"<<num<<endl;
@@ -396,7 +412,8 @@ void pre_process_2(){
             int req=read_record[time][i];
             int obj_id=request_array[req].object_id;
             Object obj=object_array[obj_id];
-            tag_array[obj.tag].fre_read[(time - 1) / FRE_PER_SLICING + 1]+=obj.size;
+            if(obj.quit!=true)
+                tag_array[obj.tag].fre_read[(time - 1) / FRE_PER_SLICING + 1]+=obj.size;
         }
         for(int i=0;i<write_record[time].size();i++){
             Object obj=object_array[write_record[time][i]];

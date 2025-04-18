@@ -319,6 +319,7 @@ void write_action(){
             size=object_array[id].size;
             tag=object_array[id].tag;
         }
+        int right_tag = object_array[id].right_tag;
         max_object_id = max(max_object_id, id);
         object_array[id].size = size;
         object_array[id].load_time=time_step;
@@ -338,12 +339,24 @@ void write_action(){
             //     possibility=p;
             // }  
             object_array[id].true_tag=false;
-            tag=predictObject(possibility);
+            Object& obj = object_array[id];
+            tag = predictObject(possibility);
+
+            need_predict++;
+            if(right_tag == tag)
+                right_predict++;
             //tag_array[tag].write_size[time_step]+=object_array[id].size;
         }    
         else{
             tag_array[tag].write_size[time_step]+=object_array[id].size;
+            if(time_step > 1800){
+                size_of_tag[object_array[id].size].insert(tag);
+                // tag_array[tag].average_size.first++, tag_array[tag].average_size.second += (double)size;
+            }
         }
+        if(time_step > 1800)
+            tag_array[right_tag].average_size.first++, tag_array[right_tag].average_size.second += (double)size;
+
         object_array[id].tag = tag;
         write_record[time_step].push_back(id);
         write_array[i] = id;
