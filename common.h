@@ -90,6 +90,7 @@ class Disk{
 
 class Object{
 public:
+    int object_id;
     int tag; // 标签
     bool true_tag=true;//标记标签是否为真值
     int right_tag = 0;

@@ -325,6 +325,7 @@ void write_action(){
         max_object_id = max(max_object_id, id);
         object_array[id].size = size;
         object_array[id].load_time=time_step;
+        object_array[id].object_id = id;
         if(global_turn==2) assert(tag!=0);
         if(tag==0) {
             // if(t>=7000){
