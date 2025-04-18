@@ -77,6 +77,19 @@ int change_object_storge(Object& obj, int empty_id, int request_id, int rep_id, 
     }
 }
 
+int find_first_wirte(ActualSegment& target_actual_segment){
+    int seg = target_actual_segment.segment_length, begin = target_actual_segment.begin_index, disk_id = target_actual_segment.disk_id;
+    for(int i = seg + begin - 1; i >= begin; i--){
+        if(disk[disk_id][i] == 0)
+            continue;
+        if(i + 1 == seg + begin){
+            return seg; // 该段未被分配
+        }
+        return i + 1 - begin;    
+    }
+    return 0;
+}
+
 int change_object_storge1(Object& obj, int empty_id, int request_id, int disk_id, int seg_request_id, int seg_empty_id){
     // 交换段内数据
     for(int i = 0; i < obj.size; i++){
@@ -121,19 +134,6 @@ int change_object_storge1(Object& obj, int empty_id, int request_id, int disk_id
 
     seg_empty.object_set.insert(obj.object_id);
     seg_request.object_set.erase(obj.object_id); // 更新对象集合
-}
-
-int find_first_wirte(ActualSegment& target_actual_segment){
-    int seg = target_actual_segment.segment_length, begin = target_actual_segment.begin_index, disk_id = target_actual_segment.disk_id;
-    for(int i = seg + begin - 1; i >= begin; i--){
-        if(disk[disk_id][i] == 0)
-            continue;
-        if(i + 1 == seg + begin){
-            return seg; // 该段未被分配
-        }
-        return i + 1 - begin;    
-    }
-    return 0;
 }
 
 int find_need_change(ActualSegment& target_actual_segment, int start_block, int tag_id){
@@ -195,6 +195,8 @@ void exchange_action()
             }
         }
 
+        
+
         vector<int> need_change_object;
         vector<int> need_change_seg;
 
@@ -205,7 +207,7 @@ void exchange_action()
             for(int j = 0; j < read_rank.size(); j++){
                 int read_time = read_rank[j].first;
                 int object_id = read_rank[j].second;
-                if(read_time > 500){
+                if(read_time > 100){
                     need_change_object.push_back(object_id);
                     need_change_seg.push_back(actual_segment_id);
                 }
