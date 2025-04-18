@@ -45,6 +45,10 @@ std::vector<int> g;
 std::set<int> has_been_predicted;
 int G;
 
+double round2_high_threshold = 0.80;
+
+double round2_low_threshold = 0.95;
+
 int predict_num=0;
 
 long long tag_first_write_size = 0;

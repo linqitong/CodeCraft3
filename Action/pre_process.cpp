@@ -463,8 +463,11 @@ void pre_process_2(){
             }
         }
     }
+
+    vector<vector<pair<int, int>>> tag_obj_read = vector<vector<pair<int, int>>>(M_tag_num + 1);
     
     for(int i=1;i <= max_object_id;i++){
+        Object& target_object = object_array[i];
         if(!object_array[i].true_tag){
             num++;
             int tag=distrib(gen);
@@ -503,7 +506,42 @@ void pre_process_2(){
                 object_array[i].quit = true;
             }   
         }
+
+        tag_obj_read[target_object.tag].push_back(
+            {target_object.read_times * target_object.size, i}
+        );
     }
+    for(int n1 = 1; n1 <= M_tag_num; n1++){
+        sort(tag_obj_read[n1].begin(), tag_obj_read[n1].end(), greater<pair<int, int>>());
+        double all_size = 0;
+        for(int n2 = 0; n2 < tag_obj_read[n1].size(); n2++){
+            all_size += tag_obj_read[n1][n2].first;
+        }
+        int high_index = 0;
+        int low_index = tag_obj_read[n1].size() - 1;
+        double current_high_size = 0;
+        double current_low_size = all_size;
+        for(int n2 = 0; n2 < tag_obj_read[n1].size(); n2++){
+            current_high_size += tag_obj_read[n1][n2].first;
+            if(current_high_size > all_size * round2_high_threshold){
+                break;
+            }
+            high_index = n2;
+        }
+        for(int n2 = tag_obj_read[n1].size() - 1; n2 >= 0; n2--){
+            current_low_size -= tag_obj_read[n1][n2].first;
+            if(current_low_size < all_size * round2_low_threshold){
+                break;
+            }
+            low_index = n2;
+        }
+        tag_array[n1].round2_high_request_num = tag_obj_read[n1][high_index].first;
+        tag_array[n1].round2_low_request_num = tag_obj_read[n1][low_index].first;
+    }
+
+
+
+
     //cout<<"total:"<<num<<endl;
     //freopen(".\\output.txt", "a+", stdout);
    
