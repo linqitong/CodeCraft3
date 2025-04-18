@@ -138,6 +138,8 @@ public:
     double read_score=0,write_score=0;
     void calc_read_score();
     void calc_write_score();
+    int round2_high_request_num;
+    int round2_low_request_num;
     // std::vector<int> virtual_segment = std::vector<int>(); // 分配给该 tag 的虚拟段索引,从 0 开始
 };
 extern int stride_length_read;
@@ -146,6 +148,10 @@ extern int stride_num;
 extern int global_turn;
 
 extern int quit_num1;
+
+extern double round2_high_threshold;
+
+extern double round2_low_threshold;
 
 extern Disk disk_array[MAX_DISK_NUM]; // 所有的磁盘数据
 extern Object object_array[MAX_OBJECT_NUM]; // 所有的对象数据
