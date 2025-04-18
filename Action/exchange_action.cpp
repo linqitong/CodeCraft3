@@ -189,13 +189,15 @@ void exchange_action()
             }
         }
         select_size = select_actual.size();
-        for(int i = 0; i < segment_num; i++){
-            if(find(select_actual.begin(), select_actual.end(), i) == select_actual.end()){
-                select_actual.push_back(i);
-            }
-        }
+        // for(int i = 0; i < segment_num; i++){
+        //     if(find(select_actual.begin(), select_actual.end(), i) == select_actual.end()){
+        //         select_actual.push_back(i);
+        //     }
+        // }
 
-        
+        for(int i = select_size; i < select_actual.size(); i++){
+            need_change_actual.push_back(select_actual[i]);
+        }
 
         vector<int> need_change_object;
         vector<int> need_change_seg;
