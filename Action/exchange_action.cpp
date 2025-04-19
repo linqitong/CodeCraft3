@@ -193,7 +193,7 @@ void exchange_action()
                     continue; // 该对象无需切换
                 int shold = 0;
                 if(global_turn == 1)
-                    shold = 100;
+                    shold = 1;
                 else 
                     shold = tag_array[target_object.tag].round2_high_request_num;
                 if(read_time > shold){
