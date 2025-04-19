@@ -263,7 +263,7 @@ void load_history(){
     
     // 读取基本参数
     fin >> G >> T_time_step_length >> M_tag_num >> N_disk_num 
-        >> V_block_per_disk >> K_max_exchange_block >> max_object_id >> max_request_id;
+        >> V_block_per_disk >> K_max_exchange_block >> max_object_id >> max_request_id >> K2;
     
     // 读取 object_array 数据（假设下标从1开始）
     for(int n1 = 1; n1 <= max_object_id; n1++){
@@ -351,7 +351,7 @@ void save_history(){
     freopen(history_name.c_str(), "w", stdout);
     cout << G << " " << T_time_step_length << " " << M_tag_num << " " << N_disk_num;
     cout << " " << V_block_per_disk << " " << K_max_exchange_block << " " << max_object_id;
-    cout << " " << max_request_id << endl;
+    cout << " " << max_request_id << " " << K2 << endl;
     for(int n1 = 1; n1 <= max_object_id; n1++){
         Object& target_object = object_array[n1];
         cout << target_object.tag << " " << target_object.true_tag << " " << target_object.size << endl;

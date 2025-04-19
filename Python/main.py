@@ -10,7 +10,7 @@ import get_tag_rank
 def main():
     original_stdin = sys.stdin
     # f = open('../Data/初赛数据/practice.in', 'r')
-    f = open('../Data/sample_practice_1.in', 'r')
+    f = open('../Data/sample_official_1.in', 'r')
     sys.stdin = f
 
     user_input = input().split()
@@ -21,6 +21,7 @@ def main():
     common.V_block_per_disk = int(user_input[3])
     common.G_token_per_time_step = int(user_input[4])
     common.K_garbage_recycle_size = int(user_input[5])
+    common.K2 = int(user_input[6])
 
     common.tag_array = [common.Tag() for _ in range(common.M_tag_num + 1)]
     common.untag_write_data = [[] for _ in range(common.T_time_step_length + EXTRA_TIME + 1)]
@@ -126,6 +127,7 @@ def main():
             garbage_action()
 
     print("输入数据已经处理完毕")
+    """
     tag_object_read_data = [[] for _ in range(17)]
     for n1 in range(1, 17):
         for o_id, value in common.tag_array[n1].object_request_dict.items():
@@ -133,6 +135,36 @@ def main():
         tag_object_read_data[n1].sort(reverse=True)
         save_line_plot(tag_object_read_data[n1], os.path.join(picture_addr, "tag_object_read"),
                        "tag" + str(n1))
+    """
+    f = open('../Data/sample_official_map_1.txt', 'r')
+    sys.stdin = f
+    no_tag_data = [[] for _ in range(17)]
+    all_no_tag_data = [0 for _ in range(common.T_time_step_length + common.EXTRA_TIME + 1)]
+    have_tag_data = [[] for _ in range(17)]
+    for n1 in range(1, 17):
+        have_tag_data[n1] = [0 for _ in range(common.T_time_step_length + common.EXTRA_TIME + 1)]
+        no_tag_data[n1] = [0 for _ in range(common.T_time_step_length + common.EXTRA_TIME + 1)]
+    for n1 in tqdm(range(0, common.max_object_id)):
+        input_data = input().split()
+        object_id = int(input_data[0])
+        tag_id = int(input_data[1])
+        common.objects[object_id].tag_id = tag_id
+        for n2 in range(len(common.objects[object_id].read_array)):
+            all_no_tag_data[common.objects[object_id].read_array[n2]] += common.objects[object_id].size
+        # common.tag_array[tag_id].append((common.objects[object_id].begin_time, object_id, 0))
+        if object_id not in common.tag_array[tag_id].object_dict:
+            no_tag_data[tag_id][common.objects[object_id].begin_time] += common.objects[object_id].size
+        else:
+            have_tag_data[tag_id][common.objects[object_id].begin_time] += common.objects[object_id].size
+    save_line_plot(all_no_tag_data, picture_addr,
+                       "all_no_tag_write", 50)
+    
+    for n2 in range(1, 17):
+        save_line_plot(no_tag_data[n2], os.path.join(picture_addr, "no_tag_write"),
+                       "tag" + str(n2), 50)
+        save_line_plot(have_tag_data[n2], os.path.join(picture_addr, "have_tag_write"),
+                       "tag" + str(n2), 50)
+    
     exit()
     data33 = [0 for _ in range(17)]
     # for i in range(1, 17):

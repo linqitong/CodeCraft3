@@ -13,6 +13,7 @@ N_disk_num = 0
 V_block_per_disk = 0
 G_token_per_time_step = 0
 K_garbage_recycle_size = 0
+K2 = 0
 
 t = 0
 t_segment = 0
@@ -69,7 +70,7 @@ all_empty_tag_read_size = 0
 all_write_num = 0
 all_empty_tag_write_num = 0
 
-picture_addr = r"./Picture/决赛_训练数据1"
+picture_addr = r"./Picture/决赛_实际数据1"
 
 max_object_id = 0
 
