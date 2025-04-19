@@ -112,7 +112,13 @@ void exchange_action()
     ExchangeBlock temp = {};
     vector<ExchangeBlock> exchange_block_array; // 交换块的数组
     for(int i = 0; i <= N_disk_num; i++){
-        exchange_disk_array.push_back(K_max_exchange_block);
+        if(global_turn == 1){
+            exchange_disk_array.push_back(K_max_exchange_block);
+
+        }else{
+            exchange_disk_array.push_back(K2);
+
+        }
         exchange_block_array.push_back(temp);
     }
     for(int n = 1; n <= N_disk_num; n++){

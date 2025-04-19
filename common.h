@@ -22,6 +22,8 @@ extern int K_max_exchange_block; //代表每次垃圾回收事件每个硬盘最
 extern int max_object_id;
 extern int max_request_id;
 extern int predict_window; // 预测窗口大小
+extern int K2;
+
 extern std::set<int> size_of_tag[6];
 
 class ExchangeBlock{
