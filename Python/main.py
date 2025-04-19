@@ -136,6 +136,8 @@ def main():
         save_line_plot(tag_object_read_data[n1], os.path.join(picture_addr, "tag_object_read"),
                        "tag" + str(n1))
     """
+    f = open('../Data/sample_official_map_1.txt', 'r')
+    sys.stdin = f
     no_tag_data = [[] for _ in range(17)]
     all_no_tag_data = [0 for _ in range(common.T_time_step_length + common.EXTRA_TIME + 1)]
     have_tag_data = [[] for _ in range(17)]
