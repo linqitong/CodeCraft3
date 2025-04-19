@@ -127,6 +127,7 @@ def main():
             garbage_action()
 
     print("输入数据已经处理完毕")
+    """
     tag_object_read_data = [[] for _ in range(17)]
     for n1 in range(1, 17):
         for o_id, value in common.tag_array[n1].object_request_dict.items():
@@ -134,6 +135,34 @@ def main():
         tag_object_read_data[n1].sort(reverse=True)
         save_line_plot(tag_object_read_data[n1], os.path.join(picture_addr, "tag_object_read"),
                        "tag" + str(n1))
+    """
+    no_tag_data = [[] for _ in range(17)]
+    all_no_tag_data = [0 for _ in range(common.T_time_step_length + common.EXTRA_TIME + 1)]
+    have_tag_data = [[] for _ in range(17)]
+    for n1 in range(1, 17):
+        have_tag_data[n1] = [0 for _ in range(common.T_time_step_length + common.EXTRA_TIME + 1)]
+        no_tag_data[n1] = [0 for _ in range(common.T_time_step_length + common.EXTRA_TIME + 1)]
+    for n1 in tqdm(range(0, common.max_object_id)):
+        input_data = input().split()
+        object_id = int(input_data[0])
+        tag_id = int(input_data[1])
+        common.objects[object_id].tag_id = tag_id
+        for n2 in range(len(common.objects[object_id].read_array)):
+            all_no_tag_data[common.objects[object_id].read_array[n2]] += common.objects[object_id].size
+        # common.tag_array[tag_id].append((common.objects[object_id].begin_time, object_id, 0))
+        if object_id not in common.tag_array[tag_id].object_dict:
+            no_tag_data[tag_id][common.objects[object_id].begin_time] += common.objects[object_id].size
+        else:
+            have_tag_data[tag_id][common.objects[object_id].begin_time] += common.objects[object_id].size
+    save_line_plot(all_no_tag_data, picture_addr,
+                       "all_no_tag_write", 50)
+    
+    for n2 in range(1, 17):
+        save_line_plot(no_tag_data[n2], os.path.join(picture_addr, "no_tag_write"),
+                       "tag" + str(n2), 50)
+        save_line_plot(have_tag_data[n2], os.path.join(picture_addr, "have_tag_write"),
+                       "tag" + str(n2), 50)
+    
     exit()
     data33 = [0 for _ in range(17)]
     # for i in range(1, 17):
