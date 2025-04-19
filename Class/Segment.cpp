@@ -101,3 +101,15 @@ int ActualSegment::get_score() {
     }
     return all_mark;
 }
+
+
+std::vector<std::pair<int, int>> ActualSegment::get_read_rank(){
+    vector<pair<int, int>> data;
+    for (std::set<int>::iterator it = object_set.begin(); it != object_set.end(); ++it) {
+        // std::cout << *it << " ";
+        int obj_id = *it;
+        data.push_back({object_array[obj_id].read_times, obj_id});
+    }
+    sort(data.begin(), data.end(), greater<pair<int, int>>());
+    return data;
+}

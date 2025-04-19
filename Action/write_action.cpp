@@ -248,6 +248,8 @@ vector<pair<int, vector<int>>> allocate_object(int object_id) {
     // 分配有效区的空间
     if(obj.quit == false){
         efficient_allocate = efficient_allocate_object(object_id);
+        int act_id = (efficient_allocate.second[0] - 1) / segment_size;
+        disk_array[efficient_allocate.first].segment_array[act_id].object_set.insert(object_id);
     }
 
     vector<pair<int, vector<int>>> rubbish_allocate;

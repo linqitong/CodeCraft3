@@ -32,7 +32,7 @@ class ExchangeBlock{
 };
         
 class ActualSegment{
-public:
+    public:
     int tag_index = 0; // 分配该段的 tag 索引
     int tag_occupy_size[18] = {0}; // 不同tag在该段的占用大小
     int disk_id; // 所在磁盘 id
@@ -49,6 +49,8 @@ public:
     int get_score(); // 计算该段的分数
     int request_size = 0; // 该实际段当前的等待请求数
     long long all_request_wait_time=0;//该段所有请求的总等待时长
+    std::set<int> object_set;
+    std::vector<std::pair<int, int>> get_read_rank();
 };
 
 class Disk{
