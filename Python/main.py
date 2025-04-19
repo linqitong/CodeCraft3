@@ -10,7 +10,7 @@ import get_tag_rank
 def main():
     original_stdin = sys.stdin
     # f = open('../Data/初赛数据/practice.in', 'r')
-    f = open('../Data/sample_practice_1.in', 'r')
+    f = open('../Data/sample_official_1.in', 'r')
     sys.stdin = f
 
     user_input = input().split()
@@ -21,6 +21,7 @@ def main():
     common.V_block_per_disk = int(user_input[3])
     common.G_token_per_time_step = int(user_input[4])
     common.K_garbage_recycle_size = int(user_input[5])
+    common.K2 = int(user_input[6])
 
     common.tag_array = [common.Tag() for _ in range(common.M_tag_num + 1)]
     common.untag_write_data = [[] for _ in range(common.T_time_step_length + EXTRA_TIME + 1)]
